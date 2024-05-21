@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
+import { User } from './users/user.entity';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      entities: [],
+      entities: [User],
       synchronize: true,
       logging: true,
       ssl: {
@@ -27,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
         options: `project=${process.env.ENDPOINT_ID}`,
       },
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
