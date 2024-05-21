@@ -25,7 +25,7 @@ export class CreateUserDto {
   password: string;
 
   @IsDateString()
-  dateOfBirth: string;
+  dateOfBirth: Date;
 
   @IsBoolean()
   isProfessional: boolean;
