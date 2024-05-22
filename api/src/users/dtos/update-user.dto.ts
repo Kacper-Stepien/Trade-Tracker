@@ -7,14 +7,14 @@ export class UpdateUserDto {
 
   @IsString()
   @IsOptional()
-  surname: string;
+  surname?: string;
 
   @IsString()
   @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH))
   @IsOptional()
-  password: string;
+  password?: string;
 
   @IsBoolean()
   @IsOptional()
-  isProfessional: boolean;
+  isProfessional?: boolean;
 }
