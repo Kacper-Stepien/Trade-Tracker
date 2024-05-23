@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { Role } from './role.enum';
 
 const mockUsers = [
   {
@@ -14,6 +15,7 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('1990-01-01'),
     isProfessional: false,
+    role: Role.USER,
   },
   {
     id: 2,
@@ -23,6 +25,7 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('1995-01-01'),
     isProfessional: true,
+    role: Role.USER,
   },
   {
     id: 3,
@@ -32,6 +35,7 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
+    role: Role.USER,
   },
 ];
 
@@ -211,6 +215,7 @@ describe('UsersController', () => {
         password: 'password12345',
         dateOfBirth: new Date('1990-01-01'),
         isProfessional: false,
+        role: Role.USER,
       };
       jest.spyOn(service, 'updateUser').mockResolvedValue(updatedUser);
       expect(await controller.updateUser(1, updatedUser)).toBe(updatedUser);

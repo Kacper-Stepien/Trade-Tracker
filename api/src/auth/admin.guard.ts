@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 
-import { Role } from 'src/users/role.enum';
+import { Role } from '../users/role.enum';
 
 @Injectable()
 export class AdminGuard implements CanActivate {

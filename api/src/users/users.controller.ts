@@ -14,14 +14,14 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { AdminGuard } from 'src/auth/admin.guard';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AdminGuard)
   @Get()
+  @UseGuards(AdminGuard)
   getUsers(
     @Query('professional') professional?: boolean,
     @Query('minAge') minAge?: number,
@@ -38,20 +38,20 @@ export class UsersController {
     );
   }
 
-  @UseGuards(AdminGuard)
   @Get(':id')
+  @UseGuards(AdminGuard)
   getUser(@Param('id') id: number): Promise<User> {
     return this.usersService.findUserById(id);
   }
 
-  @UseGuards(AdminGuard)
   @Post()
+  @UseGuards(AdminGuard)
   createUser(@Body() body: CreateUserDto): Promise<User> {
     return this.usersService.createUser(body);
   }
 
-  @UseGuards(AdminGuard)
   @Patch(':id')
+  @UseGuards(AdminGuard)
   updateUser(
     @Param('id') id: number,
     @Body() body: UpdateUserDto,
@@ -59,8 +59,8 @@ export class UsersController {
     return this.usersService.updateUser(id, body);
   }
 
-  @UseGuards(AdminGuard)
   @Delete(':id')
+  @UseGuards(AdminGuard)
   deleteUser(@Param('id') id: number): Promise<void> {
     return this.usersService.deleteUser(id);
   }
