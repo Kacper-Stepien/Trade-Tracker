@@ -12,6 +12,8 @@ import {
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
+import { AdminGuard } from '../auth/admin.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Controller('product-categories')
 export class ProductCategoryController {
@@ -32,6 +34,7 @@ export class ProductCategoryController {
   }
 
   @Post()
+  @UseGuards(AdminGuard)
   async createCategory(
     @Body() createProductCategoryDto: CreateProductCategoryDto,
   ): Promise<ProductCategory> {
@@ -41,6 +44,7 @@ export class ProductCategoryController {
   }
 
   @Patch(':id')
+  @UseGuards(AdminGuard)
   async updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductCategoryDto: UpdateProductCategoryDto,
@@ -52,6 +56,7 @@ export class ProductCategoryController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminGuard)
   async deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return await this.productCategoryService.deleteCategory(id);
   }

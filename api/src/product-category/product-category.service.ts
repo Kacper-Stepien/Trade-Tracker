@@ -14,15 +14,22 @@ export class ProductCategoryService {
     private readonly productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
+  private async validateCategoryExistence(
+    id: number,
+  ): Promise<ProductCategory> {
+    const category = await this.productCategoryRepository.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
+    }
+    return category;
+  }
+
   async findAllCategories(): Promise<ProductCategory[]> {
     return this.productCategoryRepository.find();
   }
 
   async findCategoryById(id: number): Promise<ProductCategory> {
-    const category = await this.productCategoryRepository.findOneBy({ id });
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
+    const category = await this.validateCategoryExistence(id);
     return category;
   }
 
@@ -38,15 +45,12 @@ export class ProductCategoryService {
   }
 
   async updateCategory(id: number, name: string): Promise<ProductCategory> {
-    const category = await this.productCategoryRepository.findOneBy({ id });
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
+    const category = await this.validateCategoryExistence(id);
     const categoryExists = await this.productCategoryRepository.findOne({
       where: { name },
       select: ['id'],
     });
-    if (categoryExists && categoryExists.id !== id) {
+    if (!categoryExists || categoryExists.id !== id) {
       throw new ConflictException(`Category with name ${name} already exists`);
     }
 
@@ -55,10 +59,7 @@ export class ProductCategoryService {
   }
 
   async deleteCategory(id: number): Promise<void> {
-    const category = await this.productCategoryRepository.findOneBy({ id });
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
+    const category = await this.validateCategoryExistence(id);
     await this.productCategoryRepository.remove(category);
   }
 }

@@ -46,27 +46,6 @@ export class ProductAttributeService {
     }
   }
 
-  // async createAttribute(
-  //   createProductAttributeDto: CreateProductAttributeDto,
-  //   productId: number,
-  //   userId: number,
-  // ): Promise<ProductAttribute> {
-  //   const product = await this.productRepository.findOneBy({ id: productId });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with ID ${productId} not found`);
-  //   }
-  //   if (product.user.id !== userId) {
-  //     throw new ForbiddenException(
-  //       `Product with ID ${productId} does not belong to user with ID ${userId}`,
-  //     );
-  //   }
-  //   const attribute = this.productAttributeRepository.create({
-  //     ...createProductAttributeDto,
-  //     product,
-  //   });
-  //   return this.productAttributeRepository.save(attribute);
-  // }
-
   async createAttribute(
     createProductAttributeDto: CreateProductAttributeDto,
     productId: number,
@@ -88,48 +67,6 @@ export class ProductAttributeService {
     return this.productAttributeRepository.find({ where: { product } });
   }
 
-  async deleteProductAttribute(
-    productId: number,
-    attributeId: number,
-    userId: number,
-  ): Promise<void> {
-    const product = await this.validateProductOwnership(productId, userId);
-    const attribute = await this.productAttributeRepository.findOne({
-      where: { id: attributeId, product },
-    });
-    this.validateProductAttributeExistence(attribute);
-    await this.productAttributeRepository.remove(attribute);
-  }
-
-  // async updateProductAttribute(
-  //   productId: number,
-  //   attributeId: number,
-  //   updateProductAttributeDto: UpdateProductAttributeDto,
-  //   userId: number,
-  // ): Promise<ProductAttribute> {
-  //   const product = await this.productRepository.findOneBy({ id: productId });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with ID ${productId} not found`);
-  //   }
-  //   if (product.user.id !== userId) {
-  //     throw new ForbiddenException(
-  //       `Product with ID ${productId} does not belong to user with ID ${userId}`,
-  //     );
-  //   }
-  //   const attribute = await this.productAttributeRepository.findOneBy({
-  //     id: attributeId,
-  //     product,
-  //   });
-  //   if (!attribute) {
-  //     throw new NotFoundException(
-  //       `Attribute with ID ${attributeId} not found for product with ID ${productId}`,
-  //     );
-  //   }
-  //   attribute.name = updateProductAttributeDto.name;
-  //   attribute.value = updateProductAttributeDto.value;
-  //   return this.productAttributeRepository.save(attribute);
-  // }
-
   async updateProductAttribute(
     productId: number,
     attributeId: number,
@@ -140,9 +77,22 @@ export class ProductAttributeService {
     const attribute = await this.productAttributeRepository.findOne({
       where: { id: attributeId, product },
     });
-    this.validateProductAttributeExistence(attribute);
+    await this.validateProductAttributeExistence(attribute);
     attribute.name = updateProductAttributeDto.name;
     attribute.value = updateProductAttributeDto.value;
     return this.productAttributeRepository.save(attribute);
+  }
+
+  async deleteProductAttribute(
+    productId: number,
+    attributeId: number,
+    userId: number,
+  ): Promise<void> {
+    const product = await this.validateProductOwnership(productId, userId);
+    const attribute = await this.productAttributeRepository.findOne({
+      where: { id: attributeId, product },
+    });
+    await this.validateProductAttributeExistence(attribute);
+    await this.productAttributeRepository.remove(attribute);
   }
 }
