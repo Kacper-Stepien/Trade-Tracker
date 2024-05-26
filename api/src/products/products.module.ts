@@ -4,5 +4,6 @@ import { Product } from './product.enity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product])],
+  exports: [TypeOrmModule],
 })
 export class ProductsModule {}
