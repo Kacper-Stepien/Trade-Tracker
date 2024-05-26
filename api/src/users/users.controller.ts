@@ -20,6 +20,24 @@ import { AdminGuard } from '../auth/admin.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('me')
+  getMe(@Request() req): Promise<User> {
+    const userId = req.user.sub;
+    return this.usersService.findUserById(userId);
+  }
+
+  @Patch('me')
+  updateMe(@Request() req, @Body() body: UpdateUserDto): Promise<User> {
+    const userId = req.user.sub;
+    return this.usersService.updateUser(userId, body);
+  }
+
+  @Delete('me')
+  deleteMe(@Request() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.usersService.deleteUser(userId);
+  }
+
   @Get()
   @UseGuards(AdminGuard)
   getUsers(
@@ -63,23 +81,5 @@ export class UsersController {
   @UseGuards(AdminGuard)
   deleteUser(@Param('id') id: number): Promise<void> {
     return this.usersService.deleteUser(id);
-  }
-
-  @Get('me')
-  getMe(@Request() req): Promise<User> {
-    const userId = req.user.sub;
-    return this.usersService.findUserById(userId);
-  }
-
-  @Patch('me')
-  updateMe(@Request() req, @Body() body: UpdateUserDto): Promise<User> {
-    const userId = req.user.sub;
-    return this.usersService.updateUser(userId, body);
-  }
-
-  @Delete('me')
-  deleteMe(@Request() req): Promise<void> {
-    const userId = req.user.sub;
-    return this.usersService.deleteUser(userId);
   }
 }
