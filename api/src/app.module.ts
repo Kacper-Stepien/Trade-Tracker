@@ -12,6 +12,7 @@ import { ProductCategoryModule } from './product-category/product-category.modul
 import { ProductAttributeModule } from './product-attribute/product-attribute.module';
 import { ProductCategory } from './product-category/product-category.entity';
 import { ProductAttribute } from './product-attribute/product-attribute.entity';
+import { ProductCategoryService } from './product-category.service';
 
 @Module({
   imports: [
@@ -43,6 +44,6 @@ import { ProductAttribute } from './product-attribute/product-attribute.entity';
     ProductAttributeModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ProductCategoryService],
 })
 export class AppModule {}
