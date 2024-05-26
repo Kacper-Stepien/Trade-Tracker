@@ -8,6 +8,10 @@ import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/product.enity';
+import { ProductCategoryModule } from './product-category/product-category.module';
+import { ProductAttributeModule } from './product-attribute/product-attribute.module';
+import { ProductCategory } from './product-category/product-category.entity';
+import { ProductAttribute } from './product-attribute/product-attribute.entity';
 
 @Module({
   imports: [
@@ -22,7 +26,7 @@ import { Product } from './products/product.enity';
       username: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      entities: [User, Product],
+      entities: [User, Product, ProductCategory, ProductAttribute],
       synchronize: true,
       logging: true,
       ssl: {
@@ -35,6 +39,8 @@ import { Product } from './products/product.enity';
     UsersModule,
     AuthModule,
     ProductsModule,
+    ProductCategoryModule,
+    ProductAttributeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

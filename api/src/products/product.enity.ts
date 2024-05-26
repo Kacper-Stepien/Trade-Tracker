@@ -4,9 +4,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  //   OneToMany,
+  OneToMany,
 } from 'typeorm';
-
+import { ProductCategory } from '../product-category/product-category.entity';
+import { ProductAttribute } from '../product-attribute/product-attribute.entity';
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
@@ -32,4 +33,10 @@ export class Product {
 
   @ManyToOne(() => User, (user) => user.products)
   user: User;
+
+  @ManyToOne(() => ProductCategory, (category) => category.products)
+  category: ProductCategory;
+
+  @OneToMany(() => ProductAttribute, (attribute) => attribute.product)
+  attributes: ProductAttribute[];
 }
