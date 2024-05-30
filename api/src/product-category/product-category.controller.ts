@@ -34,7 +34,7 @@ export class ProductCategoryController {
   }
 
   @Post()
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   async createCategory(
     @Body() createProductCategoryDto: CreateProductCategoryDto,
   ): Promise<ProductCategory> {

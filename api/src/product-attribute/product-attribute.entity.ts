@@ -12,6 +12,8 @@ export class ProductAttribute {
   @Column({ type: 'varchar', length: 255, nullable: false })
   value: string;
 
-  @ManyToOne(() => Product, (product) => product.attributes)
+  @ManyToOne(() => Product, (product) => product.attributes, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }
