@@ -12,6 +12,10 @@ import { ProductCategoryModule } from './product-category/product-category.modul
 import { ProductAttributeModule } from './product-attribute/product-attribute.module';
 import { ProductCategory } from './product-category/product-category.entity';
 import { ProductAttribute } from './product-attribute/product-attribute.entity';
+import { ProductCostModule } from './product-cost/product-cost.module';
+import { ProductCost } from './product-cost/product-cost.entity';
+import { CostTypeModule } from './cost-type/cost-type.module';
+import { CostType } from './cost-type/cost-type.entity';
 
 @Module({
   imports: [
@@ -26,7 +30,14 @@ import { ProductAttribute } from './product-attribute/product-attribute.entity';
       username: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      entities: [User, Product, ProductCategory, ProductAttribute],
+      entities: [
+        User,
+        Product,
+        ProductCategory,
+        ProductAttribute,
+        ProductCost,
+        CostType,
+      ],
       synchronize: true,
       logging: true,
       ssl: {
@@ -41,6 +52,8 @@ import { ProductAttribute } from './product-attribute/product-attribute.entity';
     ProductsModule,
     ProductCategoryModule,
     ProductAttributeModule,
+    ProductCostModule,
+    CostTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

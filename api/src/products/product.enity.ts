@@ -1,3 +1,4 @@
+import { ProductCost } from '../product-cost/product-cost.entity';
 import { User } from '../users/user.entity';
 import {
   Entity,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm';
 import { ProductCategory } from '../product-category/product-category.entity';
 import { ProductAttribute } from '../product-attribute/product-attribute.entity';
+
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
@@ -42,4 +44,10 @@ export class Product {
     onDelete: 'CASCADE',
   })
   attributes: ProductAttribute[];
+
+  @OneToMany(() => ProductCost, (cost) => cost.product, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  costs: ProductCost[];
 }
