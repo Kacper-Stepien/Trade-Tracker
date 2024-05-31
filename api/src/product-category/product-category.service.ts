@@ -14,22 +14,12 @@ export class ProductCategoryService {
     private readonly productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  private async validateCategoryExistence(
-    id: number,
-  ): Promise<ProductCategory> {
-    const category = await this.productCategoryRepository.findOneBy({ id });
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
-    return category;
-  }
-
   async findAllCategories(): Promise<ProductCategory[]> {
     return this.productCategoryRepository.find();
   }
 
   async findCategoryById(id: number): Promise<ProductCategory> {
-    const category = await this.validateCategoryExistence(id);
+    const category = await this.getCategoryById(id);
     return category;
   }
 
@@ -45,7 +35,7 @@ export class ProductCategoryService {
   }
 
   async updateCategory(id: number, name: string): Promise<ProductCategory> {
-    const category = await this.validateCategoryExistence(id);
+    const category = await this.getCategoryById(id);
     const categoryExists = await this.productCategoryRepository.findOne({
       where: { name },
       select: ['id'],
@@ -59,7 +49,15 @@ export class ProductCategoryService {
   }
 
   async deleteCategory(id: number): Promise<void> {
-    const category = await this.validateCategoryExistence(id);
+    const category = await this.getCategoryById(id);
     await this.productCategoryRepository.remove(category);
+  }
+
+  private async getCategoryById(id: number): Promise<ProductCategory> {
+    const category = await this.productCategoryRepository.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
+    }
+    return category;
   }
 }

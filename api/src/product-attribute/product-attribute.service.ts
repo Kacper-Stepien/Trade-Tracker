@@ -19,33 +19,6 @@ export class ProductAttributeService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  private async validateProductOwnership(
-    productId: number,
-    userId: number,
-  ): Promise<Product> {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-      relations: ['user'],
-    });
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
-    }
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `Product with ID ${productId} does not belong to user with ID ${userId}`,
-      );
-    }
-    return product;
-  }
-
-  private async validateProductAttributeExistence(
-    productAttribute: ProductAttribute | undefined,
-  ) {
-    if (!productAttribute) {
-      throw new NotFoundException(`Product not found`);
-    }
-  }
-
   async createAttribute(
     createProductAttributeDto: CreateProductAttributeDto,
     productId: number,
@@ -94,5 +67,32 @@ export class ProductAttributeService {
     });
     await this.validateProductAttributeExistence(attribute);
     await this.productAttributeRepository.remove(attribute);
+  }
+
+  private async validateProductOwnership(
+    productId: number,
+    userId: number,
+  ): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['user'],
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+    if (product.user.id !== userId) {
+      throw new ForbiddenException(
+        `Product with ID ${productId} does not belong to user with ID ${userId}`,
+      );
+    }
+    return product;
+  }
+
+  private async validateProductAttributeExistence(
+    productAttribute: ProductAttribute | undefined,
+  ) {
+    if (!productAttribute) {
+      throw new NotFoundException(`Product not found`);
+    }
   }
 }

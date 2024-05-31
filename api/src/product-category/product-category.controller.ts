@@ -8,12 +8,12 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
 import { AdminGuard } from '../auth/admin.guard';
-import { UseGuards } from '@nestjs/common';
 
 @Controller('product-categories')
 export class ProductCategoryController {
@@ -23,7 +23,7 @@ export class ProductCategoryController {
 
   @Get()
   async getAllCategories(): Promise<ProductCategory[]> {
-    return this.productCategoryService.findAllCategories();
+    return await this.productCategoryService.findAllCategories();
   }
 
   @Get(':id')
@@ -34,7 +34,7 @@ export class ProductCategoryController {
   }
 
   @Post()
-  // @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard)
   async createCategory(
     @Body() createProductCategoryDto: CreateProductCategoryDto,
   ): Promise<ProductCategory> {
