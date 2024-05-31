@@ -18,29 +18,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  private async getUserById(userId: number): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ id: userId });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
-    }
-    return user;
-  }
-
-  private async getUserByEmail(email: string): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ email });
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
-    return user;
-  }
-
-  private async checkIfUserWithEmailExists(email: string): Promise<void> {
-    const user = await this.usersRepository.findOneBy({ email });
-    if (user) {
-      throw new ConflictException('User with this email already exists');
-    }
-  }
-
   async findAllUsers(
     professional?: boolean,
     minAge?: number,
@@ -103,6 +80,29 @@ export class UsersService {
     const result = await this.usersRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${id} not found`);
+    }
+  }
+
+  private async getUserById(userId: number): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    return user;
+  }
+
+  private async getUserByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
+  }
+
+  private async checkIfUserWithEmailExists(email: string): Promise<void> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user) {
+      throw new ConflictException('User with this email already exists');
     }
   }
 }

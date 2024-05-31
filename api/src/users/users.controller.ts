@@ -20,10 +20,6 @@ import { UserDto } from './dtos/user-dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  private getUserId(req): number {
-    return req.user.sub;
-  }
-
   @Get('me')
   getMe(@Request() req): Promise<UserDto> {
     const userId = this.getUserId(req);
@@ -85,5 +81,9 @@ export class UsersController {
   @UseGuards(AdminGuard)
   deleteUser(@Param('id') id: number): Promise<void> {
     return this.usersService.deleteUser(id);
+  }
+
+  private getUserId(req): number {
+    return req.user.sub;
   }
 }

@@ -5,8 +5,9 @@ import { User } from './user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Role } from './role.enum';
+import { UserDto } from './dtos/user-dto';
 
-const mockUsers = [
+const mockUsers: User[] = [
   {
     id: 1,
     name: 'John',
@@ -16,6 +17,7 @@ const mockUsers = [
     dateOfBirth: new Date('1990-01-01'),
     isProfessional: false,
     role: Role.USER,
+    products: [],
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const mockUsers = [
     dateOfBirth: new Date('1995-01-01'),
     isProfessional: true,
     role: Role.USER,
+    products: [],
   },
   {
     id: 3,
@@ -36,8 +39,14 @@ const mockUsers = [
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
     role: Role.USER,
+    products: [],
   },
 ];
+
+const mockUsersDto = mockUsers.map((user) => {
+  const { password, ...userDto } = user;
+  return userDto;
+});
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -72,7 +81,7 @@ describe('UsersController', () => {
 
   describe('getUsers', () => {
     it('should return an array of users', async () => {
-      const users: User[] = mockUsers;
+      const users: UserDto[] = mockUsersDto;
       jest
         .spyOn(service, 'findAllUsers')
         .mockResolvedValue({ users, total: users.length });
@@ -88,7 +97,7 @@ describe('UsersController', () => {
     });
 
     it('should return an array of users with professional=true', async () => {
-      const users: User[] = mockUsers.filter(
+      const users: User[] = mockUsersDto.filter(
         (user) => user.isProfessional,
       ) as User[];
       jest
@@ -111,14 +120,13 @@ describe('UsersController', () => {
     it('should return an array of users with minAge and maxAge', async () => {
       const minAge = 20;
       const maxAge = 30;
-      const users: User[] = mockUsers as User[];
       jest
         .spyOn(service, 'findAllUsers')
-        .mockResolvedValue({ users, total: users.length });
+        .mockResolvedValue({ users: mockUsersDto, total: mockUsersDto.length });
 
       expect(await controller.getUsers(undefined, minAge, maxAge)).toEqual({
-        users,
-        total: users.length,
+        users: mockUsersDto,
+        total: mockUsersDto.length,
       });
       expect(service.findAllUsers).toHaveBeenCalledWith(
         undefined,
@@ -132,14 +140,14 @@ describe('UsersController', () => {
     it('should return an array of users with pagination params', async () => {
       const page = 2;
       const limit = 5;
-      const users: User[] = mockUsers.slice(0, limit) as User[];
+      const users = mockUsersDto.slice(0, limit);
       jest
         .spyOn(service, 'findAllUsers')
-        .mockResolvedValue({ users, total: mockUsers.length });
+        .mockResolvedValue({ users, total: mockUsersDto.length });
 
       expect(
         await controller.getUsers(undefined, undefined, undefined, page, limit),
-      ).toEqual({ users, total: mockUsers.length });
+      ).toEqual({ users, total: mockUsersDto.length });
       expect(service.findAllUsers).toHaveBeenCalledWith(
         undefined,
         undefined,
@@ -152,7 +160,7 @@ describe('UsersController', () => {
 
   describe('getUser', () => {
     it('should return a user', async () => {
-      const user: User = mockUsers[0];
+      const user = mockUsersDto[0];
       jest.spyOn(service, 'findUserById').mockResolvedValue(user);
       expect(await controller.getUser(1)).toBe(user);
     });
@@ -207,12 +215,11 @@ describe('UsersController', () => {
 
   describe('updateUser', () => {
     it('should update and return a user', async () => {
-      const updatedUser: User = {
+      const updatedUser: UserDto = {
         id: 1,
         name: 'John',
         surname: 'Doe',
         email: 'doe@gmail.com',
-        password: 'password12345',
         dateOfBirth: new Date('1990-01-01'),
         isProfessional: false,
         role: Role.USER,

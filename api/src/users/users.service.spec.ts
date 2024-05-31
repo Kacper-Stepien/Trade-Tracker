@@ -5,8 +5,12 @@ import { User } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { Role } from './role.enum';
+import { UserDto } from './dtos/user-dto';
+import { UserMapper } from './user.mapper';
+import { CreateUserDto } from './dtos/create-user.dto';
 
-const mockUsers = [
+const mockUsers: User[] = [
   {
     id: 1,
     name: 'John',
@@ -15,6 +19,8 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('1990-01-01'),
     isProfessional: false,
+    role: Role.USER,
+    products: [],
   },
   {
     id: 2,
@@ -24,6 +30,8 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('1995-01-01'),
     isProfessional: true,
+    role: Role.USER,
+    products: [],
   },
   {
     id: 3,
@@ -33,8 +41,12 @@ const mockUsers = [
     password: 'password1234',
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
+    role: Role.USER,
+    products: [],
   },
 ];
+
+const mockUsersDto: UserDto[] = mockUsers.map((user) => UserMapper.toDto(user));
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -79,7 +91,7 @@ describe('UsersService', () => {
 
   describe('findAllUsers', () => {
     it('should return an array of users and total count', async () => {
-      const users = mockUsers;
+      const users = mockUsersDto;
       const total = users.length;
 
       const result = await service.findAllUsers();
@@ -88,7 +100,7 @@ describe('UsersService', () => {
     });
 
     it('should filter users by professional status', async () => {
-      const users = mockUsers.filter((user) => user.isProfessional);
+      const users = mockUsersDto.filter((user) => user.isProfessional);
       const total = users.length;
       createQueryBuilder.getManyAndCount.mockResolvedValue([users, total]);
 
@@ -103,7 +115,11 @@ describe('UsersService', () => {
     it('should filter users by age range', async () => {
       const minAge = 20;
       const maxAge = 30;
-      const users = mockUsers;
+      const users = mockUsersDto.filter(
+        (user) =>
+          user.dateOfBirth.getFullYear() >= new Date().getFullYear() - maxAge &&
+          user.dateOfBirth.getFullYear() <= new Date().getFullYear() - minAge,
+      );
       const total = users.length;
       createQueryBuilder.getManyAndCount.mockResolvedValue([users, total]);
 
@@ -122,8 +138,8 @@ describe('UsersService', () => {
     it('should paginate users', async () => {
       const page = 2;
       const limit = 1;
-      const users = mockUsers.slice(1, 2);
-      const total = mockUsers.length;
+      const users = mockUsersDto.slice(1, 2);
+      const total = mockUsersDto.length;
       createQueryBuilder.getManyAndCount.mockResolvedValue([users, total]);
 
       const result = await service.findAllUsers(
@@ -141,7 +157,7 @@ describe('UsersService', () => {
 
   describe('findUserById', () => {
     it('should return a user with given ID', async () => {
-      const user = mockUsers[0];
+      const user = mockUsersDto[0];
       mockUsersRepository.findOneBy.mockResolvedValue(user);
 
       const result = await service.findUserById(user.id);
@@ -170,7 +186,7 @@ describe('UsersService', () => {
 
   describe('createUser', () => {
     it('should create a new user', async () => {
-      const user = {
+      const user: CreateUserDto = {
         name: 'Bob',
         surname: 'Brown',
         email: 'brown@gmail.com',
@@ -179,7 +195,15 @@ describe('UsersService', () => {
         isProfessional: false,
       };
 
-      const newUser = { ...user, id: 4 };
+      const newUser: UserDto = {
+        name: 'Bob',
+        surname: 'Brown',
+        email: 'brown@gmail.com',
+        dateOfBirth: new Date('1990-01-01'),
+        isProfessional: false,
+        id: 4,
+        role: Role.USER,
+      };
 
       mockUsersRepository.findOneBy.mockResolvedValue(undefined);
       mockUsersRepository.create.mockReturnValue(newUser);
@@ -216,7 +240,7 @@ describe('UsersService', () => {
 
   describe('updateUser', () => {
     it('should update a user with given ID', async () => {
-      const user = mockUsers[0];
+      const user = mockUsersDto[0];
       const updateUser: UpdateUserDto = { name: 'Johnny' };
       const updatedUser = { ...user, ...updateUser };
 
@@ -252,7 +276,7 @@ describe('UsersService', () => {
 
   describe('deleteUser', () => {
     it('should delete a user with given ID', async () => {
-      const user = mockUsers[0];
+      const user = mockUsersDto[0];
       mockUsersRepository.delete.mockResolvedValue({ affected: 1 });
 
       await service.deleteUser(user.id);
