@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/user.entity';
+import { UserDto } from 'src/users/dtos/user-dto';
 import { Role } from '../users/role.enum';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { SignUpDto } from './dtos/sign-up.dto';
@@ -53,7 +53,7 @@ describe('AuthController', () => {
 
   describe('signIn', () => {
     it('should return the user and access token', async () => {
-      const user: User = {
+      const user: UserDto = {
         ...signUpDto,
         id: 1,
         role: Role.USER,
@@ -81,7 +81,7 @@ describe('AuthController', () => {
 
   describe('signUp', () => {
     it('should return the user without the password', async () => {
-      const user: User = {
+      const user: UserDto = {
         ...signUpDto,
         id: 1,
         role: Role.USER,

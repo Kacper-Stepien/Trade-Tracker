@@ -1,20 +1,20 @@
 import { IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsString()
   @IsOptional()
-  name: string;
+  @IsString()
+  name?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   surname?: string;
 
-  @IsString()
-  @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH))
   @IsOptional()
+  @IsString()
+  @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH) || 8)
   password?: string;
 
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
   isProfessional?: boolean;
 }

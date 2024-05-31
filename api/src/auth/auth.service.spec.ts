@@ -8,6 +8,8 @@ import { User } from '../users/user.entity';
 import { Role } from '../users/role.enum';
 import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { UserDto } from 'src/users/dtos/user-dto';
+import { Product } from '../products/product.enity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -37,11 +39,21 @@ describe('AuthService', () => {
     isProfessional: false,
   };
 
-  const user: User = {
+  const userDto: UserDto = {
     id: 1,
-    ...signUpDto,
+    email: 'kacper@gmail.com',
+    name: 'Kacper',
+    surname: 'Stępień',
+    dateOfBirth: new Date('2000-01-01'),
+    isProfessional: false,
     role: Role.USER,
-    password: 'hashedPassword123',
+  };
+
+  const user: User = {
+    ...signUpDto,
+    id: 1,
+    role: Role.USER,
+    products: [] as Product[],
   };
 
   beforeEach(async () => {
@@ -78,10 +90,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual({
         accessToken: 'token',
-        user: {
-          ...user,
-          password: undefined,
-        },
+        user: userDto,
       });
       expect(usersService.findUserByEmail).toHaveBeenCalledWith(
         signInDto.email,
@@ -131,15 +140,11 @@ describe('AuthService', () => {
 
   describe('signUp', () => {
     it('should return a user without password', async () => {
-      jest.spyOn(usersService, 'createUser').mockResolvedValue(user);
+      jest.spyOn(usersService, 'createUser').mockResolvedValue(userDto);
       jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedPassword123');
-
       const result = await service.signUp(signUpDto);
 
-      expect(result).toEqual({
-        ...user,
-        password: undefined,
-      });
+      expect(result).toEqual(userDto);
       expect(usersService.createUser).toHaveBeenCalledWith({
         ...signUpDto,
         password: 'hashedPassword123',

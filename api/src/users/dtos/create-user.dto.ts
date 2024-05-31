@@ -21,7 +21,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH))
+  @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH) || 8)
   password: string;
 
   @IsDateString()

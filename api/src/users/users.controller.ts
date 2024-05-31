@@ -13,40 +13,44 @@ import {
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
-import { User } from './user.entity';
 import { AdminGuard } from '../auth/admin.guard';
+import { UserDto } from './dtos/user-dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  private getUserId(req): number {
+    return req.user.sub;
+  }
+
   @Get('me')
-  getMe(@Request() req): Promise<User> {
-    const userId = req.user.sub;
+  getMe(@Request() req): Promise<UserDto> {
+    const userId = this.getUserId(req);
     return this.usersService.findUserById(userId);
   }
 
   @Patch('me')
-  updateMe(@Request() req, @Body() body: UpdateUserDto): Promise<User> {
-    const userId = req.user.sub;
+  updateMe(@Request() req, @Body() body: UpdateUserDto): Promise<UserDto> {
+    const userId = this.getUserId(req);
     return this.usersService.updateUser(userId, body);
   }
 
   @Delete('me')
   deleteMe(@Request() req): Promise<void> {
-    const userId = req.user.sub;
+    const userId = this.getUserId(req);
     return this.usersService.deleteUser(userId);
   }
 
   @Get()
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   getUsers(
     @Query('professional') professional?: boolean,
     @Query('minAge') minAge?: number,
     @Query('maxAge') maxAge?: number,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-  ): Promise<{ users: User[]; total: number }> {
+  ): Promise<{ users: UserDto[]; total: number }> {
     return this.usersService.findAllUsers(
       professional,
       minAge,
@@ -58,13 +62,13 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(AdminGuard)
-  getUser(@Param('id') id: number): Promise<User> {
+  getUser(@Param('id') id: number): Promise<UserDto> {
     return this.usersService.findUserById(id);
   }
 
   @Post()
   @UseGuards(AdminGuard)
-  createUser(@Body() body: CreateUserDto): Promise<User> {
+  createUser(@Body() body: CreateUserDto): Promise<UserDto> {
     return this.usersService.createUser(body);
   }
 
@@ -73,7 +77,7 @@ export class UsersController {
   updateUser(
     @Param('id') id: number,
     @Body() body: UpdateUserDto,
-  ): Promise<User> {
+  ): Promise<UserDto> {
     return this.usersService.updateUser(id, body);
   }
 
