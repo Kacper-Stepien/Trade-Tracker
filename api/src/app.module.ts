@@ -16,6 +16,7 @@ import { ProductCostModule } from './product-cost/product-cost.module';
 import { ProductCost } from './product-cost/product-cost.entity';
 import { CostTypeModule } from './cost-type/cost-type.module';
 import { CostType } from './cost-type/cost-type.entity';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { CostType } from './cost-type/cost-type.entity';
     ProductAttributeModule,
     ProductCostModule,
     CostTypeModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

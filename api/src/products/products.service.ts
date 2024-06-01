@@ -65,12 +65,14 @@ export class ProductsService {
 
     const savedProduct = await this.productsRepository.save(product);
 
-    const productAttributes = body.attributes.map((attribute) =>
-      this.productAttributesRepository.create({
-        ...attribute,
-        product: savedProduct,
-      }),
-    );
+    const productAttributes = body.attributes
+      ? body.attributes.map((attribute) =>
+          this.productAttributesRepository.create({
+            ...attribute,
+            product: savedProduct,
+          }),
+        )
+      : [];
 
     await this.productAttributesRepository.save(productAttributes);
     savedProduct.attributes = productAttributes;
