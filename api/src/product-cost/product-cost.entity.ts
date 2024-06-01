@@ -11,7 +11,7 @@ export class ProductCost {
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
   @Column({ type: 'decimal', scale: 2, nullable: false })

@@ -8,7 +8,7 @@ import { CostType } from '../cost-type/cost-type.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProductCost]),
+    TypeOrmModule.forFeature([ProductCost, CostType]),
     forwardRef(() => ProductsModule),
     forwardRef(() => CostType),
   ],
