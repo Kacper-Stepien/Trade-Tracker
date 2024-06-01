@@ -8,6 +8,8 @@ import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
 import { Repository } from 'typeorm';
 import { CostType } from './cost-type.entity';
 import { UpdateCostTypeDto } from './dtos/update-cost-type.dto';
+import { CostTypeDto } from './dtos/cost-type.dto';
+import { CostTypeMapper } from './cost-type.mapper';
 
 @Injectable()
 export class CostTypeService {
@@ -16,33 +18,34 @@ export class CostTypeService {
     private costTypeRepository: Repository<CostType>,
   ) {}
 
-  async getCostTypeById(id: number): Promise<CostType> {
+  async getCostTypeById(id: number): Promise<CostTypeDto> {
     const costType = await this.costTypeRepository.findOneBy({ id });
     if (!costType) {
       throw new NotFoundException(`Cost type with ID ${id} not found`);
     }
-    return costType;
+    return CostTypeMapper.toDto(costType);
   }
 
-  async getAllCostTypes(): Promise<CostType[]> {
-    return this.costTypeRepository.find();
+  async getAllCostTypes(): Promise<CostTypeDto[]> {
+    const costTypes = await this.costTypeRepository.find();
+    return costTypes.map((costType) => CostTypeMapper.toDto(costType));
   }
 
   async createCostType(
     createCostTypeDto: CreateCostTypeDto,
-  ): Promise<CostType> {
+  ): Promise<CostTypeDto> {
     await this.checkCostTypeExistance(createCostTypeDto.name);
     const costType = this.costTypeRepository.create(createCostTypeDto);
-    return this.costTypeRepository.save(costType);
+    return CostTypeMapper.toDto(await this.costTypeRepository.save(costType));
   }
 
   async updateCostType(
     id: number,
     updateCostTypeDto: UpdateCostTypeDto,
-  ): Promise<CostType> {
+  ): Promise<CostTypeDto> {
     const costType = await this.getCostTypeById(id);
     costType.name = updateCostTypeDto.name;
-    return this.costTypeRepository.save(costType);
+    return CostTypeMapper.toDto(await this.costTypeRepository.save(costType));
   }
 
   async deleteCostType(id: number): Promise<void> {

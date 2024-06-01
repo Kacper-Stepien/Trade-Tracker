@@ -11,20 +11,20 @@ import {
 import { CostTypeService } from './cost-type.service';
 import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
 import { UpdateCostTypeDto } from './dtos/update-cost-type.dto';
-import { CostType } from './cost-type.entity';
-import { AdminGuard } from 'src/auth/admin.guard';
+import { CostTypeDto } from './dtos/cost-type.dto';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('cost-type')
 export class CostTypeController {
   constructor(private readonly costTypeService: CostTypeService) {}
 
   @Get('id')
-  getCostType(@Param('id') id: number): Promise<CostType> {
+  getCostType(@Param('id') id: number): Promise<CostTypeDto> {
     return this.costTypeService.getCostTypeById(id);
   }
 
   @Get()
-  getAllCostTypes(): Promise<CostType[]> {
+  getAllCostTypes(): Promise<CostTypeDto[]> {
     return this.costTypeService.getAllCostTypes();
   }
 
@@ -32,7 +32,7 @@ export class CostTypeController {
   @Post()
   createCostType(
     @Body() createCostTypeDto: CreateCostTypeDto,
-  ): Promise<CostType> {
+  ): Promise<CostTypeDto> {
     return this.costTypeService.createCostType(createCostTypeDto);
   }
 
@@ -41,7 +41,7 @@ export class CostTypeController {
   updateCostType(
     @Param('id') id: number,
     @Body() updateCostTypeDto: UpdateCostTypeDto,
-  ): Promise<CostType> {
+  ): Promise<CostTypeDto> {
     return this.costTypeService.updateCostType(id, updateCostTypeDto);
   }
 
