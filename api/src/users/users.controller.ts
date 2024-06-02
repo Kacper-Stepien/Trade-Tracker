@@ -39,7 +39,7 @@ export class UsersController {
   }
 
   @Get()
-  // @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard)
   getUsers(
     @Query('professional') professional?: boolean,
     @Query('minAge') minAge?: number,

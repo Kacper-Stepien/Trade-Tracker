@@ -33,6 +33,7 @@ export class ProductsService {
     const query = this.productsRepository.createQueryBuilder('product');
     query.leftJoinAndSelect('product.attributes', 'attributes');
     query.leftJoinAndSelect('product.category', 'category');
+    query.leftJoinAndSelect('product.costs', 'costs');
     query.where('product.userId = :userId', { userId });
     if (sold !== undefined) {
       query.andWhere('product.sold = :sold', { sold });
@@ -82,7 +83,7 @@ export class ProductsService {
   async findProductById(id: number, userId: number): Promise<Product> {
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: ['category', 'attributes', 'user'],
+      relations: ['category', 'attributes', 'user', 'costs'],
     });
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
@@ -104,7 +105,6 @@ export class ProductsService {
     userId: number,
     saleProductDto: SaleProductDto,
   ): Promise<Product> {
-    console.log('XDDDD');
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: ['user', 'attributes'],

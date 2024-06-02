@@ -7,6 +7,7 @@ import { UserDto } from 'src/users/dtos/user-dto';
 import { Role } from '../users/role.enum';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { SignUpDto } from './dtos/sign-up.dto';
+import { SignInResponseDto } from './dtos/sign-in-response.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -20,10 +21,21 @@ describe('AuthController', () => {
   const signUpDto: SignUpDto = {
     email: 'kacper@gmail.com',
     name: 'Kacper',
-    password: 'password',
+    password: 'password123',
     surname: 'Kaczmarek',
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
+  };
+
+  const userDto: UserDto = {
+    ...signUpDto,
+    id: 1,
+    role: Role.USER,
+  };
+
+  const signInResponseDto: SignInResponseDto = {
+    token: 'token',
+    user: userDto,
   };
 
   const mockAuthService = {
@@ -53,42 +65,25 @@ describe('AuthController', () => {
 
   describe('signIn', () => {
     it('should return the user and access token', async () => {
-      const user: UserDto = {
-        ...signUpDto,
-        id: 1,
-        role: Role.USER,
-      };
-      const result = { accessToken: 'token', user: user };
-
-      jest.spyOn(service, 'signIn').mockResolvedValue(result);
-      expect(await controller.signIn(signInDto)).toBe(result);
+      jest.spyOn(service, 'signIn').mockResolvedValue(signInResponseDto);
+      const result = await controller.signIn(signInDto);
+      expect(result).toEqual(signInResponseDto);
       expect(service.signIn).toHaveBeenCalledWith(signInDto);
     });
 
     it('should throw UnauthorizedException if the credentials are invalid', async () => {
       const error = new UnauthorizedException('Invalid credentials');
       jest.spyOn(service, 'signIn').mockRejectedValue(error);
-      try {
-        await controller.signIn(signInDto);
-      } catch (e) {
-        expect(e).toBeInstanceOf(UnauthorizedException);
-        expect(e.message).toBe('Invalid credentials');
-      }
-
+      await expect(controller.signIn(signInDto)).rejects.toThrow(error);
       expect(service.signIn).toHaveBeenCalledWith(signInDto);
     });
   });
 
   describe('signUp', () => {
     it('should return the user without the password', async () => {
-      const user: UserDto = {
-        ...signUpDto,
-        id: 1,
-        role: Role.USER,
-      };
-
-      jest.spyOn(service, 'signUp').mockResolvedValue(user);
-      expect(await controller.signUp(signUpDto)).toBe(user);
+      jest.spyOn(service, 'signUp').mockResolvedValue(userDto);
+      const result = await controller.signUp(signUpDto);
+      expect(result).toEqual(userDto);
       expect(service.signUp).toHaveBeenCalledWith(signUpDto);
     });
 
@@ -97,12 +92,7 @@ describe('AuthController', () => {
         'User with this email already exists',
       );
       jest.spyOn(service, 'signUp').mockRejectedValue(error);
-      try {
-        await controller.signUp(signUpDto);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ConflictException);
-        expect(e.message).toBe('User with this email already exists');
-      }
+      await expect(controller.signUp(signUpDto)).rejects.toThrow(error);
       expect(service.signUp).toHaveBeenCalledWith(signUpDto);
     });
   });

@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { UserDto } from 'src/users/dtos/user-dto';
 import { Product } from '../products/product.enity';
+import { SignInResponseDto } from './dtos/sign-in-response.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -47,6 +48,11 @@ describe('AuthService', () => {
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
     role: Role.USER,
+  };
+
+  const signInResponseDto: SignInResponseDto = {
+    token: 'token',
+    user: userDto,
   };
 
   const user: User = {
@@ -88,10 +94,7 @@ describe('AuthService', () => {
 
       const result = await service.signIn(signInDto);
 
-      expect(result).toEqual({
-        accessToken: 'token',
-        user: userDto,
-      });
+      expect(result).toEqual(signInResponseDto);
       expect(usersService.findUserByEmail).toHaveBeenCalledWith(
         signInDto.email,
       );
@@ -107,12 +110,10 @@ describe('AuthService', () => {
 
     it('should throw an UnauthorizedException if user is not found', async () => {
       jest.spyOn(usersService, 'findUserByEmail').mockResolvedValue(undefined);
-      try {
-        await service.signIn(signInDto);
-      } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
-        expect(error.message).toEqual('Invalid credentials');
-      }
+
+      await expect(service.signIn(signInDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(usersService.findUserByEmail).toHaveBeenCalledWith(
         signInDto.email,
       );
@@ -122,12 +123,9 @@ describe('AuthService', () => {
       jest.spyOn(usersService, 'findUserByEmail').mockResolvedValue(user);
       jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
 
-      try {
-        await service.signIn(signInDto);
-      } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
-        expect(error.message).toEqual('Invalid credentials');
-      }
+      await expect(service.signIn(signInDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(usersService.findUserByEmail).toHaveBeenCalledWith(
         signInDto.email,
       );
@@ -157,12 +155,13 @@ describe('AuthService', () => {
       );
       jest.spyOn(usersService, 'createUser').mockRejectedValue(error);
 
-      try {
-        await service.signUp(signUpDto);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ConflictException);
-        expect(e.message).toBe('User with this email already exists');
-      }
+      await expect(service.signUp(signUpDto)).rejects.toThrow(
+        ConflictException,
+      );
+      expect(usersService.createUser).toHaveBeenCalledWith({
+        ...signUpDto,
+        password: expect.any(String),
+      });
     });
   });
 });
