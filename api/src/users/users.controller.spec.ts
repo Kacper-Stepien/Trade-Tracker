@@ -44,7 +44,8 @@ const mockUsers: User[] = [
 ];
 
 const mockUsersDto = mockUsers.map((user) => {
-  const { password, ...userDto } = user;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, products, ...userDto } = user;
   return userDto;
 });
 
@@ -80,7 +81,7 @@ describe('UsersController', () => {
   });
 
   describe('getUsers', () => {
-    it('should return an array of users', async () => {
+    it('should return an array of users and number of all users', async () => {
       const users: UserDto[] = mockUsersDto;
       jest
         .spyOn(service, 'findAllUsers')
@@ -145,9 +146,14 @@ describe('UsersController', () => {
         .spyOn(service, 'findAllUsers')
         .mockResolvedValue({ users, total: mockUsersDto.length });
 
-      expect(
-        await controller.getUsers(undefined, undefined, undefined, page, limit),
-      ).toEqual({ users, total: mockUsersDto.length });
+      const result = await controller.getUsers(
+        undefined,
+        undefined,
+        undefined,
+        page,
+        limit,
+      );
+      expect(result).toEqual({ users, total: mockUsersDto.length });
       expect(service.findAllUsers).toHaveBeenCalledWith(
         undefined,
         undefined,
@@ -162,20 +168,15 @@ describe('UsersController', () => {
     it('should return a user', async () => {
       const user = mockUsersDto[0];
       jest.spyOn(service, 'findUserById').mockResolvedValue(user);
-      expect(await controller.getUser(1)).toBe(user);
+      const result = await controller.getUser(1);
+      expect(result).toBe(user);
+      expect(service.findUserById).toHaveBeenCalledWith(1);
     });
 
     it('should throw NotFoundException if user does not exist', async () => {
       const error = new NotFoundException(`User with ID 1 not found`);
       jest.spyOn(service, 'findUserById').mockRejectedValue(error);
-
-      try {
-        await controller.getUser(1);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID 1 not found`);
-      }
-
+      await expect(controller.getUser(1)).rejects.toThrow(NotFoundException);
       expect(service.findUserById).toHaveBeenCalledWith(1);
     });
   });
@@ -190,7 +191,7 @@ describe('UsersController', () => {
         dateOfBirth: new Date('2007-07-20'),
         isProfessional: false,
       };
-      const user = new User();
+      const user: UserDto = { ...createUserDto, id: 4, role: Role.USER };
       jest.spyOn(service, 'createUser').mockResolvedValue(user);
       expect(await controller.createUser(createUserDto)).toBe(user);
     });
@@ -202,13 +203,9 @@ describe('UsersController', () => {
       );
       jest.spyOn(service, 'createUser').mockRejectedValue(error);
 
-      try {
-        await controller.createUser(user);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ConflictException);
-        expect(e.message).toBe('User with this email already exists');
-      }
-
+      await expect(controller.createUser(mockUsers[0])).rejects.toThrow(
+        ConflictException,
+      );
       expect(service.createUser).toHaveBeenCalledWith(user);
     });
   });
@@ -231,14 +228,9 @@ describe('UsersController', () => {
     it('should throw NotFoundException if user does not exist', async () => {
       const error = new NotFoundException(`User with ID 1 not found`);
       jest.spyOn(service, 'updateUser').mockRejectedValue(error);
-
-      try {
-        await controller.updateUser(1, mockUsers[0]);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID 1 not found`);
-      }
-
+      await expect(controller.updateUser(1, mockUsers[0])).rejects.toThrow(
+        NotFoundException,
+      );
       expect(service.updateUser).toHaveBeenCalledWith(1, mockUsers[0]);
     });
   });
@@ -252,14 +244,7 @@ describe('UsersController', () => {
     it('should throw NotFoundException if user does not exist', async () => {
       const error = new NotFoundException(`User with ID 1 not found`);
       jest.spyOn(service, 'deleteUser').mockRejectedValue(error);
-
-      try {
-        await controller.deleteUser(1);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID 1 not found`);
-      }
-
+      await expect(controller.deleteUser(1)).rejects.toThrow(NotFoundException);
       expect(service.deleteUser).toHaveBeenCalledWith(1);
     });
   });

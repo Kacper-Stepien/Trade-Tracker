@@ -10,6 +10,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user-dto';
 import { UserMapper } from './user.mapper';
+import { GetUsersResponseDto } from './dtos/get-users-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
     maxAge?: number,
     page: number = 1,
     limit: number = 10,
-  ): Promise<{ users: UserDto[]; total: number }> {
+  ): Promise<GetUsersResponseDto> {
     const query = this.usersRepository.createQueryBuilder('user');
 
     if (professional !== undefined) {
@@ -34,24 +35,19 @@ export class UsersService {
     if (minAge !== undefined) {
       const minDate = new Date();
       minDate.setFullYear(minDate.getFullYear() - minAge);
-      query.andWhere('user.dateOfBirth <= :minDate', {
-        minDate: minDate.toISOString().split('T')[0],
-      });
+      query.andWhere('user.dateOfBirth <= :minDate', { minDate });
     }
 
     if (maxAge !== undefined) {
       const maxDate = new Date();
       maxDate.setFullYear(maxDate.getFullYear() - maxAge);
-      query.andWhere('user.dateOfBirth >= :maxDate', {
-        maxDate: maxDate.toISOString().split('T')[0],
-      });
+      query.andWhere('user.dateOfBirth >= :maxDate', { maxDate });
     }
 
     query.skip((page - 1) * limit).take(limit);
 
     const [users, total] = await query.getManyAndCount();
-    const usersDto = users.map((user) => UserMapper.toDto(user));
-    return { users: usersDto, total };
+    return { users: users.map((user) => UserMapper.toDto(user)), total };
   }
 
   async findUserById(id: number): Promise<UserDto> {

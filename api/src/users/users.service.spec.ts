@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
@@ -50,8 +49,6 @@ const mockUsersDto: UserDto[] = mockUsers.map((user) => UserMapper.toDto(user));
 
 describe('UsersService', () => {
   let service: UsersService;
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let repository: Repository<User>;
 
   const createQueryBuilder: any = {
     where: jest.fn().mockReturnThis(),
@@ -82,7 +79,6 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    repository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   it('should be defined', () => {
@@ -171,13 +167,7 @@ describe('UsersService', () => {
       const id = 999;
       mockUsersRepository.findOneBy.mockResolvedValue(undefined);
 
-      try {
-        await service.findUserById(id);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID ${id} not found`);
-      }
-
+      await expect(service.findUserById(id)).rejects.toThrow(NotFoundException);
       expect(mockUsersRepository.findOneBy).toHaveBeenCalledWith({
         id,
       });
@@ -195,14 +185,11 @@ describe('UsersService', () => {
         isProfessional: false,
       };
 
-      const newUser: UserDto = {
-        name: 'Bob',
-        surname: 'Brown',
-        email: 'brown@gmail.com',
-        dateOfBirth: new Date('1990-01-01'),
-        isProfessional: false,
-        id: 4,
+      const newUser: User = {
+        ...user,
+        id: 1,
         role: Role.USER,
+        products: [],
       };
 
       mockUsersRepository.findOneBy.mockResolvedValue(undefined);
@@ -210,15 +197,16 @@ describe('UsersService', () => {
       mockUsersRepository.save.mockResolvedValue(newUser);
 
       const result = await service.createUser(user);
-      expect(result).toEqual(newUser);
+      expect(result).toEqual(UserMapper.toDto(newUser));
       expect(mockUsersRepository.findOneBy).toHaveBeenCalledWith({
         email: user.email,
       });
       expect(mockUsersRepository.create).toHaveBeenCalledWith(user);
+      expect(mockUsersRepository.save).toHaveBeenCalledWith(newUser);
     });
 
     it('should throw ConflictException if user with given email already exists', async () => {
-      const user = {
+      const user: CreateUserDto = {
         name: 'Bob',
         surname: 'Brown',
         email: 'brown@gmail.com',
@@ -228,19 +216,13 @@ describe('UsersService', () => {
       };
 
       mockUsersRepository.findOneBy.mockResolvedValue(user);
-
-      try {
-        await service.createUser(user);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ConflictException);
-        expect(e.message).toBe('User with this email already exists');
-      }
+      await expect(service.createUser(user)).rejects.toThrow(ConflictException);
     });
   });
 
   describe('updateUser', () => {
     it('should update a user with given ID', async () => {
-      const user = mockUsersDto[0];
+      const user = mockUsers[0];
       const updateUser: UpdateUserDto = { name: 'Johnny' };
       const updatedUser = { ...user, ...updateUser };
 
@@ -249,7 +231,7 @@ describe('UsersService', () => {
 
       const result = await service.updateUser(user.id, updateUser);
 
-      expect(result).toEqual(updatedUser);
+      expect(result).toEqual(UserMapper.toDto(updatedUser));
       expect(mockUsersRepository.findOneBy).toHaveBeenCalledWith({
         id: user.id,
       });
@@ -262,12 +244,9 @@ describe('UsersService', () => {
 
       mockUsersRepository.findOneBy.mockResolvedValue(undefined);
 
-      try {
-        await service.updateUser(id, updateUser);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID ${id} not found`);
-      }
+      await expect(service.updateUser(id, updateUser)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockUsersRepository.findOneBy).toHaveBeenCalledWith({
         id,
       });
@@ -287,12 +266,7 @@ describe('UsersService', () => {
       const id = 999;
       mockUsersRepository.delete.mockResolvedValue({ affected: 0 });
 
-      try {
-        await service.deleteUser(id);
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException);
-        expect(e.message).toBe(`User with ID ${id} not found`);
-      }
+      await expect(service.deleteUser(id)).rejects.toThrow(NotFoundException);
       expect(mockUsersRepository.delete).toHaveBeenCalledWith(id);
     });
   });
