@@ -3,6 +3,10 @@ import { ProductCategoryController } from './product-category.controller';
 import { ProductCategoryService } from './product-category.service';
 import { ProductCategory } from './product-category.entity';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ProductCategoryMapper } from './product-category.mapper';
+import { ProductCategoryDto } from './dtos/product-category.dto';
+import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
+import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
 
 describe('ProductCategoryController', () => {
   let controller: ProductCategoryController;
@@ -16,12 +20,24 @@ describe('ProductCategoryController', () => {
     deleteCategory: jest.fn(),
   };
 
-  const mockCategories = [
-    { id: 1, name: 'New Category' },
-    { id: 2, name: 'Laptop' },
-    { id: 3, name: 'Phone' },
-    { id: 4, name: 'Clothes' },
-  ] as ProductCategory[];
+  const mockCategories: ProductCategory[] = [
+    { id: 1, name: 'New Category', products: [] },
+    { id: 2, name: 'Laptop', products: [] },
+    { id: 3, name: 'Phone', products: [] },
+    { id: 4, name: 'Clothes', products: [] },
+  ];
+
+  const mockCategoriesDto: ProductCategoryDto[] = mockCategories.map(
+    (category) => ProductCategoryMapper.toDto(category),
+  );
+
+  const createProductCategoryDto: CreateProductCategoryDto = {
+    name: 'New Category',
+  };
+
+  const updateProductCategoryDto: UpdateProductCategoryDto = {
+    name: 'Updated Category',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,16 +64,16 @@ describe('ProductCategoryController', () => {
     it('should return all categories', async () => {
       jest
         .spyOn(service, 'findAllCategories')
-        .mockResolvedValue(mockCategories);
+        .mockResolvedValue(mockCategoriesDto);
 
-      expect(await controller.getAllCategories()).toEqual(mockCategories);
+      expect(await controller.getAllCategories()).toEqual(mockCategoriesDto);
       expect(service.findAllCategories).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('getCategoryById', () => {
     it('should return a category by ID', async () => {
-      const category = mockCategories[0];
+      const category = mockCategoriesDto[0];
       jest.spyOn(service, 'findCategoryById').mockResolvedValue(category);
       expect(await controller.getCategoryById(1)).toEqual(category);
       expect(service.findCategoryById).toHaveBeenCalledWith(1);
@@ -68,49 +84,49 @@ describe('ProductCategoryController', () => {
       jest
         .spyOn(service, 'findCategoryById')
         .mockRejectedValue(new NotFoundException());
-      try {
-        await controller.getCategoryById(1);
-      } catch (error) {
-        expect(error).toBeInstanceOf(NotFoundException);
-      }
+      await expect(controller.getCategoryById(1)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(service.findCategoryById).toHaveBeenCalledWith(1);
     });
   });
 
   describe('createCategory', () => {
     it('should create a new category', async () => {
-      const newCategory = mockCategories[0];
+      const newCategory = mockCategoriesDto[0];
       jest.spyOn(service, 'createCategory').mockResolvedValue(newCategory);
-      expect(await controller.createCategory(newCategory)).toEqual(newCategory);
-      expect(service.createCategory).toHaveBeenCalledWith('New Category');
+      expect(await controller.createCategory(createProductCategoryDto)).toEqual(
+        newCategory,
+      );
+      expect(service.createCategory).toHaveBeenCalledWith(
+        createProductCategoryDto,
+      );
       expect(service.createCategory).toHaveBeenCalledTimes(1);
     });
 
     it('should throw ConflictException when category already exists', async () => {
-      const error = new ConflictException();
-      jest.spyOn(service, 'createCategory').mockRejectedValue(error);
-      try {
-        await controller.createCategory(mockCategories[0]);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ConflictException);
-      }
+      jest
+        .spyOn(service, 'createCategory')
+        .mockRejectedValue(new ConflictException());
+      await expect(
+        controller.createCategory(mockCategoriesDto[0]),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
   describe('updateCategory', () => {
     it('should update a category', async () => {
       const updatedCategory = {
-        id: 1,
-        name: 'Updated Category',
-      } as ProductCategory;
-
+        ...mockCategories[0],
+        ...updateProductCategoryDto,
+      };
       jest.spyOn(service, 'updateCategory').mockResolvedValue(updatedCategory);
-      expect(await controller.updateCategory(1, updatedCategory)).toEqual(
-        updatedCategory,
-      );
+      expect(
+        await controller.updateCategory(1, updateProductCategoryDto),
+      ).toEqual(updatedCategory);
       expect(service.updateCategory).toHaveBeenCalledWith(
         1,
-        'Updated Category',
+        updateProductCategoryDto,
       );
       expect(service.updateCategory).toHaveBeenCalledTimes(1);
     });
@@ -119,11 +135,9 @@ describe('ProductCategoryController', () => {
       jest
         .spyOn(service, 'updateCategory')
         .mockRejectedValue(new NotFoundException());
-      try {
-        await controller.updateCategory(1, mockCategories[0]);
-      } catch (error) {
-        expect(error).toBeInstanceOf(NotFoundException);
-      }
+      await expect(
+        controller.updateCategory(1, updateProductCategoryDto),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -139,11 +153,9 @@ describe('ProductCategoryController', () => {
       jest
         .spyOn(service, 'deleteCategory')
         .mockRejectedValue(new NotFoundException());
-      try {
-        await controller.deleteCategory(1);
-      } catch (error) {
-        expect(error).toBeInstanceOf(NotFoundException);
-      }
+      await expect(controller.deleteCategory(1)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

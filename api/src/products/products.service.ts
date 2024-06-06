@@ -166,7 +166,7 @@ export class ProductsService {
       (product.purchaseDate = updateProductDto.purchaseDate);
 
     if (updateProductDto.categoryId) {
-      const category = await this.productCategoryService.findCategoryById(
+      const category = await this.productCategoryService.getCategoryById(
         updateProductDto.categoryId,
       );
       product.category = category;

@@ -6,6 +6,10 @@ import {
 import { Repository } from 'typeorm';
 import { ProductCategory } from './product-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
+import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
+import { ProductCategoryDto } from './dtos/product-category.dto';
+import { ProductCategoryMapper } from './product-category.mapper';
 
 @Injectable()
 export class ProductCategoryService {
@@ -14,16 +18,20 @@ export class ProductCategoryService {
     private readonly productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  async findAllCategories(): Promise<ProductCategory[]> {
-    return this.productCategoryRepository.find();
+  async findAllCategories(): Promise<ProductCategoryDto[]> {
+    const categories = await this.productCategoryRepository.find();
+    return categories.map((category) => ProductCategoryMapper.toDto(category));
   }
 
-  async findCategoryById(id: number): Promise<ProductCategory> {
+  async findCategoryById(id: number): Promise<ProductCategoryDto> {
     const category = await this.getCategoryById(id);
-    return category;
+    return ProductCategoryMapper.toDto(category);
   }
 
-  async createCategory(name: string): Promise<ProductCategory> {
+  async createCategory(
+    createProductCategoryDto: CreateProductCategoryDto,
+  ): Promise<ProductCategoryDto> {
+    const { name } = createProductCategoryDto;
     const categoryExists = await this.productCategoryRepository.findOneBy({
       name,
     });
@@ -31,10 +39,15 @@ export class ProductCategoryService {
       throw new ConflictException(`Category with name ${name} already exists`);
     }
     const category = this.productCategoryRepository.create({ name });
-    return this.productCategoryRepository.save(category);
+    await this.productCategoryRepository.save(category);
+    return ProductCategoryMapper.toDto(category);
   }
 
-  async updateCategory(id: number, name: string): Promise<ProductCategory> {
+  async updateCategory(
+    id: number,
+    updateProductCategoryDto: UpdateProductCategoryDto,
+  ): Promise<ProductCategoryDto> {
+    const { name } = updateProductCategoryDto;
     const category = await this.getCategoryById(id);
     const categoryExists = await this.productCategoryRepository.findOne({
       where: { name },
@@ -45,15 +58,18 @@ export class ProductCategoryService {
     }
 
     category.name = name;
-    return this.productCategoryRepository.save(category);
+    await this.productCategoryRepository.save(category);
+    return ProductCategoryMapper.toDto(category);
   }
 
   async deleteCategory(id: number): Promise<void> {
-    const category = await this.getCategoryById(id);
-    await this.productCategoryRepository.remove(category);
+    const result = await this.productCategoryRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
+    }
   }
 
-  private async getCategoryById(id: number): Promise<ProductCategory> {
+  async getCategoryById(id: number): Promise<ProductCategory> {
     const category = await this.productCategoryRepository.findOneBy({ id });
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
