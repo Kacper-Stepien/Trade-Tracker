@@ -66,7 +66,7 @@ export class UsersController {
   }
 
   @Get()
-  // @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Get list of all users - only for admin' })
   @ApiQuery({ name: 'professional', required: false, type: Boolean })
   @ApiQuery({ name: 'minAge', required: false, type: Number })
