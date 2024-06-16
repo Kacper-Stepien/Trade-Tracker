@@ -14,7 +14,7 @@ export class ProductCost {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
-  @Column({ type: 'decimal', scale: 2, nullable: false })
+  @Column({ type: 'decimal', scale: 2, precision: 10, nullable: false })
   price: number;
 
   @Column({ type: 'date', nullable: false, default: () => 'CURRENT_DATE' })
@@ -22,9 +22,12 @@ export class ProductCost {
 
   @ManyToOne(() => Product, (product) => product.costs, {
     onDelete: 'CASCADE',
+    nullable: false,
   })
   product: Product;
 
-  @ManyToOne(() => CostType, (costType) => costType.costs)
+  @ManyToOne(() => CostType, (costType) => costType.costs, {
+    nullable: false,
+  })
   costType: CostType;
 }

@@ -5,8 +5,8 @@ import { ProductCost } from './product-cost.entity';
 import { ProductCostDto } from './dtos/product-cost.dto';
 import { ProductCostMapper } from './product-cost.mapper';
 import { CreateProductCostDto } from './dtos/create-product-cost.dto';
-import { CostType } from 'src/cost-type/cost-type.entity';
-import { Product } from 'src/products/product.enity';
+import { CostType } from '../cost-type/cost-type.entity';
+import { Product } from '../products/product.enity';
 import { UpdateProductCostDto } from './dtos/update-product-cost.dto';
 
 @Injectable()
@@ -47,29 +47,14 @@ export class ProductCostService {
   async createProductCost(
     createCostDto: CreateProductCostDto,
   ): Promise<ProductCostDto> {
-    const product = await this.productRepository.findOneBy({
-      id: createCostDto.productId,
-    });
+    const product = await this.getProductById(createCostDto.productId);
 
-    if (!product) {
-      throw new NotFoundException(
-        `Product with ID ${createCostDto.productId} not found`,
-      );
-    }
-
-    const productCostType = await this.costTypeRepository.findOneBy({
-      id: createCostDto.costTypeId,
-    });
-    if (!productCostType) {
-      throw new NotFoundException(
-        `Cost Type with ID ${createCostDto.costTypeId} not found`,
-      );
-    }
+    const costType = await this.getCostTypeById(createCostDto.costTypeId);
 
     const newProductCost = this.productCostRepository.create({
       ...createCostDto,
       product,
-      costType: productCostType,
+      costType,
     });
 
     const savedProductCost =
@@ -103,5 +88,27 @@ export class ProductCostService {
     if (result.affected === 0) {
       throw new NotFoundException(`Cost with ID ${costId} not found`);
     }
+  }
+
+  private async getProductById(productId): Promise<Product> {
+    const product = await this.productRepository.findOneBy({
+      id: productId,
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    return product;
+  }
+
+  private async getCostTypeById(costTypeId: number): Promise<CostType> {
+    const costType = await this.costTypeRepository.findOneBy({
+      id: costTypeId,
+    });
+    if (!costType) {
+      throw new NotFoundException(`Cost Type with ID ${costTypeId} not found`);
+    }
+    return costType;
   }
 }
