@@ -3,6 +3,10 @@ import { CostTypeController } from './cost-type.controller';
 import { CostTypeService } from './cost-type.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CostTypeDto } from './dtos/cost-type.dto';
+import { CostType } from './cost-type.entity';
+import { CostTypeMapper } from './cost-type.mapper';
+import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
+import { UpdateCostTypeDto } from './dtos/update-cost-type.dto';
 
 describe('CostTypeController', () => {
   let controller: CostTypeController;
@@ -15,25 +19,35 @@ describe('CostTypeController', () => {
     deleteCostType: jest.fn(),
   };
 
-  const mockCostType = {
-    id: 1,
+  const mockCreateCostTypeDto: CreateCostTypeDto = {
     name: 'Test Cost Type',
   };
 
-  const mockCostTypes: CostTypeDto[] = [
+  const mockUpdateCostTypeDto: UpdateCostTypeDto = {
+    name: 'Updated Test Cost Type',
+  };
+
+  const mockCostTypes: CostType[] = [
     {
       id: 1,
       name: 'Test Cost Type',
+      costs: [],
     },
     {
       id: 2,
       name: 'Another Test Cost Type',
+      costs: [],
     },
     {
       id: 3,
       name: 'Yet Another Test Cost Type',
+      costs: [],
     },
   ];
+
+  const mockCostTypesDto: CostTypeDto[] = mockCostTypes.map((cost) =>
+    CostTypeMapper.toDto(cost),
+  );
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -55,43 +69,41 @@ describe('CostTypeController', () => {
 
   describe('getCostType', () => {
     it('should return a cost type by ID', async () => {
-      const mockCostType = {
-        id: 1,
-        name: 'Test Cost Type',
-      };
-      mockService.getCostTypeById.mockResolvedValue(mockCostType);
+      mockService.getCostTypeById.mockResolvedValue(mockCostTypesDto[0]);
       const result = await controller.getCostType(1);
-      expect(result).toEqual(mockCostType);
+      expect(result).toEqual(mockCostTypesDto[0]);
       expect(mockService.getCostTypeById).toHaveBeenCalledWith(1);
     });
 
     it('should throw a NotFoundException if cost type does not exist', async () => {
       const error = new NotFoundException('Cost type with ID 1 not found');
       mockService.getCostTypeById.mockRejectedValue(error);
-      try {
-        await controller.getCostType(1);
-      } catch (error) {
-        expect(error).toEqual(error);
-      }
+      await expect(controller.getCostType(1)).rejects.toThrow(error);
       expect(mockService.getCostTypeById).toHaveBeenCalledWith(1);
     });
   });
 
   describe('getAllCostTypes', () => {
     it('should return all cost types', async () => {
-      mockService.getAllCostTypes.mockResolvedValue(mockCostTypes);
+      mockService.getAllCostTypes.mockResolvedValue(mockCostTypesDto);
       const result = await controller.getAllCostTypes();
-      expect(result).toEqual(mockCostTypes);
+      expect(result).toEqual(mockCostTypesDto);
       expect(mockService.getAllCostTypes).toHaveBeenCalled();
     });
   });
 
   describe('createCostType', () => {
     it('should create a new cost type', async () => {
-      mockService.createCostType.mockResolvedValue(mockCostType);
-      const result = await controller.createCostType(mockCostType);
-      expect(result).toEqual(mockCostType);
-      expect(mockService.createCostType).toHaveBeenCalledWith(mockCostType);
+      const mockCreatedCostTypeDto: CostTypeDto = {
+        ...mockCreateCostTypeDto,
+        id: 4,
+      };
+      mockService.createCostType.mockResolvedValue(mockCreatedCostTypeDto);
+      const result = await controller.createCostType(mockCreateCostTypeDto);
+      expect(result).toEqual(mockCreatedCostTypeDto);
+      expect(mockService.createCostType).toHaveBeenCalledWith(
+        mockCreateCostTypeDto,
+      );
     });
 
     it('should throw a ConflictException if cost type already exists', async () => {
@@ -99,32 +111,42 @@ describe('CostTypeController', () => {
         'Cost type with name Test Cost Type already exists',
       );
       mockService.createCostType.mockRejectedValue(error);
-      try {
-        await controller.createCostType(mockCostType);
-      } catch (error) {
-        expect(error).toEqual(error);
-      }
-      expect(mockService.createCostType).toHaveBeenCalledWith(mockCostType);
+      await expect(
+        controller.createCostType(mockCreateCostTypeDto),
+      ).rejects.toThrow(error);
+
+      expect(mockService.createCostType).toHaveBeenCalledWith(
+        mockCreateCostTypeDto,
+      );
     });
   });
 
   describe('updateCostType', () => {
     it('should update a cost type', async () => {
-      mockService.updateCostType.mockResolvedValue(mockCostType);
-      const result = await controller.updateCostType(1, mockCostType);
-      expect(result).toEqual(mockCostType);
-      expect(mockService.updateCostType).toHaveBeenCalledWith(1, mockCostType);
+      const mockUpdatedCostTypeDto: CostTypeDto = {
+        ...mockUpdateCostTypeDto,
+        ...mockCostTypesDto[0],
+      };
+
+      mockService.updateCostType.mockResolvedValue(mockUpdatedCostTypeDto);
+      const result = await controller.updateCostType(1, mockUpdateCostTypeDto);
+      expect(result).toEqual(mockUpdatedCostTypeDto);
+      expect(mockService.updateCostType).toHaveBeenCalledWith(
+        1,
+        mockUpdateCostTypeDto,
+      );
     });
 
     it('should throw a NotFoundException if cost type does not exist', async () => {
       const error = new NotFoundException('Cost type with ID 1 not found');
       mockService.updateCostType.mockRejectedValue(error);
-      try {
-        await controller.updateCostType(1, mockCostType);
-      } catch (error) {
-        expect(error).toEqual(error);
-      }
-      expect(mockService.updateCostType).toHaveBeenCalledWith(1, mockCostType);
+      await expect(
+        controller.updateCostType(1, mockUpdateCostTypeDto),
+      ).rejects.toThrow(error);
+      expect(mockService.updateCostType).toHaveBeenCalledWith(
+        1,
+        mockUpdateCostTypeDto,
+      );
     });
 
     it('should throw a ConflictException if cost type already exists', async () => {
@@ -132,12 +154,13 @@ describe('CostTypeController', () => {
         'Cost type with name Test Cost Type already exists',
       );
       mockService.updateCostType.mockRejectedValue(error);
-      try {
-        await controller.updateCostType(1, mockCostType);
-      } catch (error) {
-        expect(error).toEqual(error);
-      }
-      expect(mockService.updateCostType).toHaveBeenCalledWith(1, mockCostType);
+      await expect(
+        controller.updateCostType(1, mockUpdateCostTypeDto),
+      ).rejects.toThrow(error);
+      expect(mockService.updateCostType).toHaveBeenCalledWith(
+        1,
+        mockUpdateCostTypeDto,
+      );
     });
   });
 
@@ -150,11 +173,7 @@ describe('CostTypeController', () => {
     it('should throw a NotFoundException if cost type does not exist', async () => {
       const error = new NotFoundException('Cost type with ID 1 not found');
       mockService.deleteCostType.mockRejectedValue(error);
-      try {
-        await controller.deleteCostType(1);
-      } catch (error) {
-        expect(error).toEqual(error);
-      }
+      await expect(controller.deleteCostType(1)).rejects.toThrow(error);
       expect(mockService.deleteCostType).toHaveBeenCalledWith(1);
     });
   });
