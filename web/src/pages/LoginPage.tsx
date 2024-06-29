@@ -1,15 +1,16 @@
 import { useTranslation } from "react-i18next";
+import ChangeLanguageButton from "../components/ui/ChangeLanguageButton";
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation();
 
-  const changeLanguageHandler = (lang) => {
-    i18n.changeLanguage("en");
-  };
+  console.log(i18n.languages);
+  console.log(i18n.language);
+
   return (
     <div>
       <p>{t("welcomeToReact")}</p>
-      <button onClick={changeLanguageHandler}>zmień język</button>
+      <ChangeLanguageButton />
     </div>
   );
 }
