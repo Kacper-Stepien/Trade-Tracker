@@ -30,8 +30,9 @@ export default function ChangeLanguageButton() {
   return (
     <Box position="relative" width="min-content" maxWidth="100px">
       <Button
-        variant="outlined"
+        variant="contained"
         size="small"
+        color="secondary"
         startIcon={<LanguageIcon />}
         endIcon={<KeyboardArrowDownRoundedIcon />}
         onClick={() => toggleMenuHandler()}
@@ -41,7 +42,10 @@ export default function ChangeLanguageButton() {
 
       {menuIsOpened && (
         <ClickAwayListener onClickAway={closeMenuHandler}>
-          <Paper elevation={3} sx={{ marginTop: "6px" }}>
+          <Paper
+            elevation={3}
+            sx={{ marginTop: "6px", position: "absolute", zIndex: 10 }}
+          >
             <MenuList>
               {languages.map((lang) => (
                 <MenuItem

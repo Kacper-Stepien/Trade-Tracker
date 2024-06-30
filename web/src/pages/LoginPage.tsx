@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import ChangeLanguageButton from "../components/ui/ChangeLanguageButton";
+import Navbar from "../components/Navbar";
+import { Box } from "@mui/material";
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation();
@@ -8,9 +9,13 @@ export default function LoginPage() {
   console.log(i18n.language);
 
   return (
-    <div>
+    <Box
+      bgcolor={"background.default"}
+      color={"text.primary"}
+      sx={{ height: "100vh" }}
+    >
+      <Navbar />
       <p>{t("welcomeToReact")}</p>
-      <ChangeLanguageButton />
-    </div>
+    </Box>
   );
 }
