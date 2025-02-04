@@ -1,22 +1,22 @@
-import { createTheme } from "@mui/material/styles";
+import createTheme from "@mui/material/styles/createTheme";
 
 import { PaletteMode } from "@mui/material";
 
 const lightPalette = {
   mode: "light" as PaletteMode,
   primary: {
-    main: "#01835d",
+    main: "#f25c54",
   },
   secondary: {
-    main: "#33d3ac",
+    main: "#64ffda",
   },
   background: {
-    default: "#e0f2f1",
-    paper: "#b2dfdb",
+    default: "#fafafa",
+    paper: "#ededf1",
   },
   text: {
     primary: "#333333",
-    secondary: "#6FFFE9",
+    secondary: "#333333",
   },
   error: {
     main: "#E63946",
@@ -26,10 +26,10 @@ const lightPalette = {
 const darkPalette = {
   mode: "dark" as PaletteMode,
   primary: {
-    main: "#019267",
+    main: "#64ffda",
   },
   secondary: {
-    main: "#33d3ac",
+    main: "#f25c54",
   },
   background: {
     default: "#121212",

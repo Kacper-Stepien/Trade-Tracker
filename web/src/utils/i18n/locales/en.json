@@ -1,3 +1,23 @@
 {
-  "welcomeToReact": "Welcome to React and react-i18next"
+  "logging": "Logging",
+  "email": "Email",
+  "password": "Password",
+  "login": "Sign in",
+  "emailIsRequired": "Email is required",
+  "emailIsIncorrect": "Email is incorrect",
+  "passwordIsRequired": "Password is required",
+  "passwordMinLength": "Password must be at least 8 characters long",
+  "passwordIsIncorrect": "Password is incorrect",
+  "doesntHaveAnAccount": "Don't have an account?",
+  "registerNow": "Register now",
+  "registration": "Registration",
+  "name": "Name",
+  "surname": "Surname",
+  "confirmPassword": "Confirm password",
+  "dateOfBirth": "Date of birth",
+  "isProfessional": "I'm a professional seller",
+  "nameIsRequired": "Name is required",
+  "register": "Sign up",
+  "haveAnAccount": "Do you have an account already?",
+  "surnameIsRequired": "Surname is required"
 }

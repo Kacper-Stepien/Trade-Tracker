@@ -22,7 +22,7 @@ import { StatsModule } from './stats/stats.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -41,9 +41,7 @@ import { StatsModule } from './stats/stats.module';
       ],
       synchronize: true,
       logging: true,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl: { rejectUnauthorized: false },
       extra: {
         options: `project=${process.env.ENDPOINT_ID}`,
       },

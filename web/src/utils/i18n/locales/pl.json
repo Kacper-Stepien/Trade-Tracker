@@ -1,3 +1,19 @@
 {
-  "welcomeToReact": "Witaj w React i react-i18next"
+  "logging": "Logowanie",
+  "email": "Email",
+  "password": "Hasło",
+  "login": "Zaloguj się",
+  "emailIsRequired": "Email jest wymagany",
+  "emailIsIncorrect": "Email jest niepoprawny",
+  "passwordIsRequired": "Hasło jest wymagane",
+  "passwordMinLength": "Hasło musi zawierać co najmniej 8 znaków",
+  "passwordIsIncorrect": "Hasło jest niepoprawne",
+  "doesntHaveAnAccount": "Nie posiadasz konta?",
+  "registerNow": "Zarejestruj się teraz",
+  "registration": "Rejestracja",
+  "name": "Imię",
+  "lastName": "Nazwisko",
+  "confirmPassowrd": "Potwierdź hasło",
+  "dateOfBirth": "Data urodzenia",
+  "isProfessional": "Jestem zawodowym sprzedawcą"
 }

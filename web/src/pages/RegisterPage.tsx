@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 
 import { Grid, Typography } from "@mui/material";
 import { useTheme } from "../context/ThemeContext";
-import LoginForm from "../components/forms/LoginForm";
+import RegisterForm from "../components/forms/RegisterForm";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -15,17 +15,18 @@ export default function LoginPage() {
       height="100%"
       maxWidth={"800px"}
       width={"100%"}
-      margin={4}
+      marginTop={4}
+      marginBottom={4}
       container
       direction="column"
       justifyContent="center"
       alignItems="center"
-      padding={8}
+      padding={4}
       gap={4}
       borderRadius={2}
     >
-      <Typography variant="h4">{t("logging")}</Typography>
-      <LoginForm />
+      <Typography variant="h4">{t("registration")}</Typography>
+      <RegisterForm />
     </Grid>
   );
 }

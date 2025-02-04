@@ -5,7 +5,7 @@ import enLang from "./locales/en.json";
 import plLang from "./locales/pl.json";
 
 i18n
-  //   .use(LanguageDetector)
+  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
@@ -16,7 +16,7 @@ i18n
         translation: plLang,
       },
     },
-    lng: "pl", // if you're using a language detector, do not define the lng option
+    // lng: "pl", // if you're using a language detector, do not define the lng option
     fallbackLng: "en",
 
     interpolation: {
