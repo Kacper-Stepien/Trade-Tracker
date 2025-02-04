@@ -6,6 +6,7 @@ import {
   MinLength,
   IsDateString,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -43,6 +44,7 @@ export class CreateUserDto {
   dateOfBirth: Date;
 
   @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
   @ApiProperty({
     example: false,
     description:

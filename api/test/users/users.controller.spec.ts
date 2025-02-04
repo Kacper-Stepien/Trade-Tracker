@@ -1,65 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { UsersController } from '../../src/users/users.controller';
+import { UsersService } from '../../src/users/users.service';
+import { User } from '../../src/users/user.entity';
+import { CreateUserDto } from '../../src/users/dtos/create-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { Role } from './role.enum';
-import { UserDto } from './dtos/user-dto';
-
-const mockUsers: User[] = [
-  {
-    id: 1,
-    name: 'John',
-    surname: 'Doe',
-    email: 'doe@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('1990-01-01'),
-    isProfessional: false,
-    role: Role.USER,
-    products: [],
-  },
-  {
-    id: 2,
-    name: 'Jane',
-    surname: 'Wall',
-    email: 'wall@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('1995-01-01'),
-    isProfessional: true,
-    role: Role.USER,
-    products: [],
-  },
-  {
-    id: 3,
-    name: 'Alice',
-    surname: 'Smith',
-    email: 'smith@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('2000-01-01'),
-    isProfessional: false,
-    role: Role.USER,
-    products: [],
-  },
-];
-
-const mockUsersDto = mockUsers.map((user) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, products, ...userDto } = user;
-  return userDto;
-});
+import { Role } from '../../src/users/role.enum';
+import { UserDto } from '../../src/users/dtos/user-dto';
+import { mockUsers, mockUsersDto } from './users.mock';
+import { mockUsersService } from './users.service.mock';
 
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
-
-  const mockUsersService = {
-    findAllUsers: jest.fn(),
-    findUserById: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -191,7 +143,13 @@ describe('UsersController', () => {
         dateOfBirth: new Date('2007-07-20'),
         isProfessional: false,
       };
-      const user: UserDto = { ...createUserDto, id: 4, role: Role.USER };
+      const user: UserDto = {
+        ...createUserDto,
+        id: 4,
+        role: Role.USER,
+        createdAt: new Date('2025-01-01'),
+        updatedAt: new Date('2025-01-01'),
+      };
       jest.spyOn(service, 'createUser').mockResolvedValue(user);
       expect(await controller.createUser(createUserDto)).toBe(user);
     });
@@ -219,6 +177,8 @@ describe('UsersController', () => {
         email: 'doe@gmail.com',
         dateOfBirth: new Date('1990-01-01'),
         isProfessional: false,
+        createdAt: new Date('2025-01-01'),
+        updatedAt: new Date('2025-01-01'),
         role: Role.USER,
       };
       jest.spyOn(service, 'updateUser').mockResolvedValue(updatedUser);

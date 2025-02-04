@@ -14,7 +14,7 @@ import { SignUpConflictResponseDto } from './dtos/sign-up-conflict-response.dto'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Post('sign-in')
   @HttpCode(HttpStatus.OK)
   @Public()
   @ApiOperation({ summary: 'Login' })
@@ -33,7 +33,7 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @Post('register')
+  @Post('sign-up')
   @HttpCode(HttpStatus.CREATED)
   @Public()
   @ApiOperation({ summary: 'Register' })

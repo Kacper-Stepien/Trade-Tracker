@@ -11,6 +11,8 @@ export class UserMapper {
     userDto.dateOfBirth = user.dateOfBirth;
     userDto.isProfessional = user.isProfessional;
     userDto.role = user.role;
+    userDto.createdAt = user.createdAt;
+    userDto.updatedAt = user.updatedAt;
     return userDto;
   }
 }

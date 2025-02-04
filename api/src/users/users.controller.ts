@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -167,6 +168,9 @@ export class UsersController {
   }
 
   private getUserId(req): number {
+    if (!req.user || !req.user.sub) {
+      throw new UnauthorizedException('User is not authenticated');
+    }
     return req.user.sub;
   }
 }

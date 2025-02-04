@@ -1,4 +1,10 @@
-import { IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  MinLength,
+  IsBoolean,
+  IsDateString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -29,6 +35,15 @@ export class UpdateUserDto {
     required: false,
   })
   password?: string;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    example: '2000-01-01',
+    description: 'User date of birth',
+    required: false,
+  })
+  dateOfBirth?: Date;
 
   @IsOptional()
   @IsBoolean()

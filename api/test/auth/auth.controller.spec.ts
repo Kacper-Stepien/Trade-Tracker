@@ -1,13 +1,14 @@
-import { SignInDto } from './dtos/sign-in.dto';
+import { SignInDto } from '../../src/auth/dtos/sign-in.dto';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from '../../src/auth/auth.controller';
+import { AuthService } from '../../src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserDto } from 'src/users/dtos/user-dto';
-import { Role } from '../users/role.enum';
+import { UserDto } from '../../src/users/dtos/user-dto';
+import { Role } from '../../src/users/role.enum';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { SignUpDto } from './dtos/sign-up.dto';
-import { SignInResponseDto } from './dtos/sign-in-response.dto';
+import { SignUpDto } from '../../src/auth/dtos/sign-up.dto';
+import { SignInResponseDto } from '../../src/auth/dtos/sign-in-response.dto';
+import { mockAuthService } from './auth.service.mock';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -31,16 +32,13 @@ describe('AuthController', () => {
     ...signUpDto,
     id: 1,
     role: Role.USER,
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
   };
 
   const signInResponseDto: SignInResponseDto = {
     token: 'token',
     user: userDto,
-  };
-
-  const mockAuthService = {
-    signIn: jest.fn(),
-    signUp: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -64,7 +62,7 @@ describe('AuthController', () => {
   });
 
   describe('signIn', () => {
-    it('should return the user and access token', async () => {
+    it('should return a JWT token and user details when credentials are valid', async () => {
       jest.spyOn(service, 'signIn').mockResolvedValue(signInResponseDto);
       const result = await controller.signIn(signInDto);
       expect(result).toEqual(signInResponseDto);

@@ -1,71 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
+import { User } from '../../src/users/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { Role } from './role.enum';
-import { UserDto } from './dtos/user-dto';
-import { UserMapper } from './user.mapper';
-import { CreateUserDto } from './dtos/create-user.dto';
-
-const mockUsers: User[] = [
-  {
-    id: 1,
-    name: 'John',
-    surname: 'Doe',
-    email: 'doe@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('1990-01-01'),
-    isProfessional: false,
-    role: Role.USER,
-    products: [],
-  },
-  {
-    id: 2,
-    name: 'Jane',
-    surname: 'Wall',
-    email: 'wall@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('1995-01-01'),
-    isProfessional: true,
-    role: Role.USER,
-    products: [],
-  },
-  {
-    id: 3,
-    name: 'Alice',
-    surname: 'Smith',
-    email: 'smith@gmail.com',
-    password: 'password1234',
-    dateOfBirth: new Date('2000-01-01'),
-    isProfessional: false,
-    role: Role.USER,
-    products: [],
-  },
-];
-
-const mockUsersDto: UserDto[] = mockUsers.map((user) => UserMapper.toDto(user));
+import { UpdateUserDto } from '../../src/users/dtos/update-user.dto';
+import { Role } from '../../src/users/role.enum';
+import { UserMapper } from '../../src/users/user.mapper';
+import { CreateUserDto } from '../../src/users/dtos/create-user.dto';
+import { UsersService } from '../../src/users/users.service';
+import { mockUsers, mockUsersDto } from './users.mock';
+import {
+  createQueryBuilder,
+  mockUsersRepository,
+} from './users.repository.mock';
 
 describe('UsersService', () => {
   let service: UsersService;
-
-  const createQueryBuilder: any = {
-    where: jest.fn().mockReturnThis(),
-    andWhere: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
-    take: jest.fn().mockReturnThis(),
-    getManyAndCount: jest.fn().mockResolvedValue([mockUsers, mockUsers.length]),
-  };
-
-  const mockUsersRepository = {
-    find: jest.fn(),
-    findOneBy: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    delete: jest.fn(),
-    createQueryBuilder: jest.fn(() => createQueryBuilder),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -189,6 +138,8 @@ describe('UsersService', () => {
         ...user,
         id: 1,
         role: Role.USER,
+        createdAt: new Date('2025-01-01'),
+        updatedAt: new Date('2025-01-01'),
         products: [],
       };
 

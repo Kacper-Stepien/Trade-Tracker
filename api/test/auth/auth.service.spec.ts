@@ -1,30 +1,23 @@
-import { UsersService } from './../users/users.service';
+import { UsersService } from '../../src/users/users.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from './dtos/sign-in.dto';
-import { SignUpDto } from './dtos/sign-up.dto';
-import { User } from '../users/user.entity';
-import { Role } from '../users/role.enum';
+import { SignInDto } from '../../src/auth/dtos/sign-in.dto';
+import { SignUpDto } from '../../src/auth/dtos/sign-up.dto';
+import { User } from '../../src/users/user.entity';
+import { Role } from '../../src/users/role.enum';
 import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { UserDto } from 'src/users/dtos/user-dto';
-import { Product } from '../products/product.enity';
-import { SignInResponseDto } from './dtos/sign-in-response.dto';
+import { UserDto } from '../../src/users/dtos/user-dto';
+import { Product } from '../../src/products/product.enity';
+import { SignInResponseDto } from '../../src/auth/dtos/sign-in-response.dto';
+import { mockUsersService } from '../users/users.service.mock';
+import { mockJwtService } from './jwt.service.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: UsersService;
   let jwtService: JwtService;
-
-  const mockUsersService = {
-    findUserByEmail: jest.fn(),
-    createUser: jest.fn(),
-  };
-
-  const mockJwtService = {
-    signAsync: jest.fn(),
-  };
 
   const signInDto: SignInDto = {
     email: 'kacper@gmail.com',
@@ -48,6 +41,8 @@ describe('AuthService', () => {
     dateOfBirth: new Date('2000-01-01'),
     isProfessional: false,
     role: Role.USER,
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
   };
 
   const signInResponseDto: SignInResponseDto = {
@@ -59,6 +54,8 @@ describe('AuthService', () => {
     ...signUpDto,
     id: 1,
     role: Role.USER,
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
     products: [] as Product[],
   };
 
@@ -162,6 +159,53 @@ describe('AuthService', () => {
         ...signUpDto,
         password: expect.any(String),
       });
+    });
+  });
+
+  describe('hashPassword', () => {
+    it('should hash password correctly', async () => {
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedPassword');
+
+      const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
+
+      expect(hashedPassword).toEqual('hashedPassword');
+      expect(bcrypt.hash).toHaveBeenCalledWith(signUpDto.password, 10);
+    });
+
+    it('should throw an error if bcrypt fails', async () => {
+      jest.spyOn(bcrypt, 'hash').mockRejectedValue(new Error('bcrypt error'));
+
+      await expect(bcrypt.hash(signUpDto.password, 10)).rejects.toThrow(
+        'bcrypt error',
+      );
+    });
+  });
+
+  describe('generateToken', () => {
+    it('should generate a valid JWT token', async () => {
+      const token = 'mock_token';
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
+
+      const result = await jwtService.signAsync({
+        sub: user.id,
+        username: user.email,
+      });
+
+      expect(result).toBe(token);
+      expect(jwtService.signAsync).toHaveBeenCalledWith({
+        sub: user.id,
+        username: user.email,
+      });
+    });
+
+    it('should throw an error if JWT signing fails', async () => {
+      jest
+        .spyOn(jwtService, 'signAsync')
+        .mockRejectedValue(new Error('JWT error'));
+
+      await expect(
+        jwtService.signAsync({ sub: user.id, username: user.email }),
+      ).rejects.toThrow('JWT error');
     });
   });
 });

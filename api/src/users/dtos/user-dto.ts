@@ -29,4 +29,16 @@ export class UserDto {
 
   @ApiProperty({ example: 'user', description: 'User role' })
   role: Role;
+
+  @ApiProperty({
+    example: '2024-01-01T12:00:00.000Z',
+    description: 'Date when user was created',
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    example: '2024-02-01T15:30:00.000Z',
+    description: 'Date when user was last updated',
+  })
+  updatedAt: Date;
 }
