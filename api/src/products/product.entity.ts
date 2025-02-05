@@ -24,7 +24,7 @@ export class Product {
   @Column({ type: 'date', nullable: false, default: () => 'CURRENT_DATE' })
   purchaseDate: Date;
 
-  @Column({ type: 'boolean', nullable: false, default: 0 })
+  @Column({ type: 'boolean', nullable: false, default: false })
   sold: boolean;
 
   @Column({ type: 'decimal', scale: 2, nullable: true })
@@ -33,10 +33,14 @@ export class Product {
   @Column({ type: 'date', nullable: true })
   saleDate: Date;
 
-  @ManyToOne(() => User, (user) => user.products)
+  @ManyToOne(() => User, (user) => user.products, {
+    onDelete: 'SET NULL',
+  })
   user: User;
 
-  @ManyToOne(() => ProductCategory, (category) => category.products)
+  @ManyToOne(() => ProductCategory, (category) => category.products, {
+    onDelete: 'SET NULL',
+  })
   category: ProductCategory;
 
   @OneToMany(() => ProductAttribute, (attribute) => attribute.product, {

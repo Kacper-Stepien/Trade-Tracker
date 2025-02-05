@@ -3,25 +3,29 @@ import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateProductDto {
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
+
   @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
+
   @IsOptional()
   @IsNumber({
     allowInfinity: false,
     allowNaN: false,
     maxDecimalPlaces: 2,
   })
-  purchasePrice: number;
+  purchasePrice?: number;
+
   @IsOptional()
   @IsDateString()
-  purchaseDate: Date;
+  purchaseDate?: Date;
+
   @IsOptional()
   @IsNumber({
     allowInfinity: false,
     allowNaN: false,
     maxDecimalPlaces: 0,
   })
-  categoryId: number;
+  categoryId?: number;
 }

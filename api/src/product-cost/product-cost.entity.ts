@@ -1,4 +1,4 @@
-import { Product } from '../products/product.enity';
+import { Product } from '../products/product.entity';
 import { CostType } from '../cost-type/cost-type.entity';
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';

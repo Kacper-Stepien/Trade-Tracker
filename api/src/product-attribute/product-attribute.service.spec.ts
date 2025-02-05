@@ -3,7 +3,7 @@ import { ProductAttributeService } from './product-attribute.service';
 import { Repository } from 'typeorm';
 import { ProductAttribute } from './product-attribute.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Product } from '../products/product.enity';
+import { Product } from '../products/product.entity';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreateProductAttributeDto } from './dtos/create-product-attribute.dto';
 import { UpdateProductAttributeDto } from './dtos/update-product-attribute.dto';

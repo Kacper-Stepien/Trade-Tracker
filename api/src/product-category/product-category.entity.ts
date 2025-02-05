@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Product } from '../products/product.enity';
+import { Product } from '../products/product.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()

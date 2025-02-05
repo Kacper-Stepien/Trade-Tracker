@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
-import { Product } from 'src/products/product.enity';
+import { Product } from 'src/products/product.entity';
 import { ProductCost } from 'src/product-cost/product-cost.entity';
 import { ProductStatisticDto } from './dtos/product-statistic.dto';
 import { UserStatsDto } from './dtos/user-stats.dto';

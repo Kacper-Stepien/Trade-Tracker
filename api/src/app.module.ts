@@ -7,7 +7,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
-import { Product } from './products/product.enity';
+import { Product } from './products/product.entity';
 import { ProductCategoryModule } from './product-category/product-category.module';
 import { ProductAttributeModule } from './product-attribute/product-attribute.module';
 import { ProductCategory } from './product-category/product-category.entity';

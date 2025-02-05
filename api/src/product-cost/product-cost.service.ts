@@ -6,7 +6,7 @@ import { ProductCostDto } from './dtos/product-cost.dto';
 import { ProductCostMapper } from './product-cost.mapper';
 import { CreateProductCostDto } from './dtos/create-product-cost.dto';
 import { CostType } from '../cost-type/cost-type.entity';
-import { Product } from '../products/product.enity';
+import { Product } from '../products/product.entity';
 import { UpdateProductCostDto } from './dtos/update-product-cost.dto';
 
 @Injectable()

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from './product.enity';
+import { Product } from './product.entity';
 import { UsersService } from 'src/users/users.service';
 import { ProductAttribute } from 'src/product-attribute/product-attribute.entity';
 import { CreateProductDto } from './dtos/create-product.dto';
@@ -51,33 +51,44 @@ export class ProductsService {
     userId: number,
     body: CreateProductDto,
   ): Promise<Product> {
-    const user = await this.usersService.findUserById(userId);
-    const category = await this.productCategoryService.findCategoryById(
-      body.category,
+    return this.productsRepository.manager.transaction(
+      async (transactionManager) => {
+        const user = await this.usersService.findUserById(userId);
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+        const category = await this.productCategoryService.findCategoryById(
+          body.categoryId,
+        );
+
+        if (!category) {
+          throw new NotFoundException('Category not found');
+        }
+
+        const product = transactionManager.create(Product, {
+          name: body.name,
+          purchasePrice: body.purchasePrice,
+          purchaseDate: body.purchaseDate,
+          category,
+          user,
+        });
+
+        const savedProduct = await transactionManager.save(product);
+
+        if (body.attributes && body.attributes.length > 0) {
+          const productAttributes = body.attributes.map((attribute) =>
+            transactionManager.create(ProductAttribute, {
+              ...attribute,
+              product: savedProduct,
+            }),
+          );
+          await transactionManager.save(productAttributes);
+          savedProduct.attributes = productAttributes;
+        }
+
+        return savedProduct;
+      },
     );
-
-    const product = this.productsRepository.create({
-      name: body.name,
-      purchasePrice: body.purchasePrice,
-      purchaseDate: body.purchaseDate,
-      category,
-      user,
-    });
-
-    const savedProduct = await this.productsRepository.save(product);
-
-    const productAttributes = body.attributes
-      ? body.attributes.map((attribute) =>
-          this.productAttributesRepository.create({
-            ...attribute,
-            product: savedProduct,
-          }),
-        )
-      : [];
-
-    await this.productAttributesRepository.save(productAttributes);
-    savedProduct.attributes = productAttributes;
-    return savedProduct;
   }
 
   async findProductById(id: number, userId: number): Promise<Product> {
@@ -88,13 +99,8 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    console.log(product);
 
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `You don't have permission to access this product`,
-      );
-    }
+    this.validateOwnership(product, userId);
 
     product.user = undefined;
     return product;
@@ -112,11 +118,9 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `You don't have permission to access this product`,
-      );
-    }
+
+    this.validateOwnership(product, userId);
+
     product.sold = true;
     product.salePrice = saleProductDto.salePrice;
     product.saleDate = saleProductDto.saleDate;
@@ -131,11 +135,8 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `You don't have permission to access this product`,
-      );
-    }
+    this.validateOwnership(product, userId);
+
     product.sold = false;
     product.salePrice = null;
     product.saleDate = null;
@@ -154,11 +155,9 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `You don't have permission to access this product`,
-      );
-    }
+
+    this.validateOwnership(product, userId);
+
     updateProductDto.name && (product.name = updateProductDto.name);
     updateProductDto.purchasePrice &&
       (product.purchasePrice = updateProductDto.purchasePrice);
@@ -169,6 +168,9 @@ export class ProductsService {
       const category = await this.productCategoryService.getCategoryById(
         updateProductDto.categoryId,
       );
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
       product.category = category;
     }
 
@@ -183,14 +185,20 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    if (product.user.id !== userId) {
-      throw new ForbiddenException(
-        `You don't have permission to access this product`,
-      );
-    }
+
+    this.validateOwnership(product, userId);
+
     const result = await this.productsRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException('Product not found');
+    }
+  }
+
+  private validateOwnership(product: Product, userId: number): void {
+    if (!product || product.user.id !== userId) {
+      throw new ForbiddenException(
+        `You don't have permission to access this product`,
+      );
     }
   }
 }

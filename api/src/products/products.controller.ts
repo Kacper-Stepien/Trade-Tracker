@@ -10,7 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Product } from './product.enity';
+import { Product } from './product.entity';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { SaleProductDto } from './dtos/sale-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
