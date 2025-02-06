@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { ProductCategory } from './product-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
-import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
+import { UpdateProductCategoryDto } from './dtos/update-product-category.dto';
 import { ProductCategoryDto } from './dtos/product-category.dto';
 import { ProductCategoryMapper } from './product-category.mapper';
 
@@ -20,7 +20,7 @@ export class ProductCategoryService {
 
   async findAllCategories(): Promise<ProductCategoryDto[]> {
     const categories = await this.productCategoryRepository.find();
-    return categories.map((category) => ProductCategoryMapper.toDto(category));
+    return ProductCategoryMapper.toDtoList(categories);
   }
 
   async findCategoryById(id: number): Promise<ProductCategoryDto> {
@@ -53,7 +53,7 @@ export class ProductCategoryService {
       where: { name },
       select: ['id'],
     });
-    if (!categoryExists || categoryExists.id !== id) {
+    if (categoryExists && categoryExists.id && categoryExists.id !== id) {
       throw new ConflictException(`Category with name ${name} already exists`);
     }
 
@@ -70,7 +70,9 @@ export class ProductCategoryService {
   }
 
   async getCategoryById(id: number): Promise<ProductCategory> {
-    const category = await this.productCategoryRepository.findOneBy({ id });
+    const category = await this.productCategoryRepository.findOne({
+      where: { id },
+    });
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }

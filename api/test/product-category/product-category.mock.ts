@@ -1,4 +1,6 @@
+import { ProductCategoryMapper } from '../../src/product-category/product-category.mapper';
 import { ProductCategory } from '../../src/product-category/product-category.entity';
+import { ProductCategoryDto } from '../../src/product-category/dtos/product-category.dto';
 
 export const mockCategories: ProductCategory[] = [
   {
@@ -22,3 +24,7 @@ export const mockCategories: ProductCategory[] = [
     products: [],
   },
 ];
+
+export const mockCategoriesDto: ProductCategoryDto[] = mockCategories.map(
+  (category) => ProductCategoryMapper.toDto(category),
+);

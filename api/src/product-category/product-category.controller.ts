@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
-import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
+import { UpdateProductCategoryDto } from './dtos/update-product-category.dto';
 import { AdminGuard } from '../auth/admin.guard';
 import {
   ApiTags,
@@ -37,7 +37,7 @@ export class ProductCategoryController {
     type: [ProductCategoryDto],
   })
   async getAllCategories(): Promise<ProductCategoryDto[]> {
-    return await this.productCategoryService.findAllCategories();
+    return this.productCategoryService.findAllCategories();
   }
 
   @Get(':id')
@@ -113,7 +113,7 @@ export class ProductCategoryController {
   @ApiOperation({ summary: 'Delete a product category' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
-    status: 202,
+    status: 204,
     description: 'Product category deleted',
   })
   @ApiResponse({

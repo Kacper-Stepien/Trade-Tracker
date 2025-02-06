@@ -1,35 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductCategoryController } from './product-category.controller';
-import { ProductCategoryService } from './product-category.service';
-import { ProductCategory } from './product-category.entity';
+import { ProductCategoryController } from '../../src/product-category/product-category.controller';
+import { ProductCategoryService } from '../../src/product-category/product-category.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { ProductCategoryMapper } from './product-category.mapper';
-import { ProductCategoryDto } from './dtos/product-category.dto';
-import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
-import { UpdateProductCategoryDto } from './dtos/update-product-cateogory.dto';
+import { CreateProductCategoryDto } from '../../src/product-category/dtos/create-product-category.dto';
+import { UpdateProductCategoryDto } from '../../src/product-category/dtos/update-product-category.dto';
+import { mockProductCategoryService } from './product-category.service.mock';
+import { mockCategories, mockCategoriesDto } from './product-category.mock';
 
 describe('ProductCategoryController', () => {
   let controller: ProductCategoryController;
   let service: ProductCategoryService;
-
-  const mockProductCategoryService = {
-    findAllCategories: jest.fn(),
-    findCategoryById: jest.fn(),
-    createCategory: jest.fn(),
-    updateCategory: jest.fn(),
-    deleteCategory: jest.fn(),
-  };
-
-  const mockCategories: ProductCategory[] = [
-    { id: 1, name: 'New Category', products: [] },
-    { id: 2, name: 'Laptop', products: [] },
-    { id: 3, name: 'Phone', products: [] },
-    { id: 4, name: 'Clothes', products: [] },
-  ];
-
-  const mockCategoriesDto: ProductCategoryDto[] = mockCategories.map(
-    (category) => ProductCategoryMapper.toDto(category),
-  );
 
   const createProductCategoryDto: CreateProductCategoryDto = {
     name: 'New Category',
@@ -68,6 +48,11 @@ describe('ProductCategoryController', () => {
 
       expect(await controller.getAllCategories()).toEqual(mockCategoriesDto);
       expect(service.findAllCategories).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return an empty array when no categories are found', async () => {
+      jest.spyOn(service, 'findAllCategories').mockResolvedValue([]);
+      expect(await controller.getAllCategories()).toEqual([]);
     });
   });
 
@@ -109,7 +94,7 @@ describe('ProductCategoryController', () => {
         .spyOn(service, 'createCategory')
         .mockRejectedValue(new ConflictException());
       await expect(
-        controller.createCategory(mockCategoriesDto[0]),
+        controller.createCategory(createProductCategoryDto),
       ).rejects.toThrow(ConflictException);
     });
   });
