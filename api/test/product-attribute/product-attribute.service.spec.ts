@@ -1,76 +1,23 @@
+import { mockProducts } from './../products/products.mock';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductAttributeService } from './product-attribute.service';
+import { ProductAttributeService } from '../../src/product-attribute/product-attribute.service';
 import { Repository } from 'typeorm';
-import { ProductAttribute } from './product-attribute.entity';
+import { ProductAttribute } from '../../src/product-attribute/product-attribute.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Product } from '../products/product.entity';
+import { Product } from '../../src/products/product.entity';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { CreateProductAttributeDto } from './dtos/create-product-attribute.dto';
-import { UpdateProductAttributeDto } from './dtos/update-product-attribute.dto';
-import { ProductAttributeMapper } from './product-attribute.mapper';
-import { Role } from '../users/role.enum';
+import { CreateProductAttributeDto } from '../../src/product-attribute/dtos/create-product-attribute.dto';
+import { UpdateProductAttributeDto } from '../../src/product-attribute/dtos/update-product-attribute.dto';
+import { ProductAttributeMapper } from '../../src/product-attribute/product-attribute.mapper';
 
-const mockProductAttributes = [
-  {
-    id: 1,
-    name: 'Attribute 1',
-    value: 'Value 1',
-    product: null,
-  },
-  {
-    id: 2,
-    name: 'Attribute 2',
-    value: 'Value 2',
-    product: null,
-  },
-];
-
-const mockUser = {
-  id: 1,
-  name: 'Kacper',
-  surname: 'Stepien',
-  email: 'kacper@gmail.com',
-  password: 'password',
-  dateOfBirth: new Date(),
-  isProfessional: false,
-  products: [],
-  role: Role.USER,
-};
-
-const mockProduct: Product = {
-  id: 1,
-  name: 'Product 1',
-  purchasePrice: 100,
-  purchaseDate: new Date(),
-  sold: false,
-  salePrice: null,
-  saleDate: null,
-  user: mockUser,
-  category: null,
-  attributes: mockProductAttributes,
-  costs: [],
-};
+import { mockProductAttributes } from './product-attribute.mock';
+import { mockProductRepository } from '../products/products.repository.mock';
+import { mockProductAttributeRepository } from './product-attribute.repository.mock';
 
 describe('ProductAttributeService', () => {
   let service: ProductAttributeService;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let productRepository: Repository<Product>;
   let repository: Repository<ProductAttribute>;
-
-  const mockProductAttributeRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    findOneBy: jest.fn(),
-    remove: jest.fn(),
-  };
-
-  const mockProductRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    findOneBy: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -94,6 +41,7 @@ describe('ProductAttributeService', () => {
     repository = module.get<Repository<ProductAttribute>>(
       getRepositoryToken(ProductAttribute),
     );
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -101,6 +49,12 @@ describe('ProductAttributeService', () => {
   });
 
   describe('createAttribute', () => {
+    const mockProduct = mockProducts[0];
+    const createProductAttributeDto: CreateProductAttributeDto = {
+      name: mockProductAttributes[0].name,
+      value: mockProductAttributes[0].value,
+    };
+
     it('should create a new product attribute', async () => {
       jest
         .spyOn(service, 'validateProductOwnership')
@@ -111,11 +65,6 @@ describe('ProductAttributeService', () => {
       jest
         .spyOn(repository, 'save')
         .mockResolvedValue(mockProductAttributes[0]);
-
-      const createProductAttributeDto: CreateProductAttributeDto = {
-        name: 'Attribute 1',
-        value: 'Value 1',
-      };
 
       const result = await service.createAttribute(
         createProductAttributeDto,
@@ -132,14 +81,49 @@ describe('ProductAttributeService', () => {
       });
       expect(repository.save).toHaveBeenCalledWith(mockProductAttributes[0]);
     });
+
+    it('should throw NotFoundException if product does not exist', async () => {
+      const mockProduct = mockProducts[0];
+      const createProductAttributeDto: CreateProductAttributeDto = {
+        name: mockProductAttributes[0].name,
+        value: mockProductAttributes[0].value,
+      };
+      jest
+        .spyOn(service, 'validateProductOwnership')
+        .mockRejectedValue(new NotFoundException());
+
+      await expect(
+        service.createAttribute(createProductAttributeDto, mockProduct.id, 1),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(repository.create).not.toHaveBeenCalled();
+      expect(repository.save).not.toHaveBeenCalled();
+    });
+
+    it('should throw ForbiddenException if user does not own the product', async () => {
+      const mockProduct = mockProducts[0];
+      const createProductAttributeDto: CreateProductAttributeDto = {
+        name: mockProductAttributes[0].name,
+        value: mockProductAttributes[0].value,
+      };
+      jest
+        .spyOn(service, 'validateProductOwnership')
+        .mockRejectedValue(new ForbiddenException());
+
+      await expect(
+        service.createAttribute(createProductAttributeDto, mockProduct.id, 1),
+      ).rejects.toThrow(ForbiddenException);
+
+      expect(repository.create).not.toHaveBeenCalled();
+      expect(repository.save).not.toHaveBeenCalled();
+    });
   });
 
   describe('getProductAttributes', () => {
     it('should return all attributes of a product', async () => {
-      mockProductRepository.findOneBy.mockResolvedValue(mockProduct);
-      mockProductAttributeRepository.find.mockResolvedValue(
-        mockProductAttributes,
-      );
+      const mockProduct = mockProducts[0];
+      jest.spyOn(productRepository, 'findOneBy').mockResolvedValue(mockProduct);
+      jest.spyOn(repository, 'find').mockResolvedValue(mockProductAttributes);
 
       const result = await service.getProductAttributes(mockProduct.id);
 
@@ -155,53 +139,65 @@ describe('ProductAttributeService', () => {
     });
 
     it('should throw NotFoundException if product does not exist', async () => {
-      mockProductRepository.findOneBy.mockResolvedValue(undefined);
-
+      const mockProduct = mockProducts[0];
+      jest.spyOn(productRepository, 'findOneBy').mockResolvedValue(undefined);
       await expect(
         service.getProductAttributes(mockProduct.id),
       ).rejects.toThrow(NotFoundException);
+      expect(mockProductAttributeRepository.find).not.toHaveBeenCalled();
     });
   });
 
   describe('updateProductAttribute', () => {
     it('should update an attribute of a product', async () => {
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
+      const productId = mockProduct.id;
+      const userId = mockProduct.user.id;
+      const attributeId = mockProduct.attributes[0].id;
+
       const updateProductAttributeDto: UpdateProductAttributeDto = {
         name: 'Updated Attribute',
         value: 'Updated Value',
       };
-
-      mockProductAttributeRepository.findOne.mockResolvedValue(
-        mockProductAttributes[0],
-      );
       jest
         .spyOn(service, 'validateProductOwnership')
         .mockResolvedValue(mockProduct);
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(mockProduct);
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(mockProductAttributes[0]);
 
       const updatedAttribute = {
         ...mockProductAttributes[0],
         ...updateProductAttributeDto,
       };
 
-      mockProductAttributeRepository.save.mockResolvedValue(updatedAttribute);
+      jest.spyOn(repository, 'save').mockResolvedValue(updatedAttribute);
 
       const result = await service.updateProductAttribute(
-        mockProduct.id,
-        mockProductAttributes[0].id,
+        productId,
+        attributeId,
         updateProductAttributeDto,
-        1,
+        userId,
       );
 
       expect(result).toEqual(ProductAttributeMapper.toDto(updatedAttribute));
-      expect(mockProductAttributeRepository.save).toHaveBeenCalledWith(
-        updatedAttribute,
-      );
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(repository.save).toHaveBeenCalledWith(updatedAttribute);
     });
 
     it('should throw NotFoundException if attribute does not exist', async () => {
-      mockProductAttributeRepository.findOne.mockResolvedValue(undefined);
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
       jest
         .spyOn(service, 'validateProductOwnership')
         .mockResolvedValue(mockProduct);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(undefined);
 
       await expect(
         service.updateProductAttribute(
@@ -211,21 +207,24 @@ describe('ProductAttributeService', () => {
           1,
         ),
       ).rejects.toThrow(NotFoundException);
+      expect(repository.save).not.toHaveBeenCalled();
     });
   });
 
   describe('deleteProductAttribute', () => {
     it('should delete an attribute of a product', async () => {
-      mockProductAttributeRepository.findOne.mockResolvedValue(
-        mockProductAttributes[0],
-      );
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
+
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(mockProductAttributes[0]);
+
       jest
         .spyOn(service, 'validateProductOwnership')
         .mockResolvedValue(mockProduct);
-
-      const removeSpy = jest
-        .spyOn(mockProductAttributeRepository, 'remove')
-        .mockResolvedValue(undefined);
 
       await service.deleteProductAttribute(
         mockProduct.id,
@@ -233,11 +232,18 @@ describe('ProductAttributeService', () => {
         1,
       );
 
-      expect(removeSpy).toHaveBeenCalledWith(mockProductAttributes[0]);
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: mockProductAttributes[0].id, product: mockProduct },
+      });
+      expect(repository.remove).toHaveBeenCalledWith(mockProductAttributes[0]);
     });
 
     it('should throw NotFoundException if attribute does not exist', async () => {
-      mockProductAttributeRepository.findOne.mockResolvedValue(undefined);
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
+      jest.spyOn(repository, 'findOne').mockResolvedValue(undefined);
       jest
         .spyOn(service, 'validateProductOwnership')
         .mockResolvedValue(mockProduct);
@@ -250,27 +256,40 @@ describe('ProductAttributeService', () => {
 
   describe('validateProductOwnership', () => {
     it('should validate product ownership', async () => {
-      mockProductRepository.findOne.mockResolvedValue(mockProduct);
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(mockProduct);
 
-      const result = await service.validateProductOwnership(mockProduct.id, 1);
+      const result = await service.validateProductOwnership(
+        mockProduct.id,
+        mockProduct.user.id,
+      );
 
       expect(result).toEqual(mockProduct);
     });
 
     it('should throw NotFoundException if product does not exist', async () => {
-      mockProductRepository.findOne.mockResolvedValue(undefined);
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(undefined);
 
       await expect(
-        service.validateProductOwnership(mockProduct.id, 1),
+        service.validateProductOwnership(undefined, 1),
       ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw ForbiddenException if user does not own the product', async () => {
+      const mockProduct: Product = {
+        ...mockProducts[0],
+        attributes: mockProductAttributes,
+      };
       const anotherUserProduct = {
         ...mockProduct,
-        user: { ...mockUser, id: 2 },
+        user: { ...mockProduct.user, id: 100 },
       };
-      mockProductRepository.findOne.mockResolvedValue(anotherUserProduct);
+      jest
+        .spyOn(productRepository, 'findOne')
+        .mockResolvedValue(anotherUserProduct);
 
       await expect(
         service.validateProductOwnership(mockProduct.id, 1),
@@ -280,15 +299,16 @@ describe('ProductAttributeService', () => {
 
   describe('validateProductAttributeExistence', () => {
     it('should validate product attribute existence', async () => {
-      await expect(
-        service.validateProductAttributeExistence(mockProductAttributes[0]),
-      ).resolves.toBeUndefined();
+      const result = service.validateProductAttributeExistence(
+        mockProductAttributes[0],
+      );
+      expect(result).toBeUndefined();
     });
 
     it('should throw NotFoundException if product attribute does not exist', async () => {
-      await expect(
+      expect(() =>
         service.validateProductAttributeExistence(undefined),
-      ).rejects.toThrow(NotFoundException);
+      ).toThrow(NotFoundException);
     });
   });
 });

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Request,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductAttributeService } from './product-attribute.service';
 import { CreateProductAttributeDto } from './dtos/create-product-attribute.dto';
@@ -43,9 +44,13 @@ export class ProductAttributeController {
     status: 404,
     description: 'Product not found',
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - user does not own the product',
+  })
   createAttribute(
     @Body() createProductAttributeDto: CreateProductAttributeDto,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Request() req,
   ): Promise<ProductAttributeDto> {
     const userId = req.user.sub;
@@ -75,13 +80,17 @@ export class ProductAttributeController {
     type: ProductAttributeDto,
   })
   @ApiResponse({
+    status: 403,
+    description: 'Forbidden - user does not own the product',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Product or attribute not found',
   })
   updateAttribute(
     @Body() updateProductAttributeDto: UpdateProductAttributeDto,
-    @Param('productId') productId: number,
-    @Param('attributeId') attributeId: number,
+    @Param('productId', ParseIntPipe) productId: number,
+    @Param('attributeId', ParseIntPipe) attributeId: number,
     @Request() req,
   ): Promise<ProductAttributeDto> {
     const userId = req.user.sub;
@@ -110,12 +119,16 @@ export class ProductAttributeController {
     description: 'The product attribute has been successfully deleted',
   })
   @ApiResponse({
+    status: 403,
+    description: 'Forbidden - user does not own the product',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Product or attribute not found',
   })
   deleteAttribute(
-    @Param('productId') productId: number,
-    @Param('attributeId') attributeId: number,
+    @Param('productId', ParseIntPipe) productId: number,
+    @Param('attributeId', ParseIntPipe) attributeId: number,
     @Request() req,
   ): Promise<void> {
     const userId = req.user.sub;

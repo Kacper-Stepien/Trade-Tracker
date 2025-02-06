@@ -9,4 +9,10 @@ export class ProductAttributeMapper {
     productAttributeDto.value = productAttribute.value;
     return productAttributeDto;
   }
+
+  static toDtoList(
+    productAttributes: ProductAttribute[],
+  ): ProductAttributeDto[] {
+    return productAttributes.map(ProductAttributeMapper.toDto);
+  }
 }

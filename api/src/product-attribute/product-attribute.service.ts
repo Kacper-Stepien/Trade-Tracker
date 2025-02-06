@@ -61,7 +61,7 @@ export class ProductAttributeService {
     const attribute = await this.productAttributeRepository.findOne({
       where: { id: attributeId, product },
     });
-    await this.validateProductAttributeExistence(attribute);
+    this.validateProductAttributeExistence(attribute);
     attribute.name = updateProductAttributeDto.name;
     attribute.value = updateProductAttributeDto.value;
     return ProductAttributeMapper.toDto(
@@ -78,7 +78,7 @@ export class ProductAttributeService {
     const attribute = await this.productAttributeRepository.findOne({
       where: { id: attributeId, product },
     });
-    await this.validateProductAttributeExistence(attribute);
+    this.validateProductAttributeExistence(attribute);
     await this.productAttributeRepository.remove(attribute);
   }
 
@@ -101,7 +101,7 @@ export class ProductAttributeService {
     return product;
   }
 
-  async validateProductAttributeExistence(
+  validateProductAttributeExistence(
     productAttribute: ProductAttribute | undefined,
   ) {
     if (!productAttribute) {
