@@ -43,7 +43,12 @@ export class CostTypeService {
     id: number,
     updateCostTypeDto: UpdateCostTypeDto,
   ): Promise<CostTypeDto> {
-    const costType = await this.getCostTypeById(id);
+    const costType = await this.costTypeRepository.findOneBy({
+      id,
+    });
+    if (!costType) {
+      throw new NotFoundException(`Cost type with ID ${id} not found`);
+    }
     costType.name = updateCostTypeDto.name;
     return CostTypeMapper.toDto(await this.costTypeRepository.save(costType));
   }

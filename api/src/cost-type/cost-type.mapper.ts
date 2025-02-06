@@ -9,4 +9,7 @@ export class CostTypeMapper {
     };
     return costTypeDto;
   }
+  static toDtoList(costTypes: CostType[]): CostTypeDto[] {
+    return costTypes.map((costType) => this.toDto(costType));
+  }
 }

@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CostTypeService } from './cost-type.service';
 import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
@@ -26,16 +27,16 @@ import {
 export class CostTypeController {
   constructor(private readonly costTypeService: CostTypeService) {}
 
-  @Get('id')
+  @Get(':id')
   @ApiOperation({ summary: 'Get cost type by ID' })
-  @ApiParam({ name: 'id', description: 'Cost type ID' })
+  @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiResponse({
     status: 200,
     description: 'The cost type with the specified ID',
     type: CostTypeDto,
   })
   @ApiResponse({ status: 404, description: 'Cost type not found' })
-  getCostType(@Param('id') id: number): Promise<CostTypeDto> {
+  getCostType(@Param('id', ParseIntPipe) id: number): Promise<CostTypeDto> {
     return this.costTypeService.getCostTypeById(id);
   }
 
@@ -70,7 +71,7 @@ export class CostTypeController {
   @UseGuards(AdminGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a cost type - only for admin' })
-  @ApiParam({ name: 'id', description: 'Cost type ID' })
+  @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiBody({ type: UpdateCostTypeDto })
   @ApiResponse({
     status: 200,
@@ -88,7 +89,7 @@ export class CostTypeController {
   @UseGuards(AdminGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a cost type - only for admin' })
-  @ApiParam({ name: 'id', description: 'Cost type ID' })
+  @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiResponse({
     status: 200,
     description: 'The cost type has been successfully deleted',
