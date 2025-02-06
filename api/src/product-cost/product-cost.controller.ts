@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 import { ProductCostService } from './product-cost.service';
 import { CreateProductCostDto } from './dtos/create-product-cost.dto';
@@ -29,7 +30,7 @@ export class ProductCostController {
   @ApiOperation({ summary: 'Get all costs for a specific product' })
   @ApiParam({
     name: 'productId',
-    type: Number,
+    type: 'integer',
     description: 'The ID of the product',
   })
   @ApiResponse({
@@ -39,20 +40,26 @@ export class ProductCostController {
     isArray: true,
   })
   @ApiResponse({
+    status: 403,
+    description: 'You do not have permission to access this resource.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'The product with the specified ID was not found.',
   })
   async getAllProductCosts(
+    @Request() req,
     @Param('productId', ParseIntPipe) productId: number,
   ): Promise<ProductCostDto[]> {
-    return this.productCostService.getAllProductCosts(productId);
+    const userId = req.user.sub;
+    return this.productCostService.getAllProductCosts(productId, userId);
   }
 
   @Get(':costId')
   @ApiOperation({ summary: 'Get a specific cost by ID' })
   @ApiParam({
     name: 'costId',
-    type: Number,
+    type: 'integer',
     description: 'The ID of the cost',
   })
   @ApiResponse({
@@ -65,9 +72,11 @@ export class ProductCostController {
     description: 'The cost with the specified ID was not found.',
   })
   async getCostById(
+    @Request() req,
     @Param('costId', ParseIntPipe) costId: number,
   ): Promise<ProductCostDto> {
-    return this.productCostService.getCostById(costId);
+    const userId = req.user.sub;
+    return this.productCostService.getCostById(costId, userId);
   }
 
   @Post()
@@ -83,21 +92,27 @@ export class ProductCostController {
     description: 'The request body was invalid.',
   })
   @ApiResponse({
+    status: 403,
+    description: 'You do not have permission to access this resource.',
+  })
+  @ApiResponse({
     status: 404,
     description:
       'The product or cost type with the specified ID was not found.',
   })
   async createProductCost(
+    @Request() req,
     @Body() createCostDto: CreateProductCostDto,
   ): Promise<ProductCostDto> {
-    return this.productCostService.createProductCost(createCostDto);
+    const userId = req.user.sub;
+    return this.productCostService.createProductCost(createCostDto, userId);
   }
 
   @Patch(':costId')
   @ApiOperation({ summary: 'Update a specific product cost by ID' })
   @ApiParam({
     name: 'costId',
-    type: Number,
+    type: 'integer',
     description: 'The ID of the cost',
   })
   @ApiBody({ type: UpdateProductCostDto })
@@ -111,22 +126,32 @@ export class ProductCostController {
     description: 'The request body was invalid.',
   })
   @ApiResponse({
+    status: 403,
+    description: 'You do not have permission to access this resource.',
+  })
+  @ApiResponse({
     status: 404,
     description:
       'The product or cost type with the specified ID was not found.',
   })
   async updateProductCost(
+    @Request() req,
     @Param('costId', ParseIntPipe) costId: number,
     @Body() updateCostDto: UpdateProductCostDto,
   ): Promise<ProductCostDto> {
-    return this.productCostService.updateProductCost(costId, updateCostDto);
+    const userId = req.user.sub;
+    return this.productCostService.updateProductCost(
+      costId,
+      updateCostDto,
+      userId,
+    );
   }
 
   @Delete(':costId')
   @ApiOperation({ summary: 'Delete a specific product cost by ID' })
   @ApiParam({
     name: 'costId',
-    type: Number,
+    type: 'integer',
     description: 'The ID of the cost',
   })
   @ApiResponse({
@@ -134,12 +159,18 @@ export class ProductCostController {
     description: 'The cost has been successfully deleted.',
   })
   @ApiResponse({
+    status: 403,
+    description: 'You do not have permission to access this resource.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'The cost with the specified ID was not found.',
   })
   async deleteProductCost(
+    @Request() req,
     @Param('costId', ParseIntPipe) costId: number,
   ): Promise<void> {
-    return this.productCostService.deleteProductCost(costId);
+    const userId = req.user.sub;
+    return this.productCostService.deleteProductCost(costId, userId);
   }
 }

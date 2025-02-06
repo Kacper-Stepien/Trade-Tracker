@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductCost } from './product-cost.entity';
@@ -20,43 +24,63 @@ export class ProductCostService {
     private productRepository: Repository<Product>,
   ) {}
 
-  async getAllProductCosts(productId: number): Promise<ProductCostDto[]> {
+  async getAllProductCosts(
+    productId: number,
+    userId: number,
+  ): Promise<ProductCostDto[]> {
     const productCosts = await this.productCostRepository.find({
       where: { product: { id: productId } },
-      relations: ['costType'],
+      relations: ['costType', 'product'],
     });
 
+    if (productCosts.length === 0) {
+      throw new NotFoundException(
+        `No costs found for product with ID ${productId}`,
+      );
+    }
+
+    if (productCosts[0].product.user.id !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this resource',
+      );
+    }
     return productCosts.map((productCost) => {
       return ProductCostMapper.toDto(productCost);
     });
   }
 
-  async getCostById(costId: number): Promise<ProductCostDto> {
+  async getCostById(costId: number, userId: number): Promise<ProductCostDto> {
     const productCost = await this.productCostRepository.findOne({
       where: { id: costId },
-      relations: ['costType'],
+      relations: ['costType', 'product'],
     });
-
     if (!productCost) {
       throw new NotFoundException(`Cost with ID ${costId} not found`);
     }
-
+    if (productCost.product.user.id !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this resource',
+      );
+    }
     return ProductCostMapper.toDto(productCost);
   }
 
   async createProductCost(
     createCostDto: CreateProductCostDto,
+    userId: number,
   ): Promise<ProductCostDto> {
     const product = await this.getProductById(createCostDto.productId);
-
+    if (product.user.id !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this resource',
+      );
+    }
     const costType = await this.getCostTypeById(createCostDto.costTypeId);
-
     const newProductCost = this.productCostRepository.create({
       ...createCostDto,
       product,
       costType,
     });
-
     const savedProductCost =
       await this.productCostRepository.save(newProductCost);
 
@@ -66,13 +90,21 @@ export class ProductCostService {
   async updateProductCost(
     costId: number,
     updateProductCostDto: UpdateProductCostDto,
+    userId: number,
   ): Promise<ProductCostDto> {
-    const productCost = await this.productCostRepository.findOneBy({
-      id: costId,
+    const productCost = await this.productCostRepository.findOne({
+      where: { id: costId },
+      relations: ['costType', 'product'],
     });
 
     if (!productCost) {
       throw new NotFoundException(`Cost with ID ${costId} not found`);
+    }
+
+    if (productCost.product.user.id !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this resource',
+      );
     }
 
     Object.assign(productCost, updateProductCostDto);
@@ -82,9 +114,20 @@ export class ProductCostService {
     return ProductCostMapper.toDto(updatedProductCost);
   }
 
-  async deleteProductCost(costId: number): Promise<void> {
+  async deleteProductCost(costId: number, userId: number): Promise<void> {
+    const productCost = await this.productCostRepository.findOne({
+      where: { id: costId },
+      relations: ['product'],
+    });
+    if (!productCost) {
+      throw new NotFoundException(`Cost with ID ${costId} not found`);
+    }
+    if (productCost.product.user.id !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this resource',
+      );
+    }
     const result = await this.productCostRepository.delete(costId);
-
     if (result.affected === 0) {
       throw new NotFoundException(`Cost with ID ${costId} not found`);
     }

@@ -10,7 +10,6 @@ import { CostType } from '../cost-type/cost-type.entity';
   imports: [
     TypeOrmModule.forFeature([ProductCost, CostType]),
     forwardRef(() => ProductsModule),
-    forwardRef(() => CostType),
   ],
   controllers: [ProductCostController],
   providers: [ProductCostService],

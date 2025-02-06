@@ -28,6 +28,7 @@ export class ProductCost {
 
   @ManyToOne(() => CostType, (costType) => costType.costs, {
     nullable: false,
+    onDelete: 'SET NULL',
   })
   costType: CostType;
 }

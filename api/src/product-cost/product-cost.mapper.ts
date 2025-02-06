@@ -6,10 +6,14 @@ export class ProductCostMapper {
     const mappedProductCost = new ProductCostDto();
     mappedProductCost.id = productCost.id;
     mappedProductCost.name = productCost.name;
-    mappedProductCost.description = productCost.description;
+    mappedProductCost.description = productCost.description || '';
     mappedProductCost.price = productCost.price;
     mappedProductCost.date = productCost.date;
-    mappedProductCost.costType = productCost.costType;
+    mappedProductCost.costType = productCost.costType ?? null;
     return mappedProductCost;
+  }
+
+  static toDtoList(productCosts: ProductCost[]): ProductCostDto[] {
+    return productCosts.map((productCost) => this.toDto(productCost));
   }
 }
