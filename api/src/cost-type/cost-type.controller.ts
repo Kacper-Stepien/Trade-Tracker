@@ -13,7 +13,7 @@ import { CostTypeService } from './cost-type.service';
 import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
 import { UpdateCostTypeDto } from './dtos/update-cost-type.dto';
 import { CostTypeDto } from './dtos/cost-type.dto';
-import { AdminGuard } from '../auth/admin.guard';
+import { AdminGuard } from '../auth2/guards/admin.guard';
 import {
   ApiTags,
   ApiOperation,

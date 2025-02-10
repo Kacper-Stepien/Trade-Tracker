@@ -5,9 +5,12 @@ import {
   IsBoolean,
   MinLength,
   IsDateString,
+  IsEnum,
+  IsOptional,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { AccountType } from '../account-type.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -51,4 +54,16 @@ export class CreateUserDto {
       'User professional status, if true user is a professional salesman',
   })
   isProfessional: boolean;
+
+  @IsOptional()
+  @IsString()
+  googleId?: string;
+
+  @IsEnum(AccountType)
+  @ApiProperty({
+    example: AccountType.LOCAL,
+    enum: AccountType,
+    description: 'Authentication method used by the user',
+  })
+  accountType: AccountType;
 }

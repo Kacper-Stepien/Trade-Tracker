@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth2/auth.module';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/product.entity';
 import { ProductCategoryModule } from './product-category/product-category.module';
@@ -17,6 +17,8 @@ import { ProductCost } from './product-cost/product-cost.entity';
 import { CostTypeModule } from './cost-type/cost-type.module';
 import { CostType } from './cost-type/cost-type.entity';
 import { StatsModule } from './stats/stats.module';
+import { AppConfigModule } from './config/config.module';
+import { AppConfigService } from './config/config.service';
 
 @Module({
   imports: [
@@ -24,27 +26,31 @@ import { StatsModule } from './stats/stats.module';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.PGHOST,
-      port: parseInt(process.env.PGPORT, 10),
-      username: process.env.PGUSER,
-      password: process.env.PGPASSWORD,
-      database: process.env.PGDATABASE,
-      entities: [
-        User,
-        Product,
-        ProductCategory,
-        ProductAttribute,
-        ProductCost,
-        CostType,
-      ],
-      synchronize: true,
-      logging: true,
-      ssl: { rejectUnauthorized: false },
-      extra: {
-        options: `project=${process.env.ENDPOINT_ID}`,
-      },
+    AppConfigModule,
+    TypeOrmModule.forRootAsync({
+      imports: [AppConfigModule],
+      inject: [AppConfigService],
+      useFactory: (configService: AppConfigService) => ({
+        type: 'postgres',
+        host: configService.databaseHost,
+        username: configService.databaseUser,
+        password: configService.databasePassword,
+        database: configService.databaseName,
+        entities: [
+          User,
+          Product,
+          ProductCategory,
+          ProductAttribute,
+          ProductCost,
+          CostType,
+        ],
+        synchronize: true,
+        logging: true,
+        ssl: { rejectUnauthorized: false },
+        extra: {
+          options: `project=${configService.endpointId}`,
+        },
+      }),
     }),
     UsersModule,
     AuthModule,

@@ -5,9 +5,11 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { Role } from './role.enum';
 import { Product } from '../products/product.entity';
+import { AccountType } from './account-type.enum';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -19,14 +21,15 @@ export class User {
   @Column('varchar', { length: 45, nullable: false })
   surname: string;
 
+  @Index()
   @Column('varchar', { length: 45, nullable: false, unique: true })
   email: string;
 
   @Column('varchar', { length: 255, nullable: false })
   password: string;
 
-  @Column('date', { nullable: false })
-  dateOfBirth: Date;
+  @Column('date', { nullable: true })
+  dateOfBirth?: Date;
 
   @Column({ default: false })
   isProfessional: boolean;
@@ -37,6 +40,16 @@ export class User {
     default: Role.USER,
   })
   role: Role;
+
+  @Column({
+    type: 'enum',
+    enum: AccountType,
+    default: AccountType.LOCAL,
+  })
+  accountType: AccountType;
+
+  @Column('varchar', { length: 255, nullable: true })
+  googleId?: string;
 
   @CreateDateColumn()
   createdAt: Date;

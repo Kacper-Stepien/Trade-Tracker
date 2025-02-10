@@ -51,7 +51,10 @@ export class ProductsController {
     @Request() req,
     @Body() body: CreateProductDto,
   ): Promise<Product> {
+    console.log('xddddd');
+    console.log(req.user);
     const userId = req.user.sub;
+    console.log(userId);
     return this.productsService.createProduct(userId, body);
   }
 

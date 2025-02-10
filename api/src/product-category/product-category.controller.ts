@@ -12,7 +12,7 @@ import {
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dtos/update-product-category.dto';
-import { AdminGuard } from '../auth/admin.guard';
+import { AdminGuard } from '../auth2/guards/admin.guard';
 import {
   ApiTags,
   ApiOperation,

@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user-dto';
 import { UserMapper } from './user.mapper';
 import { GetUsersResponseDto } from './dtos/get-users-response.dto';
+import { AccountType } from './account-type.enum';
 
 @Injectable()
 export class UsersService {
@@ -55,9 +56,19 @@ export class UsersService {
     return UserMapper.toDto(user);
   }
 
-  async findUserByEmail(email: string): Promise<User> {
-    const user = await this.getUserByEmail(email);
-    return user;
+  async findUserByEmail(
+    email: string,
+    accountType?: AccountType,
+  ): Promise<User | null> {
+    const query = this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email });
+
+    if (accountType) {
+      query.andWhere('user.accountType = :accountType', { accountType });
+    }
+
+    return query.getOne();
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserDto> {
