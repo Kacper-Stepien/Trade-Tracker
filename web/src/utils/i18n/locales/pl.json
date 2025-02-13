@@ -15,5 +15,8 @@
   "lastName": "Nazwisko",
   "confirmPassowrd": "Potwierdź hasło",
   "dateOfBirth": "Data urodzenia",
-  "isProfessional": "Jestem zawodowym sprzedawcą"
+  "isProfessional": "Jestem zawodowym sprzedawcą",
+
+  "continueWithGoogle": "Kontynuuj z użyciem konta Google",
+  "or": "Lub"
 }

@@ -7,24 +7,27 @@ import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { languages } from "../../utils/i18n/languages";
 
-export default function ChangeLanguageButton() {
+const ChangeLanguageButton = () => {
   const { i18n } = useTranslation();
-  const [menuIsOpened, setMenuIsOpened] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const changeLanguageHandler = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setMenuIsOpened(false);
+  const handleLanguageChange = useCallback(
+    (lang: string) => {
+      i18n.changeLanguage(lang);
+      setIsMenuOpen(false);
+    },
+    [i18n]
+  );
+
+  const handleToggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
   };
 
-  const toggleMenuHandler = () => {
-    setMenuIsOpened((prev) => !prev);
-  };
-
-  const closeMenuHandler = () => {
-    setMenuIsOpened(false);
+  const handleCloseMenu = () => {
+    setIsMenuOpen(false);
   };
 
   return (
@@ -35,13 +38,13 @@ export default function ChangeLanguageButton() {
         color="secondary"
         startIcon={<LanguageIcon />}
         endIcon={<KeyboardArrowDownRoundedIcon />}
-        onClick={() => toggleMenuHandler()}
+        onClick={() => handleToggleMenu()}
       >
         {i18n.language.toUpperCase()}
       </Button>
 
-      {menuIsOpened && (
-        <ClickAwayListener onClickAway={closeMenuHandler}>
+      {isMenuOpen && (
+        <ClickAwayListener onClickAway={handleCloseMenu}>
           <Paper
             elevation={3}
             sx={{ marginTop: "6px", position: "absolute", zIndex: 10 }}
@@ -51,7 +54,7 @@ export default function ChangeLanguageButton() {
                 <MenuItem
                   key={lang}
                   selected={lang === i18n.language}
-                  onClick={() => changeLanguageHandler(lang)}
+                  onClick={() => handleLanguageChange(lang)}
                   sx={{ fontSize: "0.8rem" }}
                 >
                   {lang.toUpperCase()}
@@ -63,4 +66,6 @@ export default function ChangeLanguageButton() {
       )}
     </Box>
   );
-}
+};
+
+export default ChangeLanguageButton;

@@ -1,5 +1,5 @@
 import { Switch, styled } from "@mui/material";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../hooks/useTheme";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -51,5 +51,15 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 export default function ThemeButton() {
   const { mode, toggleTheme } = useTheme();
 
-  return <MaterialUISwitch checked={mode === "dark"} onChange={toggleTheme} />;
+  console.log("Current theme mode:", mode); // 🔹 Dodajemy logowanie
+
+  return (
+    <MaterialUISwitch
+      checked={mode === "dark"}
+      onChange={toggleTheme}
+      role="switch"
+      aria-label="Toogle dark mode"
+      aria-checked={mode === "dark"}
+    />
+  );
 }

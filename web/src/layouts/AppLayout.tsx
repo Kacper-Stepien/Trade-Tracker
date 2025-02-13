@@ -2,7 +2,7 @@ import { Box, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
 
 export default function AppLayout() {
   const { theme } = useTheme();

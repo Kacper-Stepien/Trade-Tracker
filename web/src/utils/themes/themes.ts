@@ -10,6 +10,7 @@ const lightPalette = {
   secondary: {
     main: "#64ffda",
   },
+
   background: {
     default: "#fafafa",
     paper: "#ededf1",

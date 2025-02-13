@@ -16,10 +16,11 @@ i18n
         translation: plLang,
       },
     },
-    // lng: "pl", // if you're using a language detector, do not define the lng option
     fallbackLng: "en",
 
     interpolation: {
       escapeValue: false,
     },
   });
+
+export default i18n;

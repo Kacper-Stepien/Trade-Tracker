@@ -14,7 +14,7 @@ export default function Navbar() {
           alignItems="center"
         >
           <Logo />
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} aria-label="Navbar Actions">
             <ThemeButton />
             <ChangeLanguageButton />
           </Stack>

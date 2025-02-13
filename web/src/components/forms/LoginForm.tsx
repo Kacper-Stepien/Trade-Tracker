@@ -1,7 +1,8 @@
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import GoogleButton from "../ui/GoogleButton";
 
 interface FormInputs {
   email: string;
@@ -80,6 +81,8 @@ export default function LoginForm() {
             {t("registerNow")}
           </Button>
         </Stack>
+        <Divider>{t("or")}</Divider>
+        <GoogleButton />
       </Stack>
     </form>
   );

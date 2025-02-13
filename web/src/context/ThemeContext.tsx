@@ -1,14 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useState, ReactNode, useEffect, useMemo } from "react";
 import { ThemeProvider as MuiThemeProvider, Theme } from "@mui/material/styles";
 import { lightTheme, darkTheme } from "../utils/themes/themes";
 
-interface ThemeContextType {
+export interface ThemeContextType {
   mode: "light" | "dark";
   toggleTheme: () => void;
   theme: Theme;
@@ -18,7 +12,13 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
 );
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+export const ThemeProvider = ({
+  children,
+  forcedTheme,
+}: {
+  children: ReactNode;
+  forcedTheme?: Theme;
+}) => {
   const [mode, setMode] = useState<"light" | "dark">(() => {
     const savedMode = localStorage.getItem("theme");
     return savedMode ? JSON.parse(savedMode) : "light";
@@ -32,19 +32,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
 
-  const theme = mode === "light" ? lightTheme : darkTheme;
+  const theme = useMemo(
+    () => forcedTheme || (mode === "light" ? lightTheme : darkTheme),
+    [mode]
+  );
 
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme, theme }}>
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
     </ThemeContext.Provider>
   );
-};
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
 };

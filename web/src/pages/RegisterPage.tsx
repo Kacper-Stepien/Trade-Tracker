@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { Grid, Typography } from "@mui/material";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
 import RegisterForm from "../components/forms/RegisterForm";
 
 export default function RegisterPage() {

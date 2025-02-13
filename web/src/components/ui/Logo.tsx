@@ -8,9 +8,12 @@ export default function Logo() {
       justifyContent="center"
       alignItems="center"
       spacing={1}
+      sx={{ cursor: "pointer" }}
     >
-      <ShowChartRoundedIcon fontSize="large" />
-      <Typography variant="h5">Trade Tracker</Typography>
+      <ShowChartRoundedIcon fontSize="large" aria-label="Trade Tracker Logo" />
+      <Typography variant="h5" component="span">
+        Trade Tracker
+      </Typography>
     </Stack>
   );
 }

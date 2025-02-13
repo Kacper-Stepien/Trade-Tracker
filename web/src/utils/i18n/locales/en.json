@@ -19,5 +19,8 @@
   "nameIsRequired": "Name is required",
   "register": "Sign up",
   "haveAnAccount": "Do you have an account already?",
-  "surnameIsRequired": "Surname is required"
+  "surnameIsRequired": "Surname is required",
+
+  "continueWithGoogle": "Continue with Google Account",
+  "or": "Or"
 }
