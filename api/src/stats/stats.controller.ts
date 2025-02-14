@@ -2,8 +2,8 @@ import { Controller, Get, Request, Param } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
-ApiTags('Statistics');
 @Controller('stats')
+@ApiTags('Statistics')
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 

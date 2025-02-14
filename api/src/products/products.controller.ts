@@ -14,8 +14,10 @@ import { Product } from './product.entity';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { SaleProductDto } from './dtos/sale-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('products')
+@ApiTags('users')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -51,7 +53,6 @@ export class ProductsController {
     @Request() req,
     @Body() body: CreateProductDto,
   ): Promise<Product> {
-    console.log('xddddd');
     console.log(req.user);
     const userId = req.user.sub;
     console.log(userId);
