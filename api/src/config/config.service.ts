@@ -17,6 +17,14 @@ export class AppConfigService {
     return this.configService.get<string>('JWT_EXPIRES_IN', '2d');
   }
 
+  get jwtRefreshSecret(): string {
+    return this.configService.get<string>('JWT_REFRESH_SECRET');
+  }
+
+  get jwtRefreshExpiresIn(): string {
+    return this.configService.get<string>('JWT_REFRESH_EXPIRES_IN');
+  }
+
   get googleClientId(): string {
     return this.configService.get<string>('GOOGLE_CLIENT_ID', '');
   }
@@ -28,7 +36,7 @@ export class AppConfigService {
   get googleRedirectUri(): string {
     return this.configService.get<string>(
       'GOOGLE_REDIRECT_URI',
-      'http://localhost:3000/auth/google/callback',
+      'http://localhost:3000/api/auth/google/callback',
     );
   }
 
@@ -58,5 +66,12 @@ export class AppConfigService {
 
   get passwordMinLength(): number {
     return parseInt(this.configService.get<string>('PASSWORD_MIN_LENGTH', '8'));
+  }
+
+  get frontendUrl(): string {
+    return this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:5173',
+    );
   }
 }

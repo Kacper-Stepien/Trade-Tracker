@@ -2,10 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+import { AppConfigService } from './config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(AppConfigService);
+  const frontendUrl = configService.frontendUrl;
   app.useGlobalPipes(new ValidationPipe());
+  app.use(cookieParser());
+  app.enableCors({
+    origin: frontendUrl,
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('TradeTracker API Documentation')

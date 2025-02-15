@@ -2,6 +2,7 @@ import { AppConfigService } from './../config/config.service';
 import { SignInGoogleDto } from './dto/sign-in-google.dto';
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UserDto } from 'src/users/dtos/user-dto';
 import { UserMapper } from 'src/users/user.mapper';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -35,14 +37,29 @@ export class AuthService {
     return UserMapper.toDto(user);
   }
 
-  async signIn(signInDto: SignInDto): Promise<SignInResponseDto> {
+  async signIn(
+    signInDto: SignInDto,
+    res: Response,
+  ): Promise<SignInResponseDto> {
     const user = await this.validateUser(signInDto.email, signInDto.password);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const token = await this.generateToken(user.id, user.email);
-    return { token, user };
+    const { accessToken, refreshToken } = await this.generateTokens(
+      user.id,
+      user.email,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return { token: accessToken, user };
   }
 
   async signUp(signUpDto: SignUpDto): Promise<UserDto> {
@@ -61,12 +78,61 @@ export class AuthService {
     });
   }
 
-  async generateToken(userId: number, email: string): Promise<string> {
+  async generateTokens(userId: number, email: string) {
     const payload = { sub: userId, email };
-    return this.jwtService.signAsync(payload, {
+    const accessToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.jwtSecret,
       expiresIn: this.configService.jwtExpiresIn,
     });
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.jwtRefreshSecret,
+      expiresIn: this.configService.jwtRefreshExpiresIn,
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async refreshToken(
+    req: any,
+    res: Response,
+  ): Promise<{ accessToken: string }> {
+    const oldRefreshToken = req.cookies.refreshToken;
+    if (!oldRefreshToken) {
+      throw new UnauthorizedException('No refresh token');
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync(oldRefreshToken, {
+        secret: this.configService.jwtRefreshSecret,
+      });
+
+      const user = await this.usersService.findUserById(payload.sub);
+      if (!user) {
+        throw new ForbiddenException('Invalid refresh token');
+      }
+
+      const { accessToken, refreshToken } = await this.generateTokens(
+        user.id,
+        user.email,
+      );
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      return { accessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  async logout(res: Response) {
+    res.clearCookie('refreshToken', { path: '/auth/refresh' });
   }
 
   async validateOAuthUser(oAuthUser: SignInGoogleDto): Promise<User> {

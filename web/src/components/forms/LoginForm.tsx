@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import GoogleButton from "../ui/GoogleButton";
+import { useLoginMutation } from "../../hooks/useLoginMutation";
 
 interface FormInputs {
   email: string;
@@ -19,10 +20,10 @@ export default function LoginForm() {
 
   const { register, handleSubmit, formState } = form;
   const { errors } = formState;
+  const loginMutation = useLoginMutation();
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data, event) => {
-    event?.preventDefault();
-    console.log(data);
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    loginMutation.mutate(data);
   };
 
   const goToRegisterPage = () => {

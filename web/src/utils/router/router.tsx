@@ -3,6 +3,8 @@ import LoginPage from "../../pages/LoginPage";
 import Button from "@mui/material/Button";
 import AppLayout from "../../layouts/AppLayout";
 import RegisterPage from "../../pages/RegisterPage";
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 export const router = createBrowserRouter([
   {
@@ -10,14 +12,21 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path: "/",
-        element: <Button variant="contained">Hello world</Button>,
+        element: <PublicRoute />,
+        children: [
+          { path: "/login", element: <LoginPage /> },
+          { path: "/register", element: <RegisterPage /> },
+        ],
       },
       {
-        path: "/login",
-        element: <LoginPage />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/",
+            element: <Button variant="contained">Hello world</Button>,
+          },
+        ],
       },
-      { path: "/register", element: <RegisterPage /> },
     ],
   },
 ]);

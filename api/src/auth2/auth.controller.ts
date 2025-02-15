@@ -1,4 +1,3 @@
-import { UserMapper } from './../users/user.mapper';
 import {
   Controller,
   Post,
@@ -8,6 +7,7 @@ import {
   UseGuards,
   Get,
   Req,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
@@ -19,11 +19,16 @@ import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { User } from 'src/users/user.entity';
 import { AuthenticatedRequest } from './auth-request.interface';
 import { Public } from './public.decorator';
+import { Response } from 'express';
+import { AppConfigService } from '../config/config.service';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: AppConfigService,
+  ) {}
 
   @Post('sign-up')
   @Public()
@@ -32,8 +37,9 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'User successfully registered' })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiBody({ type: SignUpDto })
-  async signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
+  async signUp(@Body() signUpDto: SignUpDto, @Res() res: Response) {
+    const user = await this.authService.signUp(signUpDto);
+    return res.status(201).json(user);
   }
 
   @Post('sign-in')
@@ -48,8 +54,9 @@ export class AuthController {
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiBody({ type: SignInDto })
-  async signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+  async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
+    const { token, user } = await this.authService.signIn(signInDto, res);
+    return res.json({ token, user });
   }
 
   @Get('google/login')
@@ -71,12 +78,43 @@ export class AuthController {
     status: 200,
     type: SignInResponseDto,
   })
-  async googleAuthRedirect(@Req() req: AuthenticatedRequest) {
+  async googleAuthRedirect(
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
     const user = req.user as User;
-    const token = await this.authService.generateToken(user.id, user.email);
-    return {
-      token,
-      user: UserMapper.toDto(user),
-    };
+    const { refreshToken } = await this.authService.generateTokens(
+      user.id,
+      user.email,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.redirect(this.configService.frontendUrl);
+  }
+
+  @Post('refresh')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'New access token' })
+  @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  async refresh(@Req() req: Request, @Res() res: Response) {
+    const { accessToken } = await this.authService.refreshToken(req, res);
+    return res.json({ token: accessToken });
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({ status: 200, description: 'User logged out' })
+  async logout(@Res() res: Response) {
+    await this.authService.logout(res);
+    return res.json({ message: 'Logged out successfully' });
   }
 }
