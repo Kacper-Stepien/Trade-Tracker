@@ -132,7 +132,7 @@ export class AuthService {
   }
 
   async logout(res: Response) {
-    res.clearCookie('refreshToken', { path: '/auth/refresh' });
+    res.clearCookie('refreshToken', { path: '/' });
   }
 
   async validateOAuthUser(oAuthUser: SignInGoogleDto): Promise<User> {
