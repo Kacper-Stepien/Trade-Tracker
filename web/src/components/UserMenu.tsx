@@ -20,6 +20,7 @@ const UserMenu = () => {
 
   const handleLogout = () => {
     logoutMutation.mutate();
+    handleMenuClose();
   };
 
   return (

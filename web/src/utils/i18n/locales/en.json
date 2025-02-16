@@ -1,8 +1,8 @@
 {
-  "logging": "Logging",
+  "logging": "Sign In",
   "email": "Email",
   "password": "Password",
-  "login": "Sign in",
+  "login": "Sign In",
   "emailIsRequired": "Email is required",
   "emailIsIncorrect": "Email is incorrect",
   "passwordIsRequired": "Password is required",
@@ -10,7 +10,7 @@
   "passwordIsIncorrect": "Password is incorrect",
   "doesntHaveAnAccount": "Don't have an account?",
   "registerNow": "Register now",
-  "registration": "Registration",
+  "registration": "Sign Up",
   "name": "Name",
   "surname": "Surname",
   "confirmPassword": "Confirm password",
@@ -20,7 +20,13 @@
   "register": "Sign up",
   "haveAnAccount": "Do you have an account already?",
   "surnameIsRequired": "Surname is required",
+  "passwordsMustMatch": "Passwords must match",
 
   "continueWithGoogle": "Continue with Google Account",
-  "or": "Or"
+  "or": "Or",
+
+  "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password",
+  "SUCCESS_SING_UP": "Account has been created.",
+  "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "User with this email already exists",
+  "UNEXPECTED_ERROR": "Server error. Try again later"
 }

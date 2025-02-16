@@ -13,9 +13,15 @@ import "dayjs/locale/pl";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../../hooks/useRegisterMutation";
+import { useState } from "react";
+import FormSubmitButton from "./FormSubmitButton";
+import FormFooter from "./FormFooter";
+import FormError from "./FormError";
+import FormSuccess from "./FormSuccess";
 
 interface FormInputs {
   name: string;
@@ -23,35 +29,60 @@ interface FormInputs {
   email: string;
   password: string;
   confirmPassword: string;
-  dateOfBirth: Dayjs;
+  dateOfBirth: Dayjs | null;
   isProfessional: boolean;
 }
 
 const RegisterForm = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const registerMutation = useRegisterMutation();
+  const [unavailableEmails, setUnavailableEmails] = useState<string[]>([]);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const form = useForm<FormInputs>({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       name: "",
       surname: "",
       email: "",
       password: "",
       confirmPassword: "",
-      dateOfBirth: Date(),
+      dateOfBirth: null,
       isProfessional: false,
     },
   });
 
-  const { register, handleSubmit, formState } = form;
-  const { errors } = formState;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = form;
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data, event) => {
-    event?.preventDefault();
-    console.log(data);
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    try {
+      setServerError(null);
+      await registerMutation.mutateAsync(data);
+      setSuccessMessage("Account created successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+      // eslint-disable-next-line
+    } catch (error: any) {
+      if (error.message === "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS") {
+        setUnavailableEmails((prev) => [...prev, data.email]);
+        form.setError("email", {
+          type: "server",
+          message: t("USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS"),
+        });
+      } else {
+        setServerError(error.message);
+      }
+    }
   };
 
-  const goToLoginPage = () => {
+  const navigateToSignInPage = () => {
     navigate("/login");
   };
 
@@ -87,6 +118,10 @@ const RegisterForm = () => {
           fullWidth={true}
           {...register("email", {
             required: t("emailIsRequired"),
+            validate: (value) =>
+              unavailableEmails.includes(value)
+                ? t("USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS")
+                : true,
             pattern: { value: /^\S+@\S+$/i, message: t("emailIsIncorrect") },
           })}
         />
@@ -109,18 +144,40 @@ const RegisterForm = () => {
           type="password"
           id="confirmPassword"
           label={t("confirmPassword")}
+          error={!!errors.confirmPassword}
+          helperText={errors.confirmPassword?.message}
+          fullWidth={true}
+          {...register("confirmPassword", {
+            required: t("passwordIsRequired"),
+            validate: (value) =>
+              value === form.getValues("password") || t("passwordsMustMatch"),
+          })}
         />
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
           adapterLocale={i18n.language}
         >
-          <DatePicker
-            label="Data urodzenia"
-            onChange={(date) => {
-              if (date) {
-                form.setValue("dateOfBirth", date);
-              }
+          <Controller
+            name="dateOfBirth"
+            control={form.control}
+            rules={{
+              required: t("dateIsRequired"),
             }}
+            render={({ field, fieldState }) => (
+              <DatePicker
+                label={t("dateOfBirth")}
+                value={field.value}
+                onChange={(date) => field.onChange(date)}
+                disableFuture
+                slotProps={{
+                  textField: {
+                    error: !!fieldState.error,
+                    helperText: fieldState.error?.message,
+                    fullWidth: true,
+                  },
+                }}
+              />
+            )}
           />
         </LocalizationProvider>
         <FormGroup>
@@ -129,9 +186,15 @@ const RegisterForm = () => {
             label={t("isProfessional")}
           />
         </FormGroup>
-        <Button type="submit" variant="contained" fullWidth={true} size="large">
+        {serverError && <FormError>{t(serverError)}</FormError>}
+        {successMessage && <FormSuccess> {t("SUCCESS_SING_UP")}</FormSuccess>}
+        <FormSubmitButton
+          disabled={!isValid}
+          isLoading={registerMutation.isLoading}
+        >
           {t("register")}
-        </Button>
+        </FormSubmitButton>
+
         <Stack spacing={1}>
           <Typography variant="body2" align="center">
             {t("haveAnAccount")}
@@ -140,11 +203,12 @@ const RegisterForm = () => {
             color="secondary"
             variant="contained"
             size="small"
-            onClick={goToLoginPage}
+            onClick={navigateToSignInPage}
           >
             {t("login")}
           </Button>
         </Stack>
+        <FormFooter />
       </Stack>
     </form>
   );

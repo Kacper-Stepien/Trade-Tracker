@@ -2,18 +2,21 @@ import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
 import { useAuthStore } from "../store/authStore";
 import { useUserStore } from "../store/userStore";
+import { AxiosError } from "../types/AxiosError.type";
+import { User } from "../types/User.type";
+import { SignIn } from "../types/SignIn.type";
 
-interface LoginData {
-  email: string;
-  password: string;
+interface LoginResponse {
+  token: string;
+  user: User;
 }
 
 export const useLoginMutation = () => {
   const setToken = useAuthStore((state) => state.setToken);
   const setUser = useUserStore((state) => state.setUser);
 
-  return useMutation({
-    mutationFn: async (data: LoginData) => {
+  return useMutation<LoginResponse, AxiosError, SignIn>({
+    mutationFn: async (data: SignIn) => {
       const response = await axiosInstance.post("/auth/sign-in", data);
       return response.data;
     },
@@ -21,8 +24,9 @@ export const useLoginMutation = () => {
       setToken(data.token);
       setUser(data.user);
     },
-    onError: (error) => {
-      console.error("Błąd logowania:", error);
+    onError: (error: AxiosError) => {
+      const errorMessage = error?.response?.data?.message || "UNEXPECTED_ERROR";
+      throw new Error(errorMessage);
     },
   });
 };

@@ -43,7 +43,7 @@ export class AuthService {
   ): Promise<SignInResponseDto> {
     const user = await this.validateUser(signInDto.email, signInDto.password);
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('INVALID_EMAIL_OR_PASSWORD');
     }
 
     const { accessToken, refreshToken } = await this.generateTokens(
@@ -67,7 +67,7 @@ export class AuthService {
       signUpDto.email,
     );
     if (existingUser) {
-      throw new ConflictException('User with this email already exists');
+      throw new ConflictException('USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS');
     }
 
     const hashedPassword = await this.hashPassword(signUpDto.password);

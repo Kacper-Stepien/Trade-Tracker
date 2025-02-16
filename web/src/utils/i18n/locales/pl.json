@@ -16,7 +16,17 @@
   "confirmPassowrd": "Potwierdź hasło",
   "dateOfBirth": "Data urodzenia",
   "isProfessional": "Jestem zawodowym sprzedawcą",
+  "nameIsRequired": "Imię jest wymagane",
+  "register": "Zarejestruj się",
+  "haveAnAccount": "Posiadasz już konto?",
+  "surnameIsRequired": "Nazwisko jest wymagane",
+  "passwordsMustMatch": "Hasła muszą być identyczne",
 
   "continueWithGoogle": "Kontynuuj z użyciem konta Google",
-  "or": "Lub"
+  "or": "Lub",
+
+  "INVALID_EMAIL_OR_PASSWORD": "Nieprawidłowy email lub hasło",
+  "SUCCESS_SING_UP": "Konto zostało utworzone",
+  "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym adresem email już istnieje",
+  "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później."
 }

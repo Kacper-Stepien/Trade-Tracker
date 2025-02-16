@@ -10,7 +10,7 @@ export default function RegisterPage() {
 
   return (
     <Grid
-      bgcolor={theme.palette.background.paper}
+      // bgcolor={theme.palette.background.paper}
       color={"text.primary"}
       height="100%"
       maxWidth={"800px"}
