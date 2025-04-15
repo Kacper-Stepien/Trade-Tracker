@@ -28,5 +28,13 @@
   "INVALID_EMAIL_OR_PASSWORD": "Nieprawidłowy email lub hasło",
   "SUCCESS_SING_UP": "Konto zostało utworzone",
   "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym adresem email już istnieje",
-  "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później."
+  "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później.",
+
+  "aboutUs": "O nas",
+  "contact": "Kontakt",
+  "footerAboutText": "Trade Tracker to narzędzie do śledzenia transakcji kupna i sprzedaży. Dodawaj produkty, rejestruj koszty, a następnie monitoruj zyski dzięki przejrzystym podsumowaniom i wykresom.",
+  "footerContactEmail": "kacper2007x48@gmail.com",
+  "footerContactPhone": "+48 123 456 789",
+  "footerAllRightsReserved": "© {{year}} Trade Tracker. Wszelkie prawa zastrzeżone.",
+  "footerDesignedBy": "© Zaprojektowane przez Kacper Stępień."
 }

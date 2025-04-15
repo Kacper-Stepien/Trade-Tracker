@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { Grid, Typography } from "@mui/material";
 // import { useTheme } from "../hooks/useTheme";
-import LoginForm from "../components/forms/LoginForm";
+import LoginForm from "../components/forms/LoginForm/LoginForm";
 
 export default function LoginPage() {
   const { t } = useTranslation();

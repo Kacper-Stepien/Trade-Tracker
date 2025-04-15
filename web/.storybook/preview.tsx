@@ -3,7 +3,7 @@ import { lightTheme, darkTheme } from "../src/utils/themes/themes";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../src/utils/i18n/index";
 import React from "react";
-import { ThemeProvider } from "../src/context/ThemeContext";
+import { ThemeProvider } from "../src/context/ThemeContext/ThemeContext";
 
 export const globalTypes = {
   theme: {
