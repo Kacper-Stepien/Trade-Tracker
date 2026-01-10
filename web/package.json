@@ -11,7 +11,11 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:component": "cypress open --component",
+    "test:e2e": "cypress run --e2e"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
