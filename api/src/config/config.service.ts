@@ -74,4 +74,11 @@ export class AppConfigService {
       'http://localhost:5173',
     );
   }
+
+  get loggerUrl(): string {
+    return this.configService.get<string>(
+      'LOGGER_URL',
+      'http://localhost:5000',
+    );
+  }
 }

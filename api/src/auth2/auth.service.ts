@@ -17,9 +17,11 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { UserDto } from 'src/users/dtos/user-dto';
 import { UserMapper } from 'src/users/user.mapper';
 import { Response } from 'express';
+import { Logger } from '@kacper2076/logger-client';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('AuthService');
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
@@ -32,8 +34,10 @@ export class AuthService {
       AccountType.LOCAL,
     );
     if (!user || !(await bcrypt.compare(password, user.password))) {
+      this.logger.error('User data not valid', { email });
       return null;
     }
+    this.logger.info('User data valid', { email });
     return UserMapper.toDto(user);
   }
 

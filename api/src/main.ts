@@ -4,8 +4,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { AppConfigService } from './config/config.service';
+import { Logger } from '@kacper2076/logger-client';
 
 async function bootstrap() {
+  Logger.configure({
+    apiUrl: process.env.LOGGER_URL,
+    service: 'TradeTracker API',
+  });
+  const logger = new Logger('AuthService');
+
+  logger.info('APP STARTED');
   const app = await NestFactory.create(AppModule);
   const configService = app.get(AppConfigService);
   const frontendUrl = configService.frontendUrl;
