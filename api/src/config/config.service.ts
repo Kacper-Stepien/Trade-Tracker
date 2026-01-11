@@ -81,4 +81,8 @@ export class AppConfigService {
       'http://localhost:5000',
     );
   }
+
+  get apiPort(): number {
+    return this.configService.get<number>('API_PORT', 3000);
+  }
 }
