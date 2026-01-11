@@ -44,9 +44,12 @@ import { AppConfigService } from './config/config.service';
           ProductCost,
           CostType,
         ],
-        synchronize: true,
-        logging: true,
-        ssl: { rejectUnauthorized: false },
+        synchronize: process.env.NODE_ENV !== 'production',
+        logging: process.env.NODE_ENV === 'development',
+        ssl:
+          process.env.NODE_ENV === 'production'
+            ? { rejectUnauthorized: true }
+            : { rejectUnauthorized: false },
         extra: {
           options: `project=${configService.endpointId}`,
         },
