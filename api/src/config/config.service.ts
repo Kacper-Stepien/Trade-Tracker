@@ -1,88 +1,82 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from './env.validation';
 
 @Injectable()
 export class AppConfigService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService<EnvironmentVariables, true>,
+  ) {}
 
   get jwtSecret(): string {
-    return this.configService.get<string>('JWT_SECRET', 'default_secret');
+    return this.configService.get('JWT_SECRET', { infer: true });
   }
 
   get jwtSalt(): number {
-    return parseInt(this.configService.get<string>('JWT_SALT', '12'));
+    return this.configService.get('JWT_SALT', { infer: true });
   }
 
   get jwtExpiresIn(): string {
-    return this.configService.get<string>('JWT_EXPIRES_IN', '2d');
+    return this.configService.get('JWT_EXPIRES_IN', { infer: true });
   }
 
   get jwtRefreshSecret(): string {
-    return this.configService.get<string>('JWT_REFRESH_SECRET');
+    return this.configService.get('JWT_REFRESH_SECRET', { infer: true });
   }
 
   get jwtRefreshExpiresIn(): string {
-    return this.configService.get<string>('JWT_REFRESH_EXPIRES_IN');
+    return this.configService.get('JWT_REFRESH_EXPIRES_IN', { infer: true });
   }
 
   get googleClientId(): string {
-    return this.configService.get<string>('GOOGLE_CLIENT_ID', '');
+    return this.configService.get('GOOGLE_CLIENT_ID', { infer: true });
   }
 
   get googleClientSecret(): string {
-    return this.configService.get<string>('GOOGLE_CLIENT_SECRET', '');
+    return this.configService.get('GOOGLE_CLIENT_SECRET', { infer: true });
   }
 
   get googleRedirectUri(): string {
-    return this.configService.get<string>(
-      'GOOGLE_REDIRECT_URI',
-      'http://localhost:3000/api/auth/google/callback',
-    );
+    return this.configService.get('GOOGLE_REDIRECT_URI', { infer: true });
   }
 
   get databaseHost(): string {
-    return this.configService.get<string>('PGHOST', '');
+    return this.configService.get('PGHOST', { infer: true });
   }
 
   get databaseUser(): string {
-    return this.configService.get<string>('PGUSER', '');
+    return this.configService.get('PGUSER', { infer: true });
   }
 
   get databasePassword(): string {
-    return this.configService.get<string>('PGPASSWORD', '');
+    return this.configService.get('PGPASSWORD', { infer: true });
   }
 
   get databaseName(): string {
-    return this.configService.get<string>('PGDATABASE', '');
+    return this.configService.get('PGDATABASE', { infer: true });
   }
 
   get databasePort(): number {
-    return this.configService.get<number>('PGPORT', 10);
+    return this.configService.get('PGPORT', { infer: true });
   }
 
   get endpointId(): string {
-    return this.configService.get<string>('ENDPOINT_ID', '');
+    return this.configService.get('ENDPOINT_ID', { infer: true });
   }
 
   get passwordMinLength(): number {
-    return parseInt(this.configService.get<string>('PASSWORD_MIN_LENGTH', '8'));
+    return this.configService.get('PASSWORD_MIN_LENGTH', { infer: true });
   }
 
   get frontendUrl(): string {
-    return this.configService.get<string>(
-      'FRONTEND_URL',
-      'http://localhost:5173',
-    );
+    return this.configService.get('FRONTEND_URL', { infer: true });
   }
 
   get loggerUrl(): string {
-    return this.configService.get<string>(
-      'LOGGER_URL',
-      'http://localhost:5000',
-    );
+    return this.configService.get('LOGGER_URL', { infer: true });
   }
 
   get apiPort(): number {
-    return this.configService.get<number>('API_PORT', 3000);
+    return this.configService.get('API_PORT', { infer: true });
   }
 }
