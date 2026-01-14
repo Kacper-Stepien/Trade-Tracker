@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth2/auth.module';
@@ -17,25 +17,27 @@ import { ProductCost } from './product-cost/product-cost.entity';
 import { CostTypeModule } from './cost-type/cost-type.module';
 import { CostType } from './cost-type/cost-type.entity';
 import { StatsModule } from './stats/stats.module';
-import { AppConfigModule } from './config/config.module';
-import { AppConfigService } from './config/config.service';
+import { EnvironmentVariables } from './config/env.validation';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      cache: true,
+      validate,
     }),
-    AppConfigModule,
     TypeOrmModule.forRootAsync({
-      imports: [AppConfigModule],
-      inject: [AppConfigService],
-      useFactory: (configService: AppConfigService) => ({
+      inject: [ConfigService],
+      useFactory: (
+        configService: ConfigService<EnvironmentVariables, true>,
+      ) => ({
         type: 'postgres',
-        host: configService.databaseHost,
-        username: configService.databaseUser,
-        password: configService.databasePassword,
-        database: configService.databaseName,
+        host: configService.get('PGHOST', { infer: true }),
+        username: configService.get('PGUSER', { infer: true }),
+        password: configService.get('PGPASSWORD', { infer: true }),
+        database: configService.get('PGDATABASE', { infer: true }),
         entities: [
           User,
           Product,
@@ -51,7 +53,7 @@ import { AppConfigService } from './config/config.service';
             ? { rejectUnauthorized: true }
             : { rejectUnauthorized: false },
         extra: {
-          options: `project=${configService.endpointId}`,
+          options: `project=${configService.get('ENDPOINT_ID', { infer: true })}`,
         },
       }),
     }),

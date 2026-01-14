@@ -6,6 +6,8 @@ import {
   validateSync,
   IsOptional,
   MinLength,
+  IsNotEmpty,
+  IsUrl,
 } from 'class-validator';
 
 enum Environment {
@@ -34,6 +36,7 @@ export class EnvironmentVariables {
   JWT_EXPIRES_IN: string = '2d';
 
   @IsString()
+  @IsNotEmpty()
   JWT_REFRESH_SECRET: string;
 
   @IsString()
@@ -56,19 +59,22 @@ export class EnvironmentVariables {
 
   // Database Configuration
   @IsString()
+  @IsNotEmpty()
   PGHOST: string;
 
   @IsString()
+  @IsNotEmpty()
   PGUSER: string;
 
   @IsString()
+  @IsNotEmpty()
   PGPASSWORD: string;
 
   @IsString()
+  @IsNotEmpty()
   PGDATABASE: string;
 
   @IsNumber()
-  @IsOptional()
   PGPORT: number = 5432;
 
   @IsString()
@@ -79,11 +85,11 @@ export class EnvironmentVariables {
   @IsOptional()
   PASSWORD_MIN_LENGTH: number = 8;
 
-  @IsString()
+  @IsUrl()
   @IsOptional()
   FRONTEND_URL: string = 'http://localhost:5173';
 
-  @IsString()
+  @IsUrl()
   @IsOptional()
   LOGGER_URL: string = 'http://localhost:5000';
 

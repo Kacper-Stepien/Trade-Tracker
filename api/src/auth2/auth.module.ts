@@ -1,4 +1,3 @@
-import { AppConfigService } from './../config/config.service';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -10,19 +9,22 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/auth.guard';
-import { AppConfigModule } from 'src/config/config.module';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from 'src/config/env.validation';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-    AppConfigModule,
     JwtModule.registerAsync({
-      imports: [AppConfigModule],
-      inject: [AppConfigService],
-      useFactory: (configService: AppConfigService) => ({
-        secret: configService.jwtSecret,
-        signOptions: { expiresIn: configService.jwtExpiresIn },
+      inject: [ConfigService],
+      useFactory: (
+        configService: ConfigService<EnvironmentVariables, true>,
+      ) => ({
+        secret: configService.get('JWT_SECRET', { infer: true }),
+        signOptions: {
+          expiresIn: configService.get('JWT_EXPIRES_IN', { infer: true }),
+        },
       }),
     }),
   ],

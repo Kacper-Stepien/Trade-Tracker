@@ -20,14 +20,15 @@ import { User } from 'src/users/user.entity';
 import { AuthenticatedRequest } from './auth-request.interface';
 import { Public } from './public.decorator';
 import { Response } from 'express';
-import { AppConfigService } from '../config/config.service';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from 'src/config/env.validation';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: AppConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables, true>,
   ) {}
 
   @Post('sign-up')
@@ -96,7 +97,9 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
-    return res.redirect(this.configService.frontendUrl);
+    return res.redirect(
+      this.configService.get('FRONTEND_URL', { infer: true }),
+    );
   }
 
   @Post('refresh')

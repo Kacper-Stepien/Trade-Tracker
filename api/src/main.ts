@@ -3,8 +3,9 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import { AppConfigService } from './config/config.service';
 import { Logger } from '@kacper2076/logger-client';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from './config/env.validation';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -21,9 +22,9 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
 
-    const configService = app.get(AppConfigService);
-    const frontendUrl = configService.frontendUrl;
-    const port = configService.apiPort;
+    const configService = app.get(ConfigService<EnvironmentVariables, true>);
+    const frontendUrl = configService.get('FRONTEND_URL', { infer: true });
+    const port = configService.get('API_PORT', { infer: true });
 
     app.useGlobalPipes(
       new ValidationPipe({

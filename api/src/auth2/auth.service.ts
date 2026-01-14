@@ -1,4 +1,3 @@
-import { AppConfigService } from './../config/config.service';
 import { SignInGoogleDto } from './dto/sign-in-google.dto';
 import {
   ConflictException,
@@ -18,6 +17,8 @@ import { UserDto } from 'src/users/dtos/user-dto';
 import { UserMapper } from 'src/users/user.mapper';
 import { Response } from 'express';
 import { Logger } from '@kacper2076/logger-client';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from 'src/config/env.validation';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private readonly configService: AppConfigService,
+    private readonly configService: ConfigService<EnvironmentVariables, true>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<UserDto | null> {
@@ -85,13 +86,13 @@ export class AuthService {
   async generateTokens(userId: number, email: string) {
     const payload = { sub: userId, email };
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.jwtSecret,
-      expiresIn: this.configService.jwtExpiresIn,
+      secret: this.configService.get('JWT_SECRET', { infer: true }),
+      expiresIn: this.configService.get('JWT_EXPIRES_IN', { infer: true }),
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.jwtRefreshSecret,
-      expiresIn: this.configService.jwtRefreshExpiresIn,
+      secret: this.configService.get('JWT_SECRET', { infer: true }),
+      expiresIn: this.configService.get('JWT_EXPIRES_IN', { infer: true }),
     });
 
     return { accessToken, refreshToken };
@@ -108,7 +109,7 @@ export class AuthService {
 
     try {
       const payload = await this.jwtService.verifyAsync(oldRefreshToken, {
-        secret: this.configService.jwtRefreshSecret,
+        secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
       });
 
       const user = await this.usersService.findUserById(payload.sub);
