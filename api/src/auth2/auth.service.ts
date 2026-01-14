@@ -15,7 +15,7 @@ import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UserDto } from 'src/users/dtos/user-dto';
 import { UserMapper } from 'src/users/user.mapper';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { Logger } from '@kacper2076/logger-client';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'src/config/env.validation';
@@ -46,8 +46,12 @@ export class AuthService {
     signInDto: SignInDto,
     res: Response,
   ): Promise<SignInResponseDto> {
+    this.logger.info('User attempting to sign in', { email: signInDto.email });
     const user = await this.validateUser(signInDto.email, signInDto.password);
     if (!user) {
+      this.logger.warn('Sign in failed - invalid credentials', {
+        email: signInDto.email,
+      });
       throw new UnauthorizedException('INVALID_EMAIL_OR_PASSWORD');
     }
 
@@ -58,29 +62,44 @@ export class AuthService {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure:
+        this.configService.get('NODE_ENV', { infer: true }) === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: this.getCookieMaxAge(),
     });
 
+    this.logger.info('User signed in successfully', {
+      userId: user.id,
+      email: user.email,
+    });
     return { token: accessToken, user };
   }
 
   async signUp(signUpDto: SignUpDto): Promise<UserDto> {
+    this.logger.info('User attempting to sign up', { email: signUpDto.email });
     const existingUser = await this.usersService.findUserByEmail(
       signUpDto.email,
     );
     if (existingUser) {
+      this.logger.warn('Sign up failed - user already exists', {
+        email: signUpDto.email,
+      });
       throw new ConflictException('USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS');
     }
 
     const hashedPassword = await this.hashPassword(signUpDto.password);
-    return this.usersService.createUser({
+    const newUser = await this.usersService.createUser({
       ...signUpDto,
       password: hashedPassword,
       accountType: AccountType.LOCAL,
     });
+
+    this.logger.info('User signed up successfully', {
+      userId: newUser.id,
+      email: newUser.email,
+    });
+    return newUser;
   }
 
   async generateTokens(userId: number, email: string) {
@@ -91,19 +110,22 @@ export class AuthService {
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET', { infer: true }),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN', { infer: true }),
+      secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
+      expiresIn: this.configService.get('JWT_REFRESH_EXPIRES_IN', {
+        infer: true,
+      }),
     });
 
     return { accessToken, refreshToken };
   }
 
   async refreshToken(
-    req: any,
+    req: Request,
     res: Response,
   ): Promise<{ accessToken: string }> {
     const oldRefreshToken = req.cookies.refreshToken;
     if (!oldRefreshToken) {
+      this.logger.warn('Refresh token failed - no token provided');
       throw new UnauthorizedException('No refresh token');
     }
 
@@ -124,29 +146,52 @@ export class AuthService {
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure:
+          this.configService.get('NODE_ENV', { infer: true }) === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+        maxAge: this.getCookieMaxAge(),
       });
 
+      this.logger.info('Token refreshed successfully', {
+        userId: user.id,
+        email: user.email,
+      });
       return { accessToken };
     } catch (error) {
+      this.logger.error('Refresh token validation failed', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
   async logout(res: Response) {
+    this.logger.info('User logged out');
     res.clearCookie('refreshToken', { path: '/' });
   }
 
   async validateOAuthUser(oAuthUser: SignInGoogleDto): Promise<User> {
+    this.logger.info('User attempting Google OAuth login', {
+      email: oAuthUser.email,
+    });
+
     let user = await this.usersService.findUserByEmail(
       oAuthUser.email,
       AccountType.GOOGLE,
     );
 
-    if (user) return user;
+    if (user) {
+      this.logger.info('Google OAuth user found', {
+        userId: user.id,
+        email: user.email,
+      });
+      return user;
+    }
+
+    this.logger.info('Creating new Google OAuth user', {
+      email: oAuthUser.email,
+    });
 
     await this.usersService.createUser({
       email: oAuthUser.email,
@@ -164,11 +209,49 @@ export class AuthService {
       AccountType.GOOGLE,
     );
 
+    this.logger.info('Google OAuth user created successfully', {
+      userId: user.id,
+      email: user.email,
+    });
     return user;
   }
 
+  async signInGoogle(
+    user: User,
+    res: Response,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    this.logger.info('Google OAuth sign in', {
+      userId: user.id,
+      email: user.email,
+    });
+
+    const { accessToken, refreshToken } = await this.generateTokens(
+      user.id,
+      user.email,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure:
+        this.configService.get('NODE_ENV', { infer: true }) === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: this.getCookieMaxAge(),
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  public getCookieMaxAge(): number {
+    const expiresIn = this.configService.get('JWT_REFRESH_EXPIRES_IN', {
+      infer: true,
+    });
+    const days = parseInt(expiresIn);
+    return days * 24 * 60 * 60 * 1000;
+  }
+
   private async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
+    const saltRounds = this.configService.get('JWT_SALT', { infer: true });
     return bcrypt.hash(password, saltRounds);
   }
 }

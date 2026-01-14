@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { Role } from '../../users/role.enum';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -19,7 +20,7 @@ export class AdminGuard implements CanActivate {
     return true;
   }
 
-  private hasAdminRole(user: any): boolean {
+  private hasAdminRole(user: User): boolean {
     return user.role === Role.ADMIN;
   }
 }

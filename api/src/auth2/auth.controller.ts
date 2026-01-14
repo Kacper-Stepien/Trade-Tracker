@@ -16,10 +16,9 @@ import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { User } from 'src/users/user.entity';
 import { AuthenticatedRequest } from './auth-request.interface';
 import { Public } from './public.decorator';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'src/config/env.validation';
 
@@ -83,19 +82,8 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res() res: Response,
   ) {
-    const user = req.user as User;
-    const { refreshToken } = await this.authService.generateTokens(
-      user.id,
-      user.email,
-    );
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
+    const user = req.user;
+    await this.authService.signInGoogle(user, res);
 
     return res.redirect(
       this.configService.get('FRONTEND_URL', { infer: true }),

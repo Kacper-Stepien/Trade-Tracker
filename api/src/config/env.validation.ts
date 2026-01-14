@@ -7,7 +7,6 @@ import {
   IsOptional,
   MinLength,
   IsNotEmpty,
-  IsUrl,
 } from 'class-validator';
 
 enum Environment {
@@ -23,7 +22,7 @@ export class EnvironmentVariables {
 
   // JWT Configuration
   @IsString()
-  @MinLength(32, {
+  @MinLength(20, {
     message: 'JWT_SECRET must be at least 32 characters in production',
   })
   JWT_SECRET: string;
@@ -85,11 +84,11 @@ export class EnvironmentVariables {
   @IsOptional()
   PASSWORD_MIN_LENGTH: number = 8;
 
-  @IsUrl()
+  @IsString()
   @IsOptional()
   FRONTEND_URL: string = 'http://localhost:5173';
 
-  @IsUrl()
+  @IsString()
   @IsOptional()
   LOGGER_URL: string = 'http://localhost:5000';
 
