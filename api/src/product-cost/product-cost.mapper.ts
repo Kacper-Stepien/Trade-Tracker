@@ -1,5 +1,6 @@
 import { ProductCostDto } from './dtos/product-cost.dto';
 import { ProductCost } from './product-cost.entity';
+import { CostTypeMapper } from '../cost-type/cost-type.mapper';
 
 export class ProductCostMapper {
   static toDto(productCost: ProductCost): ProductCostDto {
@@ -9,7 +10,9 @@ export class ProductCostMapper {
     mappedProductCost.description = productCost.description || '';
     mappedProductCost.price = productCost.price;
     mappedProductCost.date = productCost.date;
-    mappedProductCost.costType = productCost.costType ?? null;
+    mappedProductCost.costType = productCost.costType
+      ? CostTypeMapper.toDto(productCost.costType)
+      : null;
     return mappedProductCost;
   }
 

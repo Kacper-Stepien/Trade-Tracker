@@ -20,6 +20,7 @@ import {
   ApiBody,
   ApiParam,
 } from '@nestjs/swagger';
+import { AuthenticatedRequest } from 'src/auth2/auth-request.interface';
 
 @Controller('product-cost')
 @ApiTags('product-cost')
@@ -47,8 +48,8 @@ export class ProductCostController {
     status: 404,
     description: 'The product with the specified ID was not found.',
   })
-  async getAllProductCosts(
-    @Request() req,
+  getAllProductCosts(
+    @Request() req: AuthenticatedRequest,
     @Param('productId', ParseIntPipe) productId: number,
   ): Promise<ProductCostDto[]> {
     const userId = req.user.sub;
@@ -71,8 +72,8 @@ export class ProductCostController {
     status: 404,
     description: 'The cost with the specified ID was not found.',
   })
-  async getCostById(
-    @Request() req,
+  getCostById(
+    @Request() req: AuthenticatedRequest,
     @Param('costId', ParseIntPipe) costId: number,
   ): Promise<ProductCostDto> {
     const userId = req.user.sub;
@@ -100,8 +101,8 @@ export class ProductCostController {
     description:
       'The product or cost type with the specified ID was not found.',
   })
-  async createProductCost(
-    @Request() req,
+  createProductCost(
+    @Request() req: AuthenticatedRequest,
     @Body() createCostDto: CreateProductCostDto,
   ): Promise<ProductCostDto> {
     const userId = req.user.sub;
@@ -134,8 +135,8 @@ export class ProductCostController {
     description:
       'The product or cost type with the specified ID was not found.',
   })
-  async updateProductCost(
-    @Request() req,
+  updateProductCost(
+    @Request() req: AuthenticatedRequest,
     @Param('costId', ParseIntPipe) costId: number,
     @Body() updateCostDto: UpdateProductCostDto,
   ): Promise<ProductCostDto> {
@@ -166,8 +167,8 @@ export class ProductCostController {
     status: 404,
     description: 'The cost with the specified ID was not found.',
   })
-  async deleteProductCost(
-    @Request() req,
+  deleteProductCost(
+    @Request() req: AuthenticatedRequest,
     @Param('costId', ParseIntPipe) costId: number,
   ): Promise<void> {
     const userId = req.user.sub;

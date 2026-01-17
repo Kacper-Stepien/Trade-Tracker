@@ -1,4 +1,4 @@
-import { CostType } from 'src/cost-type/cost-type.entity';
+import { CostTypeDto } from 'src/cost-type/dtos/cost-type.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ProductCostDto {
@@ -28,13 +28,13 @@ export class ProductCostDto {
 
   @ApiProperty({
     description: 'Date of the product cost',
-    example: '2021-09-0',
+    example: '2021-09-01',
   })
   date: Date;
 
   @ApiProperty({
     description: 'Cost type of the product cost',
-    type: () => CostType,
+    type: () => CostTypeDto,
   })
-  costType: CostType;
+  costType: CostTypeDto;
 }
