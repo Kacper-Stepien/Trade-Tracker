@@ -12,9 +12,12 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { ProductCategoryService } from 'src/product-category/product-category.service';
 import { SaleProductDto } from './dtos/sale-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
+import { Logger } from '@kacper2076/logger-client';
 
 @Injectable()
 export class ProductsService {
+  private readonly logger = new Logger(ProductsService.name);
+
   constructor(
     @InjectRepository(Product) private productsRepository: Repository<Product>,
     @InjectRepository(ProductAttribute)
@@ -30,6 +33,14 @@ export class ProductsService {
     sold?: boolean,
     category?: number,
   ): Promise<{ products: Product[]; total: number }> {
+    this.logger.info('Getting user products', {
+      userId,
+      page,
+      limit,
+      sold,
+      category,
+    });
+
     const query = this.productsRepository.createQueryBuilder('product');
     query.leftJoinAndSelect('product.attributes', 'attributes');
     query.leftJoinAndSelect('product.category', 'category');
@@ -51,10 +62,13 @@ export class ProductsService {
     userId: number,
     body: CreateProductDto,
   ): Promise<Product> {
-    return this.productsRepository.manager.transaction(
+    this.logger.info('Creating product', { userId, productName: body.name });
+
+    const result = await this.productsRepository.manager.transaction(
       async (transactionManager) => {
         const user = await this.usersService.findUserById(userId);
         if (!user) {
+          this.logger.warn('User not found', { userId });
           throw new NotFoundException('User not found');
         }
         const category = await this.productCategoryService.findCategoryById(
@@ -62,6 +76,9 @@ export class ProductsService {
         );
 
         if (!category) {
+          this.logger.warn('Category not found', {
+            categoryId: body.categoryId,
+          });
           throw new NotFoundException('Category not found');
         }
 
@@ -89,14 +106,24 @@ export class ProductsService {
         return savedProduct;
       },
     );
+
+    this.logger.info('Product created successfully', {
+      productId: result.id,
+      userId,
+    });
+
+    return result;
   }
 
   async findProductById(id: number, userId: number): Promise<Product> {
+    this.logger.info('Finding product by ID', { productId: id, userId });
+
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: ['category', 'attributes', 'user', 'costs'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId: id });
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
@@ -111,11 +138,14 @@ export class ProductsService {
     userId: number,
     saleProductDto: SaleProductDto,
   ): Promise<Product> {
+    this.logger.info('Marking product as sold', { productId: id, userId });
+
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: ['user', 'attributes'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId: id });
       throw new NotFoundException('Product not found');
     }
 
@@ -124,15 +154,22 @@ export class ProductsService {
     product.sold = true;
     product.salePrice = saleProductDto.salePrice;
     product.saleDate = saleProductDto.saleDate;
-    return await this.productsRepository.save(product);
+    const savedProduct = await this.productsRepository.save(product);
+
+    this.logger.info('Product marked as sold', { productId: id });
+
+    return savedProduct;
   }
 
   async markProductAsUnsold(id: number, userId: number): Promise<Product> {
+    this.logger.info('Marking product as unsold', { productId: id, userId });
+
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: ['user', 'attributes'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId: id });
       throw new NotFoundException('Product not found');
     }
     this.validateOwnership(product, userId);
@@ -140,7 +177,11 @@ export class ProductsService {
     product.sold = false;
     product.salePrice = null;
     product.saleDate = null;
-    return await this.productsRepository.save(product);
+    const savedProduct = await this.productsRepository.save(product);
+
+    this.logger.info('Product marked as unsold', { productId: id });
+
+    return savedProduct;
   }
 
   async updateProduct(
@@ -148,56 +189,66 @@ export class ProductsService {
     userId: number,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
+    this.logger.info('Updating product', { productId: id, userId });
+
     const product = await this.productsRepository.findOne({
       where: { id },
       relations: ['user', 'attributes'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId: id });
       throw new NotFoundException('Product not found');
     }
 
     this.validateOwnership(product, userId);
 
-    updateProductDto.name && (product.name = updateProductDto.name);
-    updateProductDto.purchasePrice &&
-      (product.purchasePrice = updateProductDto.purchasePrice);
-    updateProductDto.purchaseDate &&
-      (product.purchaseDate = updateProductDto.purchaseDate);
+    if (updateProductDto.name) product.name = updateProductDto.name;
+    if (updateProductDto.purchasePrice)
+      product.purchasePrice = updateProductDto.purchasePrice;
+    if (updateProductDto.purchaseDate)
+      product.purchaseDate = updateProductDto.purchaseDate;
 
     if (updateProductDto.categoryId) {
       const category = await this.productCategoryService.getCategoryById(
         updateProductDto.categoryId,
       );
-      if (!category) {
-        throw new NotFoundException('Category not found');
-      }
       product.category = category;
     }
 
-    return await this.productsRepository.save(product);
+    const savedProduct = await this.productsRepository.save(product);
+
+    this.logger.info('Product updated successfully', { productId: id });
+
+    return savedProduct;
   }
 
   async deleteProduct(id: number, userId: number): Promise<void> {
+    this.logger.info('Deleting product', { productId: id, userId });
+
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: ['user', 'attributes'],
+      relations: ['user'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId: id });
       throw new NotFoundException('Product not found');
     }
 
     this.validateOwnership(product, userId);
 
-    const result = await this.productsRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Product not found');
-    }
+    await this.productsRepository.delete(id);
+
+    this.logger.info('Product deleted successfully', { productId: id });
   }
 
   private validateOwnership(product: Product, userId: number): void {
-    if (!product || product.user.id !== userId) {
+    if (product.user.id !== userId) {
+      this.logger.warn('User does not have permission to access product', {
+        productId: product.id,
+        userId,
+      });
       throw new ForbiddenException(
-        `You don't have permission to access this product`,
+        'You do not have permission to access this resource',
       );
     }
   }

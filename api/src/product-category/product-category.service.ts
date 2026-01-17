@@ -93,7 +93,7 @@ export class ProductCategoryService {
     });
   }
 
-  private async getCategoryById(id: number): Promise<ProductCategory> {
+  async getCategoryById(id: number): Promise<ProductCategory> {
     const category = await this.productCategoryRepository.findOne({
       where: { id },
     });

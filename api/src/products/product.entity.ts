@@ -18,7 +18,7 @@ export class Product {
   @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ type: 'decimal', scale: 2, nullable: false })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   purchasePrice: number;
 
   @Column({ type: 'date', nullable: false, default: () => 'CURRENT_DATE' })
@@ -27,14 +27,15 @@ export class Product {
   @Column({ type: 'boolean', nullable: false, default: false })
   sold: boolean;
 
-  @Column({ type: 'decimal', scale: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   salePrice: number;
 
   @Column({ type: 'date', nullable: true })
   saleDate: Date;
 
   @ManyToOne(() => User, (user) => user.products, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
+    nullable: false,
   })
   user: User;
 
@@ -45,13 +46,11 @@ export class Product {
 
   @OneToMany(() => ProductAttribute, (attribute) => attribute.product, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   attributes: ProductAttribute[];
 
   @OneToMany(() => ProductCost, (cost) => cost.product, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   costs: ProductCost[];
 }
