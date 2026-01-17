@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { Logger } from '@kacper2076/logger-client';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from './config/env.validation';
+import { GlobalExceptionFilter } from './filters/global-exception.filter';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -21,7 +22,7 @@ async function bootstrap() {
 
   try {
     const app = await NestFactory.create(AppModule);
-
+    app.useGlobalFilters(new GlobalExceptionFilter());
     const configService = app.get(ConfigService<EnvironmentVariables, true>);
     const frontendUrl = configService.get('FRONTEND_URL', { infer: true });
     const port = configService.get('API_PORT', { infer: true });
