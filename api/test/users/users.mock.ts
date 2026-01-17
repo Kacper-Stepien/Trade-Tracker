@@ -1,5 +1,5 @@
 import { User } from '../../src/users/user.entity';
-import { UserDto } from '../../src/users/dtos/user-dto';
+import { UserDto } from '../../src/users/dtos/user.dto';
 import { UserMapper } from '../../src/users/user.mapper';
 import { Role } from '../../src/users/role.enum';
 

@@ -32,7 +32,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(parseInt(process.env.PASSWORD_MIN_LENGTH) || 8)
+  @MinLength(8)
   @ApiProperty({
     example: 'password123',
     description: 'User password, at least 8 characters long',
@@ -57,6 +57,11 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
+  @ApiProperty({
+    example: '123456789',
+    description: 'Google OAuth user ID (optional, for admin use)',
+    required: false,
+  })
   googleId?: string;
 
   @IsEnum(AccountType)

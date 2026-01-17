@@ -10,6 +10,7 @@ import {
 import { Role } from './role.enum';
 import { Product } from '../products/product.entity';
 import { AccountType } from './account-type.enum';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()

@@ -5,7 +5,7 @@ import { User } from '../../src/users/user.entity';
 import { CreateUserDto } from '../../src/users/dtos/create-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Role } from '../../src/users/role.enum';
-import { UserDto } from '../../src/users/dtos/user-dto';
+import { UserDto } from '../../src/users/dtos/user.dto';
 import { mockUsers, mockUsersDto } from './users.mock';
 import { mockUsersService } from './users.service.mock';
 

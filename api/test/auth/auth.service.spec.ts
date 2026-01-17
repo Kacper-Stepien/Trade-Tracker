@@ -8,7 +8,7 @@ import { User } from '../../src/users/user.entity';
 import { Role } from '../../src/users/role.enum';
 import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { UserDto } from '../../src/users/dtos/user-dto';
+import { UserDto } from '../../src/users/dtos/user.dto';
 import { Product } from '../../src/products/product.entity';
 import { SignInResponseDto } from '../../src/auth/dtos/sign-in-response.dto';
 import { mockUsersService } from '../users/users.service.mock';

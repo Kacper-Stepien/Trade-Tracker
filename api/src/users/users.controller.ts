@@ -15,7 +15,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 import { AdminGuard } from '../auth2/guards/admin.guard';
-import { UserDto } from './dtos/user-dto';
+import { UserDto } from './dtos/user.dto';
 import { GetUsersResponseDto } from './dtos/get-users-response.dto';
 import { GetUserNotFoundResponseDto } from './dtos/get-user-not-found-response.dto';
 import { CreateUserConflictResponseDto } from './dtos/create-user-conflict-response.dto';
@@ -40,7 +40,7 @@ export class UsersController {
     description: "Current user's data",
     type: UserDto,
   })
-  getMe(@Request() req): Promise<UserDto> {
+  getMe(@Request() req: Request): Promise<UserDto> {
     const userId = this.getUserId(req);
     return this.usersService.findUserById(userId);
   }
@@ -53,15 +53,18 @@ export class UsersController {
     description: "Updated current user's data",
     type: UserDto,
   })
-  updateMe(@Request() req, @Body() body: UpdateUserDto): Promise<UserDto> {
+  updateMe(
+    @Request() req: Request,
+    @Body() body: UpdateUserDto,
+  ): Promise<UserDto> {
     const userId = this.getUserId(req);
     return this.usersService.updateUser(userId, body);
   }
 
   @Delete('me')
   @ApiOperation({ summary: "Delete current (logged in) user's account" })
-  @ApiResponse({ status: 202, description: 'User deleted' })
-  deleteMe(@Request() req): Promise<void> {
+  @ApiResponse({ status: 204, description: 'User deleted' })
+  deleteMe(@Request() req: Request): Promise<void> {
     const userId = this.getUserId(req);
     return this.usersService.deleteUser(userId);
   }
@@ -157,7 +160,7 @@ export class UsersController {
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Delete user by id - only for admin' })
   @ApiParam({ name: 'id', type: Number })
-  @ApiResponse({ status: 202, description: 'User deleted' })
+  @ApiResponse({ status: 204, description: 'User deleted' })
   @ApiResponse({
     status: 404,
     description: 'User not found',

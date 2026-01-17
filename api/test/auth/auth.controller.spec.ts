@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../../src/auth/auth.controller';
 import { AuthService } from '../../src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserDto } from '../../src/users/dtos/user-dto';
+import { UserDto } from '../../src/users/dtos/user.dto';
 import { Role } from '../../src/users/role.enum';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { SignUpDto } from '../../src/auth/dtos/sign-up.dto';

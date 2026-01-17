@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { SignUpDto } from './dto/sign-up.dto';
-import { UserDto } from 'src/users/dtos/user-dto';
+import { UserDto } from 'src/users/dtos/user.dto';
 import { UserMapper } from 'src/users/user.mapper';
 import { Response, Request } from 'express';
 import { Logger } from '@kacper2076/logger-client';
