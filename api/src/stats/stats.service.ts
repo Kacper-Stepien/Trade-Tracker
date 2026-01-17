@@ -2,25 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
 import { Product } from 'src/products/product.entity';
-import { ProductCost } from 'src/product-cost/product-cost.entity';
 import { ProductStatisticDto } from './dtos/product-statistic.dto';
 import { UserStatsDto } from './dtos/user-stats.dto';
+import { Logger } from '@kacper2076/logger-client';
 
 @Injectable()
 export class StatsService {
+  private readonly logger = new Logger(StatsService.name);
+
   constructor(
     @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
-    @InjectRepository(ProductCost)
-    private productCostRepository: Repository<ProductCost>,
+    private readonly productsRepository: Repository<Product>,
   ) {}
 
-  async getAllUserStats(userId: number) {
+  async getAllUserStats(userId: number): Promise<UserStatsDto> {
+    this.logger.info('Getting all user stats', { userId });
+
     const products = await this.getUserProducts(userId);
     return this.calculateUserStats(products, 'all');
   }
 
-  async getUserStatsFromYear(userId: number, year: number) {
+  async getUserStatsFromYear(userId: number, year: number): Promise<UserStatsDto> {
+    this.logger.info('Getting user stats from year', { userId, year });
+
     const startDate = new Date(year, 0, 1);
     const endDate = new Date(year, 11, 31);
 
@@ -28,7 +32,9 @@ export class StatsService {
     return this.calculateUserStats(products, `year ${year}`);
   }
 
-  async getUserStatsFromLastMonths(userId: number, months: number) {
+  async getUserStatsFromLastMonths(userId: number, months: number): Promise<UserStatsDto> {
+    this.logger.info('Getting user stats from last months', { userId, months });
+
     const endDate = new Date();
     const startDate = new Date();
     startDate.setMonth(startDate.getMonth() - months);
@@ -37,7 +43,7 @@ export class StatsService {
     return this.calculateUserStats(products, `last ${months} months`);
   }
 
-  private calculateUserStats(products: Product[], period: string) {
+  private calculateUserStats(products: Product[], period: string): UserStatsDto {
     const productStats = products.map((product) =>
       this.mapProductToProductStatisticDto(product),
     );
