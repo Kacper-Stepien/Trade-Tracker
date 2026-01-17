@@ -36,7 +36,7 @@ export class ProductCategoryController {
     description: 'Return all product categories',
     type: [ProductCategoryDto],
   })
-  async getAllCategories(): Promise<ProductCategoryDto[]> {
+  getAllCategories(): Promise<ProductCategoryDto[]> {
     return this.productCategoryService.findAllCategories();
   }
 
@@ -53,10 +53,10 @@ export class ProductCategoryController {
     type: ProductCategoryDto,
   })
   @ApiResponse({ status: 404, description: 'Product category not found' })
-  async getCategoryById(
+  getCategoryById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ProductCategoryDto> {
-    return await this.productCategoryService.findCategoryById(id);
+    return this.productCategoryService.findCategoryById(id);
   }
 
   @Post()
@@ -72,12 +72,10 @@ export class ProductCategoryController {
     status: 409,
     description: 'Category with this name already exists',
   })
-  async createCategory(
+  createCategory(
     @Body() createProductCategoryDto: CreateProductCategoryDto,
   ): Promise<ProductCategoryDto> {
-    return await this.productCategoryService.createCategory(
-      createProductCategoryDto,
-    );
+    return this.productCategoryService.createCategory(createProductCategoryDto);
   }
 
   @Patch(':id')
@@ -98,11 +96,11 @@ export class ProductCategoryController {
     status: 409,
     description: 'Category with this name already exists',
   })
-  async updateCategory(
+  updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductCategoryDto: UpdateProductCategoryDto,
   ): Promise<ProductCategoryDto> {
-    return await this.productCategoryService.updateCategory(
+    return this.productCategoryService.updateCategory(
       id,
       updateProductCategoryDto,
     );
@@ -120,7 +118,7 @@ export class ProductCategoryController {
     status: 404,
     description: 'Product category not found',
   })
-  async deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return await this.productCategoryService.deleteCategory(id);
+  deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.productCategoryService.deleteCategory(id);
   }
 }
