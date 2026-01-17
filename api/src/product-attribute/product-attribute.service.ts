@@ -11,9 +11,12 @@ import { CreateProductAttributeDto } from './dtos/create-product-attribute.dto';
 import { UpdateProductAttributeDto } from './dtos/update-product-attribute.dto';
 import { ProductAttributeDto } from './dtos/product-attribute.dto';
 import { ProductAttributeMapper } from './product-attribute.mapper';
+import { Logger } from '@kacper2076/logger-client';
 
 @Injectable()
 export class ProductAttributeService {
+  private readonly logger = new Logger(ProductAttributeService.name);
+
   constructor(
     @InjectRepository(ProductAttribute)
     private productAttributeRepository: Repository<ProductAttribute>,
@@ -26,25 +29,36 @@ export class ProductAttributeService {
     productId: number,
     userId: number,
   ): Promise<ProductAttributeDto> {
+    this.logger.info('Creating product attribute', { productId, userId });
+
     const product = await this.validateProductOwnership(productId, userId);
     const attribute = this.productAttributeRepository.create({
       ...createProductAttributeDto,
       product,
     });
-    return ProductAttributeMapper.toDto(
-      await this.productAttributeRepository.save(attribute),
-    );
+    const savedAttribute =
+      await this.productAttributeRepository.save(attribute);
+
+    this.logger.info('Product attribute created successfully', {
+      attributeId: savedAttribute.id,
+      productId,
+    });
+
+    return ProductAttributeMapper.toDto(savedAttribute);
   }
 
   async getProductAttributes(
     productId: number,
   ): Promise<ProductAttributeDto[]> {
+    this.logger.info('Getting product attributes', { productId });
+
     const product = await this.productRepository.findOneBy({ id: productId });
     if (!product) {
+      this.logger.warn('Product not found', { productId });
       throw new NotFoundException(`Product with ID ${productId} not found`);
     }
     const attributes = await this.productAttributeRepository.find({
-      where: { product },
+      where: { product: { id: productId } },
     });
     return attributes.map((attribute) =>
       ProductAttributeMapper.toDto(attribute),
@@ -57,16 +71,25 @@ export class ProductAttributeService {
     updateProductAttributeDto: UpdateProductAttributeDto,
     userId: number,
   ): Promise<ProductAttributeDto> {
-    const product = await this.validateProductOwnership(productId, userId);
-    const attribute = await this.productAttributeRepository.findOne({
-      where: { id: attributeId, product },
+    this.logger.info('Updating product attribute', {
+      productId,
+      attributeId,
+      userId,
     });
-    this.validateProductAttributeExistence(attribute);
+
+    await this.validateProductOwnership(productId, userId);
+    const attribute = await this.productAttributeRepository.findOne({
+      where: { id: attributeId, product: { id: productId } },
+    });
+    this.validateProductAttributeExistence(attribute, attributeId);
     attribute.name = updateProductAttributeDto.name;
     attribute.value = updateProductAttributeDto.value;
-    return ProductAttributeMapper.toDto(
-      await this.productAttributeRepository.save(attribute),
-    );
+    const updatedAttribute =
+      await this.productAttributeRepository.save(attribute);
+
+    this.logger.info('Product attribute updated successfully', { attributeId });
+
+    return ProductAttributeMapper.toDto(updatedAttribute);
   }
 
   async deleteProductAttribute(
@@ -74,15 +97,23 @@ export class ProductAttributeService {
     attributeId: number,
     userId: number,
   ): Promise<void> {
-    const product = await this.validateProductOwnership(productId, userId);
-    const attribute = await this.productAttributeRepository.findOne({
-      where: { id: attributeId, product },
+    this.logger.info('Deleting product attribute', {
+      productId,
+      attributeId,
+      userId,
     });
-    this.validateProductAttributeExistence(attribute);
+
+    await this.validateProductOwnership(productId, userId);
+    const attribute = await this.productAttributeRepository.findOne({
+      where: { id: attributeId, product: { id: productId } },
+    });
+    this.validateProductAttributeExistence(attribute, attributeId);
     await this.productAttributeRepository.remove(attribute);
+
+    this.logger.info('Product attribute deleted successfully', { attributeId });
   }
 
-  async validateProductOwnership(
+  private async validateProductOwnership(
     productId: number,
     userId: number,
   ): Promise<Product> {
@@ -91,21 +122,30 @@ export class ProductAttributeService {
       relations: ['user'],
     });
     if (!product) {
+      this.logger.warn('Product not found', { productId });
       throw new NotFoundException(`Product with ID ${productId} not found`);
     }
     if (product.user.id !== userId) {
+      this.logger.warn('User does not have permission to access product', {
+        productId,
+        userId,
+      });
       throw new ForbiddenException(
-        `Product with ID ${productId} does not belong to user with ID ${userId}`,
+        'You do not have permission to access this resource',
       );
     }
     return product;
   }
 
-  validateProductAttributeExistence(
+  private validateProductAttributeExistence(
     productAttribute: ProductAttribute | undefined,
-  ) {
+    attributeId: number,
+  ): asserts productAttribute is ProductAttribute {
     if (!productAttribute) {
-      throw new NotFoundException(`Product not found`);
+      this.logger.warn('Product attribute not found', { attributeId });
+      throw new NotFoundException(
+        `Product attribute with ID ${attributeId} not found`,
+      );
     }
   }
 }

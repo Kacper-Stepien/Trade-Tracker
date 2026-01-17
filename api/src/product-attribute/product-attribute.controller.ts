@@ -19,6 +19,7 @@ import {
   ApiBody,
   ApiParam,
 } from '@nestjs/swagger';
+import { AuthenticatedRequest } from 'src/auth2/auth-request.interface';
 
 @Controller('product-attribute')
 @ApiTags('product-attribute')
@@ -51,7 +52,7 @@ export class ProductAttributeController {
   createAttribute(
     @Body() createProductAttributeDto: CreateProductAttributeDto,
     @Param('productId', ParseIntPipe) productId: number,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ): Promise<ProductAttributeDto> {
     const userId = req.user.sub;
     return this.productAttributeService.createAttribute(
@@ -91,7 +92,7 @@ export class ProductAttributeController {
     @Body() updateProductAttributeDto: UpdateProductAttributeDto,
     @Param('productId', ParseIntPipe) productId: number,
     @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ): Promise<ProductAttributeDto> {
     const userId = req.user.sub;
     return this.productAttributeService.updateProductAttribute(
@@ -115,7 +116,7 @@ export class ProductAttributeController {
     type: Number,
   })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'The product attribute has been successfully deleted',
   })
   @ApiResponse({
@@ -129,7 +130,7 @@ export class ProductAttributeController {
   deleteAttribute(
     @Param('productId', ParseIntPipe) productId: number,
     @Param('attributeId', ParseIntPipe) attributeId: number,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ): Promise<void> {
     const userId = req.user.sub;
     return this.productAttributeService.deleteProductAttribute(

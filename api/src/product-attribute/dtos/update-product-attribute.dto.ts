@@ -1,8 +1,9 @@
-import { IsString } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateProductAttributeDto {
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     description: 'The name of the product attribute',
     example: 'Color',
@@ -10,6 +11,7 @@ export class UpdateProductAttributeDto {
   name: string;
 
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     description: 'The value of the product attribute',
     example: 'Red',
