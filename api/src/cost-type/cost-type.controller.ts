@@ -80,7 +80,7 @@ export class CostTypeController {
   })
   @ApiResponse({ status: 404, description: 'Cost type not found' })
   updateCostType(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCostTypeDto: UpdateCostTypeDto,
   ): Promise<CostTypeDto> {
     return this.costTypeService.updateCostType(id, updateCostTypeDto);
@@ -91,10 +91,10 @@ export class CostTypeController {
   @ApiOperation({ summary: 'Delete a cost type - only for admin' })
   @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'The cost type has been successfully deleted',
   })
-  deleteCostType(@Param('id') id: number): Promise<void> {
+  deleteCostType(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.costTypeService.deleteCostType(id);
   }
 }
