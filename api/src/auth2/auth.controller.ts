@@ -16,7 +16,7 @@ import { SignInResponseDto } from './dto/sign-in-response.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { AuthenticatedRequest } from './auth-request.interface';
+import { GoogleAuthenticatedRequest } from './auth-request.interface';
 import { Public } from './public.decorator';
 import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
@@ -79,7 +79,7 @@ export class AuthController {
     type: SignInResponseDto,
   })
   async googleAuthRedirect(
-    @Req() req: AuthenticatedRequest,
+    @Req() req: GoogleAuthenticatedRequest,
     @Res() res: Response,
   ) {
     const user = req.user;
