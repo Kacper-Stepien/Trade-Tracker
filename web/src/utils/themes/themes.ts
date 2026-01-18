@@ -41,7 +41,7 @@ const darkPalette = {
     secondary: "#6FFFE9",
   },
   error: {
-    main: "#E63946",
+    main: "#f25c54",
   },
 };
 
