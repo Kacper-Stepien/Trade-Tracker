@@ -10,6 +10,7 @@ import {
 import { Role } from './role.enum';
 import { Product } from '../products/product.entity';
 import { AccountType } from './account-type.enum';
+import { ProductCategory } from 'src/product-category/product-category.entity';
 
 @Entity()
 export class User {
@@ -60,4 +61,7 @@ export class User {
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
+
+  @OneToMany(() => ProductCategory, (category) => category.user)
+  categories: ProductCategory[];
 }

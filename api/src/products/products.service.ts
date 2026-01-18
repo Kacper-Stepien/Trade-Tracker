@@ -73,6 +73,7 @@ export class ProductsService {
         }
         const category = await this.productCategoryService.findCategoryById(
           body.categoryId,
+          userId,
         );
 
         if (!category) {
@@ -211,6 +212,7 @@ export class ProductsService {
     if (updateProductDto.categoryId) {
       const category = await this.productCategoryService.getCategoryById(
         updateProductDto.categoryId,
+        userId,
       );
       product.category = category;
     }
