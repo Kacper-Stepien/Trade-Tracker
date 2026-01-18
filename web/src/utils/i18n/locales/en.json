@@ -1,4 +1,10 @@
 {
+  "sidebar.dashboard": "Dashboard",
+  "sidebar.products": "Products",
+  "sidebar.categories": "Categories",
+  "sidebar.costTypes": "Cost Types",
+  "sidebar.statistics": "Statistics",
+
   "logging": "Sign In",
   "email": "Email",
   "password": "Password",

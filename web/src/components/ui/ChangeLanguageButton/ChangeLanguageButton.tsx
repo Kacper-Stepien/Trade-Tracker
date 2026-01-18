@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import LanguageIcon from "@mui/icons-material/Language";
-import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import { useTranslation } from "react-i18next";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Paper from "@mui/material/Paper";
@@ -19,7 +18,7 @@ const ChangeLanguageButton = () => {
       i18n.changeLanguage(lang);
       setIsMenuOpen(false);
     },
-    [i18n]
+    [i18n],
   );
 
   const handleToggleMenu = () => {
@@ -37,8 +36,13 @@ const ChangeLanguageButton = () => {
         size="small"
         color="secondary"
         startIcon={<LanguageIcon />}
-        endIcon={<KeyboardArrowDownRoundedIcon />}
         onClick={() => handleToggleMenu()}
+        sx={{
+          fontWeight: 500,
+          borderRadius: 1,
+          px: 2,
+          py: 0.5,
+        }}
       >
         {i18n.language.toUpperCase()}
       </Button>

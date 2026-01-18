@@ -26,7 +26,14 @@ const UserMenu = () => {
   return (
     <>
       <IconButton onClick={handleMenuOpen}>
-        <Avatar>{`${user.name.charAt(0)}${user.surname.charAt(0)}`}</Avatar>
+        <Avatar
+          sx={{
+            bgcolor: "background.paper",
+            color: "text.primary",
+            fontWeight: 500,
+            fontSize: "1rem",
+          }}
+        >{`${user.name.charAt(0)}${user.surname.charAt(0)}`}</Avatar>
       </IconButton>
       <Menu
         anchorEl={anchorEl}

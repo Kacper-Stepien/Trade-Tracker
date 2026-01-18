@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import { useTheme } from "../hooks/useTheme";
 
-export default function AppLayout() {
+export default function PublicLayout() {
   const { theme } = useTheme();
 
   return (

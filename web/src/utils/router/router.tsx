@@ -1,30 +1,36 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../../pages/LoginPage";
-import Button from "@mui/material/Button";
-import AppLayout from "../../layouts/AppLayout";
 import RegisterPage from "../../pages/RegisterPage";
+import PublicLayout from "../../layouts/PublicLayout";
+import DashboardLayout from "../../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import DashboardPage from "../../pages/DashboardPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <AppLayout />,
+    element: <PublicRoute />,
     children: [
       {
-        element: <PublicRoute />,
+        element: <PublicLayout />,
         children: [
           { path: "/login", element: <LoginPage /> },
           { path: "/register", element: <RegisterPage /> },
         ],
       },
+    ],
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
       {
-        element: <ProtectedRoute />,
+        element: <DashboardLayout />,
         children: [
-          {
-            path: "/",
-            element: <Button variant="contained">Hello world</Button>,
-          },
+          { path: "/", element: <DashboardPage /> },
+          { path: "/products", element: <div>Products Page - Coming Soon</div> },
+          { path: "/categories", element: <div>Categories Page - Coming Soon</div> },
+          { path: "/cost-types", element: <div>Cost Types Page - Coming Soon</div> },
+          { path: "/statistics", element: <div>Statistics Page - Coming Soon</div> },
         ],
       },
     ],

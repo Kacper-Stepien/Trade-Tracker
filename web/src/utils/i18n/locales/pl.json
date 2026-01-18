@@ -1,4 +1,10 @@
 {
+  "sidebar.dashboard": "Panel główny",
+  "sidebar.products": "Produkty",
+  "sidebar.categories": "Kategorie",
+  "sidebar.costTypes": "Typy kosztów",
+  "sidebar.statistics": "Statystyki",
+
   "logging": "Logowanie",
   "email": "Email",
   "password": "Hasło",
