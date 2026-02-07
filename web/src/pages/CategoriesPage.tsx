@@ -30,6 +30,7 @@ import { useState } from "react";
 import { CategoryModal } from "../components/CategoryModal/CategoryModal";
 import { AxiosError } from "axios";
 import { Category } from "../types/Category.type";
+import { useTranslation } from "react-i18next";
 
 interface ApiError {
   message: string;
@@ -38,6 +39,7 @@ interface ApiError {
 }
 
 export const CategoriesPage = () => {
+  const { t } = useTranslation();
   const { data: categories, isLoading, isError } = useCategoriesQuery();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(
@@ -48,22 +50,22 @@ export const CategoriesPage = () => {
   const updateMutation = useUpdateCategoryMutation();
   const deleteMutation = useDeleteCategoryMutation();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleOpenModal = () => {
     createMutation.reset();
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
   const handleCloseModal = () => {
     createMutation.reset();
-    setIsModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   const handleCreate = (name: string) => {
     createMutation.mutate(name, {
       onSuccess: () => {
-        setIsModalOpen(false);
+        setIsEditModalOpen(false);
       },
     });
   };
@@ -97,7 +99,7 @@ export const CategoriesPage = () => {
   const getErrorMessage = (error: unknown): string | null => {
     if (!error) return null;
     const axiosError = error as AxiosError<ApiError>;
-    return axiosError.response?.data?.message || "An error occurred";
+    return axiosError.response?.data?.message || t("common.errors.error");
   };
 
   if (isLoading) {
@@ -114,7 +116,7 @@ export const CategoriesPage = () => {
   }
 
   if (isError) {
-    return <Alert severity="error">Nie udało się pobrać kategorii</Alert>;
+    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
   }
 
   return (
@@ -127,10 +129,10 @@ export const CategoriesPage = () => {
       >
         <Box>
           <Typography variant="h4" fontWeight={600}>
-            Categories
+            {t("pages.categories.title")}
           </Typography>
           <Typography variant="body2" color="text.">
-            Manage your product categories
+            {t("pages.categories.description")}
           </Typography>
         </Box>
         <Button
@@ -139,16 +141,18 @@ export const CategoriesPage = () => {
           startIcon={<AddIcon />}
           onClick={() => handleOpenModal()}
         >
-          Add Category
+          {t("common.actions.add")}
         </Button>
       </Box>
-      <TableContainer component={Paper} sx={{ borderRadius: 4 }} elevation={0}>
-        <Box sx={{ px: 4, py: 6 }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 2 }} elevation={0}>
+        <Box sx={{ px: 2, py: 6 }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t("pages.categories.table.name")}</TableCell>
+                <TableCell align="right">
+                  {t("pages.categories.table.actions")}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -173,7 +177,7 @@ export const CategoriesPage = () => {
         </Box>
       </TableContainer>
       <CategoryModal
-        open={isModalOpen}
+        open={isEditModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleCreate}
         isLoading={createMutation.isLoading}
@@ -193,18 +197,23 @@ export const CategoriesPage = () => {
         open={!!deletingCategory}
         onClose={() => setDeletingCategory(null)}
       >
-        <DialogTitle>Delete Category</DialogTitle>
+        <DialogTitle>{t("pages.categories.deleteModal.title")}</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete "{deletingCategory?.name}"?
+          {t("pages.categories.deleteModal.confirmation")} "
+          {deletingCategory?.name}"?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeletingCategory(null)}>Cancel</Button>
+          <Button onClick={() => setDeletingCategory(null)}>
+            {t("common.actions.cancel")}
+          </Button>
           <Button
             onClick={handleDeleteConfirm}
             color="error"
             disabled={deleteMutation.isLoading}
           >
-            {deleteMutation.isLoading ? "Deleting..." : "Delete"}
+            {deleteMutation.isLoading
+              ? `${t("common.actions.deleting")}...`
+              : t("common.actions.delete")}
           </Button>
         </DialogActions>
       </Dialog>

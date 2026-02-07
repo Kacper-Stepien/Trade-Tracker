@@ -44,5 +44,47 @@
   "footerAllRightsReserved": "© {{year}} Trade Tracker. All rights reserved.",
   "footerDesignedBy": "© Designed by Kacper Stępień.",
 
-  "footerSocialMediaLinks": "Social media links"
+  "footerSocialMediaLinks": "Social media links",
+
+  "common": {
+    "actions": {
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting",
+      "edit": "Edit",
+      "add": "Add",
+      "create": "Create",
+      "save": "Save"
+    },
+    "errors": {
+      "error": "An error occurred",
+      "fetchFailed": "Failed to fetch data",
+      "saveFaield": "Failed to save changes"
+    }
+  },
+
+  "pages": {
+    "categories": {
+      "title": "Categories",
+      "description": "Manage your product categories",
+      "table": {
+        "name": "Name",
+        "actions": "Actions"
+      },
+      "addModal": {
+        "title": "Add Category",
+        "label": "Cateogy Name",
+        "placeholder": "Enter category name"
+      },
+      "editModal": {
+        "title": "Edit Category",
+        "label": "Cateogy Name",
+        "placeholder": "Enter category name"
+      },
+      "deleteModal": {
+        "title": "Delete Category",
+        "confirmation": "Are you sure you want to delete"
+      }
+    }
+  }
 }

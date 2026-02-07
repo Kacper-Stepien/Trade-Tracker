@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import { CircularProgress } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 type CategoryModalProps = {
   open: boolean;
@@ -31,6 +32,7 @@ export const CategoryModal = ({
   mode,
   error,
 }: CategoryModalProps) => {
+  const { t } = useTranslation();
   const [name, setName] = useState(initialName);
 
   useEffect(() => {
@@ -56,7 +58,9 @@ export const CategoryModal = ({
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">
-            {mode === "create" ? "Add Category" : "Edit Category"}
+            {mode === "create"
+              ? t("pages.categories.addModal.title")
+              : t("pages.categories.editModal.title")}
           </Typography>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
@@ -70,12 +74,18 @@ export const CategoryModal = ({
           </Alert>
         )}
         <Typography variant="body2" mb={1}>
-          Category Name
+          {mode === "create"
+            ? t("pages.categories.addModal.label")
+            : t("pages.categories.editModal.label")}
         </Typography>
         <TextField
           autoFocus
           fullWidth
-          placeholder="Enter category name"
+          placeholder={
+            mode === "create"
+              ? t("pages.categories.addModal.placeholder")
+              : t("pages.categories.editModal.placeholder")
+          }
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
@@ -93,7 +103,9 @@ export const CategoryModal = ({
             isLoading ? <CircularProgress size={16} color="inherit" /> : null
           }
         >
-          {mode === "create" ? "Create" : "Save"}
+          {mode === "create"
+            ? t("common.actions.create")
+            : t("common.actions.save")}
         </Button>
       </DialogActions>
     </Dialog>
