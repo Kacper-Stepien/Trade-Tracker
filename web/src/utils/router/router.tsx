@@ -6,6 +6,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardPage from "../../pages/DashboardPage";
+import { CategoriesPage } from "../../pages/CategoriesPage";
 
 export const router = createBrowserRouter([
   {
@@ -27,10 +28,19 @@ export const router = createBrowserRouter([
         element: <DashboardLayout />,
         children: [
           { path: "/", element: <DashboardPage /> },
-          { path: "/products", element: <div>Products Page - Coming Soon</div> },
-          { path: "/categories", element: <div>Categories Page - Coming Soon</div> },
-          { path: "/cost-types", element: <div>Cost Types Page - Coming Soon</div> },
-          { path: "/statistics", element: <div>Statistics Page - Coming Soon</div> },
+          {
+            path: "/products",
+            element: <div>Products Page - Coming Soon</div>,
+          },
+          { path: "/categories", element: <CategoriesPage /> },
+          {
+            path: "/cost-types",
+            element: <div>Cost Types Page - Coming Soon</div>,
+          },
+          {
+            path: "/statistics",
+            element: <div>Statistics Page - Coming Soon</div>,
+          },
         ],
       },
     ],

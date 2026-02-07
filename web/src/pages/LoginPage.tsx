@@ -1,16 +1,13 @@
 import { useTranslation } from "react-i18next";
 
 import { Grid, Typography } from "@mui/material";
-// import { useTheme } from "../hooks/useTheme";
 import LoginForm from "../components/forms/LoginForm/LoginForm";
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  // const { theme } = useTheme();
 
   return (
     <Grid
-      // bgcolor={theme.palette.background.paper}
       color={"text.primary"}
       height="100%"
       maxWidth={"800px"}

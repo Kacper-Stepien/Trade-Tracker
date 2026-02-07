@@ -7,12 +7,13 @@ import {
   Param,
   Body,
   ParseIntPipe,
-  UseGuards,
+  HttpCode,
+  Request,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
 import { UpdateProductCategoryDto } from './dtos/update-product-category.dto';
-import { AdminGuard } from '../auth2/guards/admin.guard';
 import {
   ApiTags,
   ApiOperation,
@@ -21,6 +22,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ProductCategoryDto } from './dtos/product-category.dto';
+import { AuthenticatedRequest } from 'src/auth2/auth-request.interface';
 
 @Controller('product-categories')
 @ApiTags('product categories')
@@ -30,23 +32,22 @@ export class ProductCategoryController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all product categories' })
+  @ApiOperation({ summary: 'Get all product categories for current user' })
   @ApiResponse({
     status: 200,
     description: 'Return all product categories',
     type: [ProductCategoryDto],
   })
-  getAllCategories(): Promise<ProductCategoryDto[]> {
-    return this.productCategoryService.findAllCategories();
+  getAllCategories(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<ProductCategoryDto[]> {
+    const userId = req.user.sub;
+    return this.productCategoryService.findAllCategories(userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a product category by ID' })
-  @ApiParam({
-    name: 'id',
-    type: 'number',
-    description: 'The unique identifier of the product category',
-  })
+  @ApiParam({ name: 'id', type: Number, description: 'Category ID' })
   @ApiResponse({
     status: 200,
     description: 'Return a product category by ID',
@@ -54,13 +55,14 @@ export class ProductCategoryController {
   })
   @ApiResponse({ status: 404, description: 'Product category not found' })
   getCategoryById(
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ProductCategoryDto> {
-    return this.productCategoryService.findCategoryById(id);
+    const userId = req.user.sub;
+    return this.productCategoryService.findCategoryById(id, userId);
   }
 
   @Post()
-  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Create a new product category' })
   @ApiBody({ type: CreateProductCategoryDto })
   @ApiResponse({
@@ -73,52 +75,54 @@ export class ProductCategoryController {
     description: 'Category with this name already exists',
   })
   createCategory(
+    @Request() req: AuthenticatedRequest,
     @Body() createProductCategoryDto: CreateProductCategoryDto,
   ): Promise<ProductCategoryDto> {
-    return this.productCategoryService.createCategory(createProductCategoryDto);
+    const userId = req.user.sub;
+    return this.productCategoryService.createCategory(
+      createProductCategoryDto,
+      userId,
+    );
   }
 
   @Patch(':id')
-  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Update a product category' })
-  @ApiParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number, description: 'Category ID' })
   @ApiBody({ type: UpdateProductCategoryDto })
   @ApiResponse({
     status: 200,
     description: 'Product category updated',
     type: ProductCategoryDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Product category not found',
-  })
+  @ApiResponse({ status: 404, description: 'Product category not found' })
   @ApiResponse({
     status: 409,
     description: 'Category with this name already exists',
   })
   updateCategory(
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductCategoryDto: UpdateProductCategoryDto,
   ): Promise<ProductCategoryDto> {
+    const userId = req.user.sub;
     return this.productCategoryService.updateCategory(
       id,
       updateProductCategoryDto,
+      userId,
     );
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a product category' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiResponse({
-    status: 204,
-    description: 'Product category deleted',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Product category not found',
-  })
-  deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.productCategoryService.deleteCategory(id);
+  @ApiParam({ name: 'id', type: Number, description: 'Category ID' })
+  @ApiResponse({ status: 204, description: 'Product category deleted' })
+  @ApiResponse({ status: 404, description: 'Product category not found' })
+  deleteCategory(
+    @Request() req: AuthenticatedRequest,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    const userId = req.user.sub;
+    return this.productCategoryService.deleteCategory(id, userId);
   }
 }
