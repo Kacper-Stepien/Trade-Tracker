@@ -22,6 +22,7 @@ import FormSubmitButton from "../FormSubbmitButton/FormSubmitButton";
 import AuthFormFooter from "../AuthFormFooter/AuthFormFooter";
 import InputError from "../InputError/InputError";
 import FormSuccess from "../FormSuccess/FormSuccess";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 interface FormInputs {
   name: string;
@@ -38,7 +39,7 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const registerMutation = useRegisterMutation();
   const [unavailableEmails, setUnavailableEmails] = useState<string[]>([]);
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const form = useForm<FormInputs>({
@@ -62,8 +63,9 @@ const RegisterForm = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     try {
-      setServerError(null);
-      await registerMutation.mutateAsync(data);
+      const { confirmPassword: _, ...dataToSubmit } = data;
+      setServerError(undefined);
+      await registerMutation.mutateAsync(dataToSubmit);
       setSuccessMessage("Account created successfully!");
       setTimeout(() => {
         navigate("/login");
@@ -74,10 +76,10 @@ const RegisterForm = () => {
         setUnavailableEmails((prev) => [...prev, data.email]);
         form.setError("email", {
           type: "server",
-          message: t("USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS"),
+          message: getApiErrorMessage(error),
         });
       } else {
-        setServerError(error.message);
+        setServerError(getApiErrorMessage(error));
       }
     }
   };
@@ -186,7 +188,7 @@ const RegisterForm = () => {
             label={t("isProfessional")}
           />
         </FormGroup>
-        {serverError && <InputError>{t(serverError)}</InputError>}
+        {serverError && <InputError>{serverError}</InputError>}
         {successMessage && <FormSuccess> {t("SUCCESS_SING_UP")}</FormSuccess>}
         <FormSubmitButton
           disabled={!isValid}

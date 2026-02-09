@@ -42,5 +42,58 @@
   "footerContactEmail": "kacper2007x48@gmail.com",
   "footerContactPhone": "+48 123 456 789",
   "footerAllRightsReserved": "© {{year}} Trade Tracker. Wszelkie prawa zastrzeżone.",
+<<<<<<< Updated upstream
   "footerDesignedBy": "© Zaprojektowane przez Kacper Stępień."
+=======
+  "footerDesignedBy": "© Zaprojektowane przez Kacper Stępień.",
+
+  "footerSocialMediaLinks": "Social media",
+
+  "common": {
+    "actions": {
+      "cancel": "Anuluj",
+      "delete": "Usuń",
+      "deleting": "Usuwanie",
+      "edit": "Edytuj",
+      "add": "Dodaj",
+      "create": "Stwórz",
+      "save": "Zapisz"
+    },
+    "errors": {
+      "error": "Wystąpił błąd",
+      "fetchFailed": "Wystąpił błąd podczas pobrania danych",
+      "saveFaield": "Wystąpił błąd podczas zapisu"
+    }
+  },
+
+  "apiErrors": {
+    "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później.",
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym email istnieje"
+  },
+
+  "pages": {
+    "categories": {
+      "title": "Kategorie",
+      "description": "Zarządzaj swoimi kategoriami produktów",
+      "table": {
+        "name": "Nazwa",
+        "actions": "Akcje"
+      },
+      "addModal": {
+        "title": "Dodaj kategorię",
+        "label": "Nazwa kategori",
+        "placeholder": "Wpisz nazwę kategori"
+      },
+      "editModal": {
+        "title": "Edytuj kategorię",
+        "label": "Nazwa kategori",
+        "placeholder": "Wpisz nazwę kategori"
+      },
+      "deleteModal": {
+        "title": "Delete Category",
+        "confirmation": "Are you sure you want to delete"
+      }
+    }
+  }
+>>>>>>> Stashed changes
 }

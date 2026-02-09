@@ -21,6 +21,7 @@
   "surname": "Surname",
   "confirmPassword": "Confirm password",
   "dateOfBirth": "Date of birth",
+  "dateIsRequired": "Date of birth is required",
   "isProfessional": "I'm a professional seller",
   "nameIsRequired": "Name is required",
   "register": "Sign up",
@@ -44,5 +45,56 @@
   "footerAllRightsReserved": "© {{year}} Trade Tracker. All rights reserved.",
   "footerDesignedBy": "© Designed by Kacper Stępień.",
 
+<<<<<<< Updated upstream
   "footerSocialMediaLinks": "Social media links"
+=======
+  "footerSocialMediaLinks": "Social media links",
+
+  "common": {
+    "actions": {
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting",
+      "edit": "Edit",
+      "add": "Add",
+      "create": "Create",
+      "save": "Save"
+    },
+    "errors": {
+      "error": "An error occurred",
+      "fetchFailed": "Failed to fetch data",
+      "saveFaield": "Failed to save changes"
+    }
+  },
+
+  "apiErrors": {
+    "UNEXPECTED_ERROR": "Error with server. Try again later",
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "User with given email already exists"
+  },
+
+  "pages": {
+    "categories": {
+      "title": "Categories",
+      "description": "Manage your product categories",
+      "table": {
+        "name": "Name",
+        "actions": "Actions"
+      },
+      "addModal": {
+        "title": "Add Category",
+        "label": "Cateogy Name",
+        "placeholder": "Enter category name"
+      },
+      "editModal": {
+        "title": "Edit Category",
+        "label": "Cateogy Name",
+        "placeholder": "Enter category name"
+      },
+      "deleteModal": {
+        "title": "Delete Category",
+        "confirmation": "Are you sure you want to delete"
+      }
+    }
+  }
+>>>>>>> Stashed changes
 }
