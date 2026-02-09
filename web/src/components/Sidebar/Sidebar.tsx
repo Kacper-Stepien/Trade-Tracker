@@ -24,11 +24,11 @@ import { useTranslation } from "react-i18next";
 const DRAWER_WIDTH = 240;
 const DRAWER_COLLAPSED_WIDTH = 72;
 
-interface MenuItem {
+type MenuItem = {
   label: string;
   path: string;
   icon: React.ReactNode;
-}
+};
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);

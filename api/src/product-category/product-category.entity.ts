@@ -1,7 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Unique,
+  ManyToOne,
+} from 'typeorm';
 import { Product } from '../products/product.entity';
+import { User } from 'src/users/user.entity';
 
 @Entity()
+@Unique(['name', 'user'])
 export class ProductCategory {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,4 +20,10 @@ export class ProductCategory {
 
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
+
+  @ManyToOne(() => User, (user) => user.categories, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  user: User;
 }

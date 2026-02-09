@@ -42,9 +42,6 @@
   "footerContactEmail": "kacper2007x48@gmail.com",
   "footerContactPhone": "+48 123 456 789",
   "footerAllRightsReserved": "© {{year}} Trade Tracker. Wszelkie prawa zastrzeżone.",
-<<<<<<< Updated upstream
-  "footerDesignedBy": "© Zaprojektowane przez Kacper Stępień."
-=======
   "footerDesignedBy": "© Zaprojektowane przez Kacper Stępień.",
 
   "footerSocialMediaLinks": "Social media",
@@ -95,5 +92,4 @@
       }
     }
   }
->>>>>>> Stashed changes
 }

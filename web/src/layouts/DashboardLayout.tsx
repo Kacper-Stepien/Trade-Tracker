@@ -9,30 +9,41 @@ export default function DashboardLayout() {
   const { theme } = useTheme();
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+      }}
+    >
       <Sidebar />
 
       <Box
         component="main"
         sx={{
           flexGrow: 1,
+          height: "100vh",
           display: "flex",
           flexDirection: "column",
           backgroundColor: theme.palette.background.default,
+          overflowX: "hidden",
         }}
+        color="text.primary"
       >
         <DashboardHeader />
 
+        <Box></Box>
         <Box
           sx={{
             flexGrow: 1,
-            p: 3,
-            overflow: "auto",
+            p: 4,
+            overflowY: "auto",
+            overflowX: "hidden",
           }}
         >
           <Outlet />
         </Box>
-
         <Footer />
       </Box>
     </Box>

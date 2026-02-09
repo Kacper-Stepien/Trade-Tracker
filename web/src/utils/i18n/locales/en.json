@@ -45,9 +45,6 @@
   "footerAllRightsReserved": "© {{year}} Trade Tracker. All rights reserved.",
   "footerDesignedBy": "© Designed by Kacper Stępień.",
 
-<<<<<<< Updated upstream
-  "footerSocialMediaLinks": "Social media links"
-=======
   "footerSocialMediaLinks": "Social media links",
 
   "common": {
@@ -96,5 +93,8 @@
       }
     }
   }
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> 44a46870515e50459a2ee6bc486d2d9826a97bef
 }
