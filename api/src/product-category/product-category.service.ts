@@ -13,6 +13,7 @@ import { ProductCategoryDto } from './dtos/product-category.dto';
 import { ProductCategoryMapper } from './product-category.mapper';
 import { Logger } from '@kacper2076/logger-client';
 import { ApiErrorCode } from 'src/common/constants/error-codes';
+import { Product } from 'src/products/product.entity';
 
 @Injectable()
 export class ProductCategoryService {
@@ -21,6 +22,8 @@ export class ProductCategoryService {
   constructor(
     @InjectRepository(ProductCategory)
     private readonly productCategoryRepository: Repository<ProductCategory>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async findAllCategories(userId: number): Promise<ProductCategoryDto[]> {
@@ -117,6 +120,16 @@ export class ProductCategoryService {
     this.logger.info('Deleting product category', { categoryId: id, userId });
 
     const category = await this.getCategoryById(id, userId);
+    const productsCount = await this.productRepository.count({
+      where: { category: { id } },
+    });
+    if (productsCount > 0) {
+      throw new ConflictException({
+        message: 'Cannot delete category with assigned products',
+        code: ApiErrorCode.CATEGORY_HAS_PRODUCTS,
+      });
+    }
+
     await this.productCategoryRepository.remove(category);
 
     this.logger.info('Product category deleted successfully', {
@@ -133,7 +146,10 @@ export class ProductCategoryService {
 
     if (!category) {
       this.logger.warn('Category not found', { categoryId: id });
-      throw new NotFoundException(`Category with ID ${id} not found`);
+      throw new NotFoundException({
+        message: `Category with ID ${id} not found`,
+        code: ApiErrorCode.NOT_FOUND,
+      });
     }
 
     if (category.user.id !== userId) {
@@ -141,9 +157,10 @@ export class ProductCategoryService {
         categoryId: id,
         userId,
       });
-      throw new ForbiddenException(
-        'You do not have permission to access this resource',
-      );
+      throw new ForbiddenException({
+        message: 'You do not have permission to access this resource',
+        code: ApiErrorCode.FORBIDDEN,
+      });
     }
 
     return category;
