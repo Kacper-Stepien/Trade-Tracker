@@ -20,17 +20,22 @@ const Footer = () => {
       component="footer"
       bgcolor={theme.palette.background.paper}
       color={theme.palette.text.primary}
-      py={6}
-      px={4}
+      py={4}
+      px={0}
     >
-      <Grid container spacing={4} justifyContent="center">
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="flex-start"
+      >
         <Grid item xs={12} sm={4} textAlign="center">
           <Logo />
           <Stack
             direction="row"
             justifyContent="center"
-            spacing={1}
-            mt={1}
+            spacing={0.5}
+            mt={0.5}
             aria-label={t("footerSocialMediaLinks")}
           >
             {SOCIAL_LINKS.map(({ icon, url, name }) => (
@@ -41,6 +46,7 @@ const Footer = () => {
                 target="blank"
                 rel="noopener noreferrer"
                 aria-label={`${name} link`}
+                size="small"
               >
                 {icon}
               </IconButton>
@@ -56,10 +62,10 @@ const Footer = () => {
           component="section"
           aria-labelledby="about-heading"
         >
-          <Typography variant="h6" fontWeight="bold" id="about-heading">
+          <Typography variant="subtitle2" fontWeight="bold" id="about-heading">
             {t("aboutUs")}
           </Typography>
-          <Typography variant="body2">{t("footerAboutText")}</Typography>
+          <Typography variant="caption">{t("footerAboutText")}</Typography>
         </Grid>
 
         <Grid
@@ -70,19 +76,23 @@ const Footer = () => {
           component="section"
           aria-labelledby="contact-heading"
         >
-          <Typography variant="h6" fontWeight="bold" id="contact-heading">
+          <Typography
+            variant="subtitle2"
+            fontWeight="bold"
+            id="contact-heading"
+          >
             {t("contact")}
           </Typography>
-          <Typography variant="body2" aria-label="email">
+          <Typography variant="caption" display="block" aria-label="email">
             kacper2007x48@gmail.com
           </Typography>
-          <Typography variant="body2" aria-label="phone">
+          <Typography variant="caption" display="block" aria-label="phone">
             +48 123 456 789
           </Typography>
         </Grid>
       </Grid>
 
-      <Divider sx={{ my: 4 }} />
+      <Divider sx={{ my: 2 }} />
 
       <Typography variant="caption" textAlign="center" display="block">
         {t("footerAllRightsReserved", { year: new Date().getFullYear() })}
