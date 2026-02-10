@@ -64,11 +64,14 @@
   },
 
   "apiErrors": {
-    "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później.",
-    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym email istnieje",
-    "CATEGORY_ALREADY_EXISTS": "Kategoria o podanej nazwie już istnieje",
-    "NETWORK_ERROR": "Problem z internetem",
-    "SERVER_UNAVAILABLE": "Problem z serwerem"
+    "NOT_FOUND": "Nie znaleziono żądanego zasobu",
+    "FORBIDDEN": "Nie masz uprawnień do wykonania tej operacji",
+    "UNEXPECTED_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później",
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Konto z tym adresem e-mail już istnieje",
+    "NETWORK_ERROR": "Brak połączenia z internetem. Sprawdź swoje połączenie sieciowe",
+    "SERVER_UNAVAILABLE": "Serwer jest tymczasowo niedostępny. Spróbuj ponownie później",
+    "CATEGORY_ALREADY_EXISTS": "Kategoria o tej nazwie już istnieje",
+    "CATEGORY_HAS_PRODUCTS": "Nie można usunąć kategorii, która ma przypisane produkty"
   },
 
   "pages": {
