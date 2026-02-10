@@ -76,7 +76,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       endpointsToSkipRefresh.some((endpoint) =>
-        originalRequest.url.includes(endpoint)
+        originalRequest.url.includes(endpoint),
       )
     ) {
       return Promise.reject(error);
@@ -97,5 +97,5 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
     return Promise.reject(error);
-  }
+  },
 );

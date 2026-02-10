@@ -12,6 +12,7 @@ import { UpdateProductCategoryDto } from './dtos/update-product-category.dto';
 import { ProductCategoryDto } from './dtos/product-category.dto';
 import { ProductCategoryMapper } from './product-category.mapper';
 import { Logger } from '@kacper2076/logger-client';
+import { ApiErrorCode } from 'src/common/constants/error-codes';
 
 @Injectable()
 export class ProductCategoryService {
@@ -54,9 +55,10 @@ export class ProductCategoryService {
         name,
         userId,
       });
-      throw new ConflictException(
-        `Category with name "${name}" already exists`,
-      );
+      throw new ConflictException({
+        message: `Category with name "${name}" already exists`,
+        code: ApiErrorCode.CATEGORY_ALREADY_EXISTS,
+      });
     }
 
     const category = this.productCategoryRepository.create({
@@ -95,9 +97,10 @@ export class ProductCategoryService {
         name,
         userId,
       });
-      throw new ConflictException(
-        `Category with name "${name}" already exists`,
-      );
+      throw new ConflictException({
+        message: `Category with name "${name}" already exists`,
+        code: ApiErrorCode.CATEGORY_ALREADY_EXISTS,
+      });
     }
 
     category.name = name;

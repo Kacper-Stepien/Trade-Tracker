@@ -65,7 +65,10 @@
 
   "apiErrors": {
     "UNEXPECTED_ERROR": "Problem z serwerem. Spróbuj ponownie później.",
-    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym email istnieje"
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Użytkownik z podanym email istnieje",
+    "CATEGORY_ALREADY_EXISTS": "Kategoria o podanej nazwie już istnieje",
+    "NETWORK_ERROR": "Problem z internetem",
+    "SERVER_UNAVAILABLE": "Problem z serwerem"
   },
 
   "pages": {

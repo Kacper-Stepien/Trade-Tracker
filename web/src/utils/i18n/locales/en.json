@@ -66,7 +66,10 @@
 
   "apiErrors": {
     "UNEXPECTED_ERROR": "Error with server. Try again later",
-    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "User with given email already exists"
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "User with given email already exists",
+    "CATEGORY_ALREADY_EXISTS": "Category with given name already exists",
+    "NETWORK_ERROR": "Network error",
+    "SERVER_UNAVAILABLE": "Server error"
   },
 
   "pages": {
@@ -93,8 +96,4 @@
       }
     }
   }
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> 44a46870515e50459a2ee6bc486d2d9826a97bef
 }

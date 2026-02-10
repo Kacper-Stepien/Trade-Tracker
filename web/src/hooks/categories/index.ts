@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "../../types/Category.type";
 import { axiosInstance } from "../../utils/axiosInstance";
+import { ResultAsync } from "neverthrow";
+import { ApiError } from "../../types/errors";
+import { toResult } from "../../utils/resultWrapper";
+import { CategoryAlreadyExistsError } from "../../types/categoryErrors";
+import { ApiErrorCode } from "../../types/api-error-code.type";
 
 export const CATEGORIES_QUERY_KEY = ["categories"];
 
@@ -9,29 +14,38 @@ const fetchCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
-const createCategory = async (name: string): Promise<Category> => {
-  const response = await axiosInstance.post<Category>("/product-categories", {
-    name,
+export const createCategory = (
+  name: string,
+): ResultAsync<Category, ApiError> => {
+  return toResult(
+    axiosInstance.post<Category>("/product-categories", { name }),
+  ).mapErr((error): ApiError => {
+    if (error.code === ApiErrorCode.CATEGORY_ALREADY_EXISTS) {
+      return new CategoryAlreadyExistsError(error.message, error.context);
+    }
+    return error;
   });
-  return response.data;
 };
 
-const updateCategory = async ({
+export const updateCategory = ({
   id,
   name,
 }: {
   id: number;
   name: string;
-}): Promise<Category> => {
-  const response = await axiosInstance.patch<Category>(
-    `/product-categories/${id}`,
-    { name },
-  );
-  return response.data;
+}): ResultAsync<Category, ApiError> => {
+  return toResult(
+    axiosInstance.patch<Category>(`/product-categories/${id}`, { name }),
+  ).mapErr((error): ApiError => {
+    if (error.code === ApiErrorCode.CATEGORY_ALREADY_EXISTS) {
+      return new CategoryAlreadyExistsError(error.message, error.context);
+    }
+    return error;
+  });
 };
 
-const deleteCategory = async (id: number): Promise<void> => {
-  await axiosInstance.delete(`/product-categories/${id}`);
+export const deleteCategory = (id: number): ResultAsync<void, ApiError> => {
+  return toResult(axiosInstance.delete(`/product-categories/${id}`));
 };
 
 export const useCategoriesQuery = () => {
@@ -45,10 +59,17 @@ export const useCreateCategoryMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+    mutationFn: async (name: string) => {
+      const result = await createCategory(name);
+      console.log(result);
+      return result;
     },
+    onSuccess: (result) => {
+      if (result.isOk()) {
+        queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+      }
+    },
+    retry: false,
   });
 };
 
@@ -56,9 +77,14 @@ export const useUpdateCategoryMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+    mutationFn: async (params: { id: number; name: string }) => {
+      const result = await updateCategory(params);
+      return result;
+    },
+    onSuccess: (result) => {
+      if (result.isOk()) {
+        queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+      }
     },
   });
 };
@@ -67,9 +93,14 @@ export const useDeleteCategoryMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+    mutationFn: async (id: number) => {
+      const result = await deleteCategory(id);
+      return result;
+    },
+    onSuccess: (result) => {
+      if (result.isOk()) {
+        queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
+      }
     },
   });
 };

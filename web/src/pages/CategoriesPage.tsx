@@ -28,78 +28,92 @@ import {
 } from "../hooks/categories";
 import { useState } from "react";
 import { CategoryModal } from "../components/CategoryModal/CategoryModal";
-import { AxiosError } from "axios";
 import { Category } from "../types/Category.type";
 import { useTranslation } from "react-i18next";
-
-interface ApiError {
-  message: string;
-  error: string;
-  statusCode: number;
-}
+import { translateError } from "../utils/translateError";
 
 export const CategoriesPage = () => {
   const { t } = useTranslation();
   const { data: categories, isLoading, isError } = useCategoriesQuery();
+
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(
     null,
   );
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [createFormError, setCreateFormError] = useState<string | null>(null);
+  const [updateFormError, setUpdateFormError] = useState<string | null>(null);
 
   const createMutation = useCreateCategoryMutation();
   const updateMutation = useUpdateCategoryMutation();
   const deleteMutation = useDeleteCategoryMutation();
 
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
   const handleOpenModal = () => {
     createMutation.reset();
+    setCreateFormError(null);
     setIsEditModalOpen(true);
   };
 
   const handleCloseModal = () => {
     createMutation.reset();
     setIsEditModalOpen(false);
+    setCreateFormError(null);
   };
 
-  const handleCreate = (name: string) => {
-    createMutation.mutate(name, {
-      onSuccess: () => {
-        setIsEditModalOpen(false);
+  const handleCreate = async (name: string) => {
+    setCreateFormError(null);
+    const result = await createMutation.mutateAsync(name);
+
+    result.match(
+      () => {
+        handleCloseModal();
       },
-    });
+      (error) => {
+        setCreateFormError(translateError(error));
+      },
+    );
   };
 
   const handleEditClick = (category: Category) => {
     setEditingCategory(category);
+    setUpdateFormError(null);
     updateMutation.reset();
   };
 
-  const handleEditSubmit = (name: string) => {
-    if (editingCategory) {
-      updateMutation.mutate(
-        { id: editingCategory.id, name },
-        { onSuccess: () => setEditingCategory(null) },
-      );
-    }
+  const handleEditSubmit = async (name: string) => {
+    if (!editingCategory) return;
+
+    setUpdateFormError(null);
+    const result = await updateMutation.mutateAsync({
+      id: editingCategory.id,
+      name,
+    });
+
+    result.match(
+      () => setEditingCategory(null),
+      (error) => {
+        setUpdateFormError(translateError(error));
+      },
+    );
   };
 
   const handleDeleteClick = (category: Category) => {
     setDeletingCategory(category);
   };
 
-  const handleDeleteConfirm = () => {
-    if (deletingCategory) {
-      deleteMutation.mutate(deletingCategory.id, {
-        onSuccess: () => setDeletingCategory(null),
-      });
-    }
-  };
+  const handleDeleteConfirm = async () => {
+    if (!deletingCategory) return;
 
-  const getErrorMessage = (error: unknown): string | null => {
-    if (!error) return null;
-    const axiosError = error as AxiosError<ApiError>;
-    return axiosError.response?.data?.message || t("common.errors.error");
+    const result = await deleteMutation.mutateAsync(deletingCategory.id);
+
+    result.match(
+      () => setDeletingCategory(null),
+      (error) => {
+        // Tu można dodać np. toast z błędem, jeśli usuwanie się nie powiodło
+        console.error(translateError(error));
+      },
+    );
   };
 
   if (isLoading) {
@@ -182,7 +196,7 @@ export const CategoriesPage = () => {
         onSubmit={handleCreate}
         isLoading={createMutation.isLoading}
         mode="create"
-        error={getErrorMessage(createMutation.error)}
+        error={createFormError}
       />
       <CategoryModal
         open={!!editingCategory}
@@ -191,7 +205,7 @@ export const CategoriesPage = () => {
         isLoading={updateMutation.isLoading}
         initialName={editingCategory?.name || ""}
         mode="edit"
-        error={getErrorMessage(updateMutation.error)}
+        error={updateFormError}
       />
       <Dialog
         open={!!deletingCategory}
