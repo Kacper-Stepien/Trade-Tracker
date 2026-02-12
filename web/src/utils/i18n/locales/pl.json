@@ -93,8 +93,30 @@
         "placeholder": "Wpisz nazwę kategori"
       },
       "deleteModal": {
-        "title": "Delete Category",
-        "confirmation": "Are you sure you want to delete"
+        "title": "Usuń kategorię",
+        "confirmation": "Czy na pewno chcesz usunąć tę kategorię?"
+      }
+    },
+    "costTypes": {
+      "title": "Typy kosztów",
+      "description": "Zarządzaj swoimi typami kosztów",
+      "table": {
+        "name": "Nazwa",
+        "actions": "Akcje"
+      },
+      "addModal": {
+        "title": "Dodaj typ kosztu",
+        "label": "Nazwa typu kosztu",
+        "placeholder": "Wpisz nazwę typu kosztu"
+      },
+      "editModal": {
+        "title": "Edytuj typ kosztu",
+        "label": "Nazwa typu kosztu",
+        "placeholder": "Wpisz nazwę typu kosztu"
+      },
+      "deleteModal": {
+        "title": "Usuń typ kosztu",
+        "confirmation": "Czy na pewno chcesz usunąć ten typ kosztu?"
       }
     }
   }

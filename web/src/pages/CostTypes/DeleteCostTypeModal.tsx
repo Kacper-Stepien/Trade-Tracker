@@ -1,24 +1,24 @@
 import { Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useDeleteCategoryMutation } from "../../hooks/categories";
-import { Category } from "../../types/Category.type";
+import { useDeleteCostTypeMutation } from "../../hooks/cost_types";
+import { CostType } from "../../types/CostType.type";
 import { translateError } from "../../utils/translateError";
 import { FC } from "react";
 import { BaseModal } from "../../components/BaseModal/BaseModal";
 
 interface Props {
-  category: Category | null;
+  costType: CostType | null;
   onClose: () => void;
 }
 
-export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
+export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
   const { t } = useTranslation();
-  const deleteMutation = useDeleteCategoryMutation();
+  const deleteMutation = useDeleteCostTypeMutation();
 
   const handleConfirm = async () => {
-    if (!category) return;
+    if (!costType) return;
 
-    const result = await deleteMutation.mutateAsync(category.id);
+    const result = await deleteMutation.mutateAsync(costType.id);
 
     result.match(
       () => onClose(),
@@ -30,9 +30,9 @@ export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
 
   return (
     <BaseModal
-      open={!!category}
+      open={!!costType}
       onClose={onClose}
-      title={t("pages.categories.deleteModal.title")}
+      title={t("pages.costTypes.deleteModal.title")}
       actions={
         <>
           <Button onClick={onClose} color="inherit">
@@ -57,7 +57,7 @@ export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
       }
     >
       <Typography>
-        {t("pages.categories.deleteModal.confirmation")} "{category?.name}"?
+        {t("pages.costTypes.deleteModal.confirmation")} "{costType?.name}"?
       </Typography>
     </BaseModal>
   );

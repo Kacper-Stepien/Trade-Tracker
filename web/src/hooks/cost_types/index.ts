@@ -25,7 +25,7 @@ export const updateCostType = ({ id, name }: UpdateCostType) => {
 };
 
 export const deleteCostType = (id: number): ResultAsync<void, ApiError> => {
-  return toResult(axiosInstance.delete(`/product-categories/${id}`));
+  return toResult(axiosInstance.delete(`/cost-type/${id}`));
 };
 
 export const useCostTypesQuery = () => {
