@@ -6,7 +6,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardPage from "../../pages/DashboardPage";
-import { CategoriesPage } from "../../pages/CategoriesPage";
+import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 
 export const router = createBrowserRouter([
   {

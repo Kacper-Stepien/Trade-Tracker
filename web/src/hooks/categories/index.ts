@@ -4,8 +4,6 @@ import { axiosInstance } from "../../utils/axiosInstance";
 import { ResultAsync } from "neverthrow";
 import { ApiError } from "../../types/errors";
 import { toResult } from "../../utils/resultWrapper";
-import { CategoryAlreadyExistsError } from "../../types/categoryErrors";
-import { ApiErrorCode } from "../../types/api-error-code.type";
 
 export const CATEGORIES_QUERY_KEY = ["categories"];
 
@@ -19,12 +17,7 @@ export const createCategory = (
 ): ResultAsync<Category, ApiError> => {
   return toResult(
     axiosInstance.post<Category>("/product-categories", { name }),
-  ).mapErr((error): ApiError => {
-    if (error.code === ApiErrorCode.CATEGORY_ALREADY_EXISTS) {
-      return new CategoryAlreadyExistsError(error.message, error.context);
-    }
-    return error;
-  });
+  );
 };
 
 export const updateCategory = ({
@@ -36,12 +29,7 @@ export const updateCategory = ({
 }): ResultAsync<Category, ApiError> => {
   return toResult(
     axiosInstance.patch<Category>(`/product-categories/${id}`, { name }),
-  ).mapErr((error): ApiError => {
-    if (error.code === ApiErrorCode.CATEGORY_ALREADY_EXISTS) {
-      return new CategoryAlreadyExistsError(error.message, error.context);
-    }
-    return error;
-  });
+  );
 };
 
 export const deleteCategory = (id: number): ResultAsync<void, ApiError> => {
@@ -61,7 +49,6 @@ export const useCreateCategoryMutation = () => {
   return useMutation({
     mutationFn: async (name: string) => {
       const result = await createCategory(name);
-      console.log(result);
       return result;
     },
     onSuccess: (result) => {
