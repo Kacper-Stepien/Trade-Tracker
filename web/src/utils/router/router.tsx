@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import DashboardPage from "../../pages/DashboardPage";
 import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
+import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ export const router = createBrowserRouter([
           { path: "/categories", element: <CategoriesPage /> },
           {
             path: "/cost-types",
-            element: <div>Cost Types Page - Coming Soon</div>,
+            element: <CostTypesPage />,
           },
           {
             path: "/statistics",

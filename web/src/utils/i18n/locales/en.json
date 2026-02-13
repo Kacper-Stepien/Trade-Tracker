@@ -72,7 +72,10 @@
     "NETWORK_ERROR": "No internet connection. Please check your network",
     "SERVER_UNAVAILABLE": "Server is temporarily unavailable. Please try again later",
     "CATEGORY_ALREADY_EXISTS": "A category with this name already exists",
-    "CATEGORY_HAS_PRODUCTS": "Cannot delete a category that has products assigned to it"
+    "CATEGORY_HAS_PRODUCTS": "Cannot delete a category that has products assigned to it",
+    "COST_TYPE_NOT_FOUND": "Cost type not found",
+    "COST_TYPE_ALREADY_EXISTS": "Cost type with this name already exists",
+    "COST_TYPE_HAS_ASSOCIATED_COSTS": "Cannot delete a cost type that has associated costs"
   },
 
   "pages": {
@@ -96,6 +99,28 @@
       "deleteModal": {
         "title": "Delete Category",
         "confirmation": "Are you sure you want to delete"
+      }
+    },
+    "costTypes": {
+      "title": "Cost Types",
+      "description": "Manage your cost types",
+      "table": {
+        "name": "Name",
+        "actions": "Actions"
+      },
+      "addModal": {
+        "title": "Add Cost Type",
+        "label": "Cost Type Name",
+        "placeholder": "Enter cost type name"
+      },
+      "editModal": {
+        "title": "Edit Cost Type",
+        "label": "Cost Type Name",
+        "placeholder": "Enter cost type name"
+      },
+      "deleteModal": {
+        "title": "Delete Cost Type",
+        "confirmation": "Are you sure you want to delete this cost type?"
       }
     }
   }

@@ -11,6 +11,8 @@ import { UpdateCostTypeDto } from './dtos/update-cost-type.dto';
 import { CostTypeDto } from './dtos/cost-type.dto';
 import { CostTypeMapper } from './cost-type.mapper';
 import { Logger } from '@kacper2076/logger-client';
+import { ProductCost } from 'src/product-cost/product-cost.entity';
+import { ApiErrorCode } from 'src/common/constants/error-codes';
 
 @Injectable()
 export class CostTypeService {
@@ -19,13 +21,18 @@ export class CostTypeService {
   constructor(
     @InjectRepository(CostType)
     private costTypeRepository: Repository<CostType>,
+    @InjectRepository(ProductCost)
+    private readonly productCostRepository: Repository<ProductCost>,
   ) {}
 
   async getCostTypeById(id: number): Promise<CostTypeDto> {
     const costType = await this.costTypeRepository.findOneBy({ id });
     if (!costType) {
       this.logger.warn('Cost type not found', { costTypeId: id });
-      throw new NotFoundException(`Cost type with ID ${id} not found`);
+      throw new NotFoundException({
+        message: `Cost type with ID ${id} not found`,
+        code: ApiErrorCode.COST_TYPE_NOT_FOUND,
+      });
     }
     return CostTypeMapper.toDto(costType);
   }
@@ -62,7 +69,10 @@ export class CostTypeService {
     const costType = await this.costTypeRepository.findOneBy({ id });
     if (!costType) {
       this.logger.warn('Cost type not found for update', { costTypeId: id });
-      throw new NotFoundException(`Cost type with ID ${id} not found`);
+      throw new NotFoundException({
+        message: `Cost type with ID ${id} not found`,
+        code: ApiErrorCode.COST_TYPE_NOT_FOUND,
+      });
     }
 
     costType.name = name;
@@ -74,11 +84,30 @@ export class CostTypeService {
 
   async deleteCostType(id: number): Promise<void> {
     this.logger.info('Deleting cost type', { costTypeId: id });
+    const associatedCosts = await this.productCostRepository.countBy({
+      costType: { id },
+    });
+    if (associatedCosts > 0) {
+      this.logger.warn(
+        'Cannot delete cost type with associated product costs',
+        {
+          costTypeId: id,
+          associatedCosts,
+        },
+      );
+      throw new ConflictException({
+        message: 'Cannot delete cost type with associated product costs',
+        code: ApiErrorCode.COST_TYPE_HAS_ASSOCIATED_COSTS,
+      });
+    }
 
     const result = await this.costTypeRepository.delete(id);
     if (result.affected === 0) {
       this.logger.warn('Cost type not found for deletion', { costTypeId: id });
-      throw new NotFoundException(`Cost type with ID ${id} not found`);
+      throw new NotFoundException({
+        message: `Cost type with ID ${id} not found`,
+        code: ApiErrorCode.COST_TYPE_NOT_FOUND,
+      });
     }
 
     this.logger.info('Cost type deleted successfully', { costTypeId: id });
@@ -88,7 +117,10 @@ export class CostTypeService {
     const costType = await this.costTypeRepository.findOneBy({ name });
     if (costType) {
       this.logger.warn('Cost type with this name already exists', { name });
-      throw new ConflictException(`Cost type with name ${name} already exists`);
+      throw new ConflictException({
+        message: `Cost type with name "${name}" already exists`,
+        code: ApiErrorCode.COST_TYPE_ALREADY_EXISTS,
+      });
     }
   }
 }
