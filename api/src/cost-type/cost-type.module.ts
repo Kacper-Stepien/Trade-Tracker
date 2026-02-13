@@ -4,10 +4,11 @@ import { CostTypeService } from './cost-type.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CostType } from './cost-type.entity';
 import { ProductCostModule } from 'src/product-cost/product-cost.module';
+import { ProductCost } from 'src/product-cost/product-cost.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CostType]),
+    TypeOrmModule.forFeature([CostType, ProductCost]),
     forwardRef(() => ProductCostModule),
   ],
   controllers: [CostTypeController],

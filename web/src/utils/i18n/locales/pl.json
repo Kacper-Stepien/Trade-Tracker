@@ -71,7 +71,10 @@
     "NETWORK_ERROR": "Brak połączenia z internetem. Sprawdź swoje połączenie sieciowe",
     "SERVER_UNAVAILABLE": "Serwer jest tymczasowo niedostępny. Spróbuj ponownie później",
     "CATEGORY_ALREADY_EXISTS": "Kategoria o tej nazwie już istnieje",
-    "CATEGORY_HAS_PRODUCTS": "Nie można usunąć kategorii, która ma przypisane produkty"
+    "CATEGORY_HAS_PRODUCTS": "Nie można usunąć kategorii, która ma przypisane produkty",
+    "COST_TYPE_NOT_FOUND": "Nie znaleziono typu kosztu",
+    "COST_TYPE_ALREADY_EXISTS": "Typ kosztu o tej nazwie już istnieje",
+    "COST_TYPE_HAS_ASSOCIATED_COSTS": "Nie można usunąć typu kosztu, który ma przypisane koszty"
   },
 
   "pages": {
