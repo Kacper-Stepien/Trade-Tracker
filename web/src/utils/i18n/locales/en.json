@@ -79,6 +79,31 @@
   },
 
   "pages": {
+    "products": {
+      "title": "Products",
+      "description": "Browse and manage your products",
+      "actions": {
+        "addProduct": "Add Product"
+      },
+      "status": {
+        "sold": "Sold",
+        "unsold": "Unsold"
+      },
+      "table": {
+        "name": "Name",
+        "category": "Category",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "sold": "Status",
+        "salePrice": "Sale Price",
+        "saleDate": "Sale Date",
+        "empty": "No products to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
+      }
+    },
     "categories": {
       "title": "Categories",
       "description": "Manage your product categories",
@@ -125,3 +150,4 @@
     }
   }
 }
+

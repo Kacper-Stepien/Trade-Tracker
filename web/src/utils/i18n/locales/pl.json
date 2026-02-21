@@ -78,6 +78,31 @@
   },
 
   "pages": {
+    "products": {
+      "title": "Produkty",
+      "description": "Przegladaj i zarzadzaj swoimi produktami",
+      "actions": {
+        "addProduct": "Dodaj produkt"
+      },
+      "status": {
+        "sold": "Sprzedany",
+        "unsold": "Niesprzedany"
+      },
+      "table": {
+        "name": "Nazwa",
+        "category": "Kategoria",
+        "purchasePrice": "Cena zakupu",
+        "purchaseDate": "Data zakupu",
+        "sold": "Status",
+        "salePrice": "Cena sprzedazy",
+        "saleDate": "Data sprzedazy",
+        "empty": "Brak produktow do wyswietlenia"
+      },
+      "pagination": {
+        "rowsPerPage": "Wierszy na strone:",
+        "displayedRows": "{{from}}-{{to}} z {{total}}"
+      }
+    },
     "categories": {
       "title": "Kategorie",
       "description": "Zarządzaj swoimi kategoriami produktów",
@@ -124,3 +149,4 @@
     }
   }
 }
+

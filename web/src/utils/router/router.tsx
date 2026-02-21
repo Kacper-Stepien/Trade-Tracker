@@ -8,6 +8,7 @@ import PublicRoute from "./PublicRoute";
 import DashboardPage from "../../pages/DashboardPage";
 import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
+import { ProductsPage } from "../../pages/Products/ProductsPage";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
           { path: "/", element: <DashboardPage /> },
           {
             path: "/products",
-            element: <div>Products Page - Coming Soon</div>,
+            element: <ProductsPage />,
           },
           { path: "/categories", element: <CategoriesPage /> },
           {
