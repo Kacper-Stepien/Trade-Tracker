@@ -79,6 +79,31 @@
   },
 
   "pages": {
+    "addProduct": {
+      "title": "Add Product",
+      "description": "Create a new product entry",
+      "sections": {
+        "productInfo": "Product Information",
+        "category": "Category",
+        "attributes": "Attributes"
+      },
+      "fields": {
+        "name": "Product Name",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "category": "Category",
+        "attributeName": "Attribute Name",
+        "attributeValue": "Attribute Value",
+        "noAttributes": "No attributes added"
+      },
+      "actions": {
+        "addAttribute": "Add Attribute",
+        "removeAttribute": "Remove Attribute"
+      },
+      "validation": {
+        "required": "This field is required"
+      }
+    },
     "products": {
       "title": "Products",
       "description": "Browse and manage your products",

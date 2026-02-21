@@ -78,6 +78,31 @@
   },
 
   "pages": {
+    "addProduct": {
+      "title": "Dodaj produkt",
+      "description": "Utworz nowy wpis produktu",
+      "sections": {
+        "productInfo": "Informacje o produkcie",
+        "category": "Kategoria",
+        "attributes": "Atrybuty"
+      },
+      "fields": {
+        "name": "Nazwa produktu",
+        "purchasePrice": "Cena zakupu",
+        "purchaseDate": "Data zakupu",
+        "category": "Kategoria",
+        "attributeName": "Nazwa atrybutu",
+        "attributeValue": "Wartosc atrybutu",
+        "noAttributes": "Brak dodanych atrybutow"
+      },
+      "actions": {
+        "addAttribute": "Dodaj atrybut",
+        "removeAttribute": "Usun atrybut"
+      },
+      "validation": {
+        "required": "To pole jest wymagane"
+      }
+    },
     "products": {
       "title": "Produkty",
       "description": "Przegladaj i zarzadzaj swoimi produktami",

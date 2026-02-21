@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -33,6 +34,7 @@ import {
 
 export const ProductsPage = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const {
     page,
     rowsPerPage,
@@ -57,7 +59,9 @@ export const ProductsPage = () => {
     category: categoryParam,
   });
 
-  const handleCreateProduct = () => {};
+  const handleCreateProduct = () => {
+    navigate("/products/add");
+  };
 
   if (isLoading) {
     return <PageLoader />;
@@ -68,12 +72,20 @@ export const ProductsPage = () => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
         mb={4}
+        flexShrink={0}
       >
         <Box>
           <Typography variant="h4" fontWeight={600}>
@@ -93,7 +105,12 @@ export const ProductsPage = () => {
         </Button>
       </Box>
 
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={2}
+        mb={3}
+        flexShrink={0}
+      >
         <FormControl sx={{ minWidth: 220 }}>
           <InputLabel id="products-status-filter-label">
             {t("pages.products.filters.status")}
@@ -138,9 +155,37 @@ export const ProductsPage = () => {
         </FormControl>
       </Stack>
 
-      <TableContainer component={Paper} sx={{ borderRadius: 2 }} elevation={0}>
-        <Box sx={{ px: 2, py: 6 }}>
-          <Table>
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: 2,
+          border: 1,
+          borderColor: "divider",
+          flex: 1,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        <TableContainer
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: "scroll",
+            overflowX: "auto",
+            boxShadow: "inset 0 6px 6px -8px rgba(0,0,0,0.35)",
+          }}
+        >
+          <Table
+            stickyHeader
+            sx={{
+              "& .MuiTableCell-stickyHeader": {
+                backgroundColor: "background.paper",
+                zIndex: 2,
+              },
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell>{t("pages.products.table.name")}</TableCell>
@@ -192,7 +237,7 @@ export const ProductsPage = () => {
               )}
             </TableBody>
           </Table>
-        </Box>
+        </TableContainer>
         <TablePagination
           component="div"
           count={data?.total ?? 0}
@@ -210,7 +255,7 @@ export const ProductsPage = () => {
             })
           }
         />
-      </TableContainer>
+      </Paper>
     </Box>
   );
 };

@@ -9,6 +9,7 @@ import DashboardPage from "../../pages/DashboardPage";
 import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
 import { ProductsPage } from "../../pages/Products/ProductsPage";
+import { AddProductPage } from "../../pages/Products/AddProductPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
           {
             path: "/products",
             element: <ProductsPage />,
+          },
+          {
+            path: "/products/add",
+            element: <AddProductPage />,
           },
           { path: "/categories", element: <CategoriesPage /> },
           {
