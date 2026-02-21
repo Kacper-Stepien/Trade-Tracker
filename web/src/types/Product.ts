@@ -42,6 +42,21 @@ export type GetProductsParams = {
   category?: number;
 };
 
+export const PRODUCT_SOLD_FILTER = {
+  ALL: "all",
+  SOLD: "sold",
+  UNSOLD: "unsold",
+} as const;
+
+export type ProductSoldFilter =
+  (typeof PRODUCT_SOLD_FILTER)[keyof typeof PRODUCT_SOLD_FILTER];
+
+export const PRODUCT_CATEGORY_FILTER_ALL = "all";
+
+export type ProductCategoryFilter =
+  | typeof PRODUCT_CATEGORY_FILTER_ALL
+  | `${number}`;
+
 export type CreateProductAttributeInput = {
   name: string;
   value: string;

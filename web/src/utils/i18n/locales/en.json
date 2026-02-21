@@ -82,6 +82,16 @@
     "products": {
       "title": "Products",
       "description": "Browse and manage your products",
+      "filters": {
+        "status": "Status",
+        "category": "Category",
+        "options": {
+          "allStatuses": "All statuses",
+          "allCategories": "All categories",
+          "sold": "Sold",
+          "unsold": "Unsold"
+        }
+      },
       "actions": {
         "addProduct": "Add Product"
       },

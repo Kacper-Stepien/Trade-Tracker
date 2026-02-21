@@ -81,6 +81,16 @@
     "products": {
       "title": "Produkty",
       "description": "Przegladaj i zarzadzaj swoimi produktami",
+      "filters": {
+        "status": "Status",
+        "category": "Kategoria",
+        "options": {
+          "allStatuses": "Wszystkie statusy",
+          "allCategories": "Wszystkie kategorie",
+          "sold": "Sprzedany",
+          "unsold": "Niesprzedany"
+        }
+      },
       "actions": {
         "addProduct": "Dodaj produkt"
       },
