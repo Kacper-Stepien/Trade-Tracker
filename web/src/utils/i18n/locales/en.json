@@ -108,6 +108,11 @@
       "description": "Detailed product information",
       "backToList": "Back to products",
       "invalidId": "Invalid product ID",
+      "actions": {
+        "editProduct": "Edit Product",
+        "markAsSold": "Mark as Sold",
+        "markAsUnsold": "Mark as Unsold"
+      },
       "sections": {
         "summary": "Summary",
         "attributes": "Attributes",
@@ -173,6 +178,18 @@
         "deleteModal": {
           "title": "Delete Attribute",
           "confirmation": "Are you sure you want to delete"
+        }
+      },
+      "productModals": {
+        "edit": {
+          "title": "Edit Product"
+        },
+        "markSold": {
+          "title": "Mark Product as Sold"
+        },
+        "markUnsold": {
+          "title": "Mark Product as Unsold",
+          "confirmation": "This will clear sale date and sale price. Continue?"
         }
       }
     },

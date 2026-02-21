@@ -31,6 +31,9 @@ import { DeleteProductCostModal } from "./DeleteProductCostModal";
 import { CreateProductAttributeModal } from "./CreateProductAttributeModal";
 import { EditProductAttributeModal } from "./EditProductAttributeModal";
 import { DeleteProductAttributeModal } from "./DeleteProductAttributeModal";
+import { EditProductModal } from "./EditProductModal";
+import { MarkProductAsSoldModal } from "./MarkProductAsSoldModal";
+import { MarkProductAsUnsoldModal } from "./MarkProductAsUnsoldModal";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -48,6 +51,10 @@ export const ProductDetailsPage = () => {
   );
   const [deletingAttribute, setDeletingAttribute] =
     useState<ProductAttribute | null>(null);
+  const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
+  const [isMarkAsSoldModalOpen, setIsMarkAsSoldModalOpen] = useState(false);
+  const [isMarkAsUnsoldModalOpen, setIsMarkAsUnsoldModalOpen] =
+    useState(false);
 
   const { data: product, isLoading, isError } = useProductByIdQuery(
     productId,
@@ -93,9 +100,41 @@ export const ProductDetailsPage = () => {
 
       <Stack spacing={3}>
         <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-          <Typography variant="h6" mb={2}>
-            {t("pages.productDetails.sections.summary")}
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h6">
+              {t("pages.productDetails.sections.summary")}
+            </Typography>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+              <Button
+                variant="outlined"
+                onClick={() => setIsEditProductModalOpen(true)}
+              >
+                {t("pages.productDetails.actions.editProduct")}
+              </Button>
+              {product.sold ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setIsMarkAsUnsoldModalOpen(true)}
+                >
+                  {t("pages.productDetails.actions.markAsUnsold")}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setIsMarkAsSoldModalOpen(true)}
+                >
+                  {t("pages.productDetails.actions.markAsSold")}
+                </Button>
+              )}
+            </Stack>
+          </Box>
           <Stack spacing={1}>
             <Typography>
               {t("pages.productDetails.fields.category")}:{" "}
@@ -282,6 +321,21 @@ export const ProductDetailsPage = () => {
         productId={productId}
         attribute={deletingAttribute}
         onClose={() => setDeletingAttribute(null)}
+      />
+
+      <EditProductModal
+        product={isEditProductModalOpen ? product : null}
+        onClose={() => setIsEditProductModalOpen(false)}
+      />
+      <MarkProductAsSoldModal
+        open={isMarkAsSoldModalOpen}
+        productId={productId}
+        onClose={() => setIsMarkAsSoldModalOpen(false)}
+      />
+      <MarkProductAsUnsoldModal
+        open={isMarkAsUnsoldModalOpen}
+        productId={productId}
+        onClose={() => setIsMarkAsUnsoldModalOpen(false)}
       />
     </Box>
   );

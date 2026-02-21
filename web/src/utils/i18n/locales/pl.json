@@ -107,6 +107,11 @@
       "description": "Szczegolowe informacje o produkcie",
       "backToList": "Powrot do produktow",
       "invalidId": "Nieprawidlowe ID produktu",
+      "actions": {
+        "editProduct": "Edytuj produkt",
+        "markAsSold": "Oznacz jako sprzedany",
+        "markAsUnsold": "Oznacz jako niesprzedany"
+      },
       "sections": {
         "summary": "Podsumowanie",
         "attributes": "Atrybuty",
@@ -172,6 +177,18 @@
         "deleteModal": {
           "title": "Usun atrybut",
           "confirmation": "Czy na pewno chcesz usunac"
+        }
+      },
+      "productModals": {
+        "edit": {
+          "title": "Edytuj produkt"
+        },
+        "markSold": {
+          "title": "Oznacz produkt jako sprzedany"
+        },
+        "markUnsold": {
+          "title": "Oznacz produkt jako niesprzedany",
+          "confirmation": "Ta operacja usunie date i cene sprzedazy. Kontynuowac?"
         }
       }
     },
