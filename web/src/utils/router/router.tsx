@@ -10,6 +10,7 @@ import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
 import { ProductsPage } from "../../pages/Products/ProductsPage";
 import { AddProductPage } from "../../pages/Products/AddProductPage";
+import { ProductDetailsPage } from "../../pages/Products/ProductDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
           {
             path: "/products/add",
             element: <AddProductPage />,
+          },
+          {
+            path: "/products/:id",
+            element: <ProductDetailsPage />,
           },
           { path: "/categories", element: <CategoriesPage /> },
           {

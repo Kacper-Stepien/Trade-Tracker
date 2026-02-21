@@ -103,6 +103,59 @@
         "required": "To pole jest wymagane"
       }
     },
+    "productDetails": {
+      "description": "Szczegolowe informacje o produkcie",
+      "backToList": "Powrot do produktow",
+      "invalidId": "Nieprawidlowe ID produktu",
+      "sections": {
+        "summary": "Podsumowanie",
+        "attributes": "Atrybuty",
+        "costs": "Koszty"
+      },
+      "fields": {
+        "category": "Kategoria",
+        "purchasePrice": "Cena zakupu",
+        "purchaseDate": "Data zakupu",
+        "status": "Status",
+        "salePrice": "Cena sprzedazy",
+        "saleDate": "Data sprzedazy"
+      },
+      "tables": {
+        "name": "Nazwa",
+        "value": "Wartosc",
+        "price": "Cena",
+        "date": "Data",
+        "description": "Opis",
+        "costType": "Typ kosztu",
+        "actions": "Akcje"
+      },
+      "empty": {
+        "attributes": "Brak atrybutow",
+        "costs": "Brak kosztow"
+      },
+      "costs": {
+        "actions": {
+          "add": "Dodaj koszt"
+        },
+        "fields": {
+          "name": "Nazwa",
+          "description": "Opis",
+          "price": "Cena",
+          "date": "Data",
+          "costType": "Typ kosztu"
+        },
+        "addModal": {
+          "title": "Dodaj koszt"
+        },
+        "editModal": {
+          "title": "Edytuj koszt"
+        },
+        "deleteModal": {
+          "title": "Usun koszt",
+          "confirmation": "Czy na pewno chcesz usunac"
+        }
+      }
+    },
     "products": {
       "title": "Produkty",
       "description": "Przegladaj i zarzadzaj swoimi produktami",

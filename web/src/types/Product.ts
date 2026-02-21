@@ -10,6 +10,10 @@ export type ProductCost = {
   description: string | null;
   price: number;
   date: string;
+  costType?: {
+    id: number;
+    name: string;
+  };
 };
 
 export type ProductCategory = {
@@ -82,4 +86,27 @@ export type MarkProductAsSoldInput = {
   id: number;
   salePrice: number;
   saleDate: string;
+};
+
+export type CreateProductCostInput = {
+  name: string;
+  description: string;
+  price: number;
+  date: string;
+  productId: number;
+  costTypeId: number;
+};
+
+export type UpdateProductCostInput = {
+  id: number;
+  productId: number;
+  name?: string;
+  description?: string;
+  price?: number;
+  date?: string;
+};
+
+export type DeleteProductCostInput = {
+  id: number;
+  productId: number;
 };

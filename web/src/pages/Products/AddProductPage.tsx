@@ -142,7 +142,9 @@ export const AddProductPage = () => {
                   <Controller
                     name="purchaseDate"
                     control={control}
-                    rules={{ required: t("pages.addProduct.validation.required") }}
+                    rules={{
+                      required: t("pages.addProduct.validation.required"),
+                    }}
                     render={({ field, fieldState }) => (
                       <DatePicker
                         label={t("pages.addProduct.fields.purchaseDate")}
@@ -243,11 +245,7 @@ export const AddProductPage = () => {
             </Stack>
           </Paper>
 
-          {formError && (
-            <Alert severity="error">
-              {formError}
-            </Alert>
-          )}
+          {formError && <Alert severity="error">{formError}</Alert>}
 
           <Stack direction="row" spacing={2} justifyContent="flex-end">
             <Button

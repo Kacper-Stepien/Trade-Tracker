@@ -200,7 +200,17 @@ export const ProductsPage = () => {
             <TableBody>
               {data?.products.length ? (
                 data.products.map((product) => (
-                  <TableRow key={product.id}>
+                  <TableRow
+                    key={product.id}
+                    hover
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                  >
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.category?.name ?? "-"}</TableCell>
                     <TableCell>

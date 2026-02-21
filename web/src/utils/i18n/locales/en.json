@@ -104,6 +104,59 @@
         "required": "This field is required"
       }
     },
+    "productDetails": {
+      "description": "Detailed product information",
+      "backToList": "Back to products",
+      "invalidId": "Invalid product ID",
+      "sections": {
+        "summary": "Summary",
+        "attributes": "Attributes",
+        "costs": "Costs"
+      },
+      "fields": {
+        "category": "Category",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "status": "Status",
+        "salePrice": "Sale Price",
+        "saleDate": "Sale Date"
+      },
+      "tables": {
+        "name": "Name",
+        "value": "Value",
+        "price": "Price",
+        "date": "Date",
+        "description": "Description",
+        "costType": "Cost Type",
+        "actions": "Actions"
+      },
+      "empty": {
+        "attributes": "No attributes available",
+        "costs": "No costs available"
+      },
+      "costs": {
+        "actions": {
+          "add": "Add Cost"
+        },
+        "fields": {
+          "name": "Name",
+          "description": "Description",
+          "price": "Price",
+          "date": "Date",
+          "costType": "Cost Type"
+        },
+        "addModal": {
+          "title": "Add Cost"
+        },
+        "editModal": {
+          "title": "Edit Cost"
+        },
+        "deleteModal": {
+          "title": "Delete Cost",
+          "confirmation": "Are you sure you want to delete"
+        }
+      }
+    },
     "products": {
       "title": "Products",
       "description": "Browse and manage your products",
