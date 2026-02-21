@@ -61,7 +61,7 @@ export type ProductCategoryFilter =
   | typeof PRODUCT_CATEGORY_FILTER_ALL
   | `${number}`;
 
-export type CreateProductAttributeInput = {
+export type CreateProductAttributeItemInput = {
   name: string;
   value: string;
 };
@@ -71,7 +71,7 @@ export type CreateProductInput = {
   purchasePrice: number;
   purchaseDate: string;
   categoryId: number;
-  attributes?: CreateProductAttributeInput[];
+  attributes?: CreateProductAttributeItemInput[];
 };
 
 export type UpdateProductInput = {
@@ -109,4 +109,22 @@ export type UpdateProductCostInput = {
 export type DeleteProductCostInput = {
   id: number;
   productId: number;
+};
+
+export type CreateProductAttributeMutationInput = {
+  productId: number;
+  name: string;
+  value: string;
+};
+
+export type UpdateProductAttributeInput = {
+  productId: number;
+  attributeId: number;
+  name: string;
+  value: string;
+};
+
+export type DeleteProductAttributeInput = {
+  productId: number;
+  attributeId: number;
 };

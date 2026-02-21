@@ -155,6 +155,25 @@
           "title": "Delete Cost",
           "confirmation": "Are you sure you want to delete"
         }
+      },
+      "attributes": {
+        "actions": {
+          "add": "Add Attribute"
+        },
+        "fields": {
+          "name": "Name",
+          "value": "Value"
+        },
+        "addModal": {
+          "title": "Add Attribute"
+        },
+        "editModal": {
+          "title": "Edit Attribute"
+        },
+        "deleteModal": {
+          "title": "Delete Attribute",
+          "confirmation": "Are you sure you want to delete"
+        }
       }
     },
     "products": {

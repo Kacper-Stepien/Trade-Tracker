@@ -154,6 +154,25 @@
           "title": "Usun koszt",
           "confirmation": "Czy na pewno chcesz usunac"
         }
+      },
+      "attributes": {
+        "actions": {
+          "add": "Dodaj atrybut"
+        },
+        "fields": {
+          "name": "Nazwa",
+          "value": "Wartosc"
+        },
+        "addModal": {
+          "title": "Dodaj atrybut"
+        },
+        "editModal": {
+          "title": "Edytuj atrybut"
+        },
+        "deleteModal": {
+          "title": "Usun atrybut",
+          "confirmation": "Czy na pewno chcesz usunac"
+        }
       }
     },
     "products": {

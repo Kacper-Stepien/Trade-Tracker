@@ -24,10 +24,13 @@ import { useProductByIdQuery } from "../../hooks/products";
 import { useProductCostsQuery } from "../../hooks/product_costs";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { formatDate, formatPrice } from "../../utils/formatters";
-import { ProductCost } from "../../types/Product";
+import { ProductAttribute, ProductCost } from "../../types/Product";
 import { CreateProductCostModal } from "./CreateProductCostModal";
 import { EditProductCostModal } from "./EditProductCostModal";
 import { DeleteProductCostModal } from "./DeleteProductCostModal";
+import { CreateProductAttributeModal } from "./CreateProductAttributeModal";
+import { EditProductAttributeModal } from "./EditProductAttributeModal";
+import { DeleteProductAttributeModal } from "./DeleteProductAttributeModal";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -38,6 +41,13 @@ export const ProductDetailsPage = () => {
   const [isCreateCostModalOpen, setIsCreateCostModalOpen] = useState(false);
   const [editingCost, setEditingCost] = useState<ProductCost | null>(null);
   const [deletingCost, setDeletingCost] = useState<ProductCost | null>(null);
+  const [isCreateAttributeModalOpen, setIsCreateAttributeModalOpen] =
+    useState(false);
+  const [editingAttribute, setEditingAttribute] = useState<ProductAttribute | null>(
+    null,
+  );
+  const [deletingAttribute, setDeletingAttribute] =
+    useState<ProductAttribute | null>(null);
 
   const { data: product, isLoading, isError } = useProductByIdQuery(
     productId,
@@ -117,9 +127,24 @@ export const ProductDetailsPage = () => {
         </Paper>
 
         <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-          <Typography variant="h6" mb={2}>
-            {t("pages.productDetails.sections.attributes")}
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h6">
+              {t("pages.productDetails.sections.attributes")}
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={() => setIsCreateAttributeModalOpen(true)}
+            >
+              {t("pages.productDetails.attributes.actions.add")}
+            </Button>
+          </Box>
           {!product.attributes.length ? (
             <Typography color="text.secondary">
               {t("pages.productDetails.empty.attributes")}
@@ -131,6 +156,9 @@ export const ProductDetailsPage = () => {
                   <TableRow>
                     <TableCell>{t("pages.productDetails.tables.name")}</TableCell>
                     <TableCell>{t("pages.productDetails.tables.value")}</TableCell>
+                    <TableCell align="right">
+                      {t("pages.productDetails.tables.actions")}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -138,6 +166,17 @@ export const ProductDetailsPage = () => {
                     <TableRow key={attribute.id}>
                       <TableCell>{attribute.name}</TableCell>
                       <TableCell>{attribute.value}</TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => setEditingAttribute(attribute)}>
+                          <EditOutlinedIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => setDeletingAttribute(attribute)}
+                        >
+                          <DeleteOutlinedIcon />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -227,6 +266,22 @@ export const ProductDetailsPage = () => {
         productId={productId}
         cost={deletingCost}
         onClose={() => setDeletingCost(null)}
+      />
+
+      <CreateProductAttributeModal
+        open={isCreateAttributeModalOpen}
+        productId={productId}
+        onClose={() => setIsCreateAttributeModalOpen(false)}
+      />
+      <EditProductAttributeModal
+        productId={productId}
+        attribute={editingAttribute}
+        onClose={() => setEditingAttribute(null)}
+      />
+      <DeleteProductAttributeModal
+        productId={productId}
+        attribute={deletingAttribute}
+        onClose={() => setDeletingAttribute(null)}
       />
     </Box>
   );
