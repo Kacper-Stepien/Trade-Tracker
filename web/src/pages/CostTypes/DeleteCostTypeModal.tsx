@@ -1,9 +1,9 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDeleteCostTypeMutation } from "../../hooks/cost_types";
 import { CostType } from "../../types/CostType.type";
 import { translateError } from "../../utils/translateError";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { BaseModal } from "../../components/BaseModal/BaseModal";
 
 interface Props {
@@ -14,16 +14,24 @@ interface Props {
 export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
   const { t } = useTranslation();
   const deleteMutation = useDeleteCostTypeMutation();
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleClose = () => {
+    deleteMutation.reset();
+    setFormError(null);
+    onClose();
+  };
 
   const handleConfirm = async () => {
     if (!costType) return;
 
+    setFormError(null);
     const result = await deleteMutation.mutateAsync(costType.id);
 
     result.match(
-      () => onClose(),
+      () => handleClose(),
       (error) => {
-        console.error(translateError(error));
+        setFormError(translateError(error));
       },
     );
   };
@@ -31,11 +39,11 @@ export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
   return (
     <BaseModal
       open={!!costType}
-      onClose={onClose}
+      onClose={handleClose}
       title={t("pages.costTypes.deleteModal.title")}
       actions={
         <>
-          <Button onClick={onClose} color="inherit">
+          <Button onClick={handleClose} color="inherit">
             {t("common.actions.cancel")}
           </Button>
           <Button
@@ -56,6 +64,11 @@ export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
         </>
       }
     >
+      {formError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {formError}
+        </Alert>
+      )}
       <Typography>
         {t("pages.costTypes.deleteModal.confirmation")} "{costType?.name}"?
       </Typography>

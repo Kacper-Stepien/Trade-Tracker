@@ -294,7 +294,13 @@
       "description": "Manage your cost types",
       "table": {
         "name": "Name",
-        "actions": "Actions"
+        "costsCount": "Costs count",
+        "actions": "Actions",
+        "empty": "No cost types to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
       },
       "addModal": {
         "title": "Add Cost Type",

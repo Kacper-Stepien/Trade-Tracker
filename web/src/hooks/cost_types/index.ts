@@ -1,5 +1,9 @@
 import { ResultAsync } from "neverthrow";
-import { CostType, UpdateCostType } from "../../types/CostType.type";
+import {
+  CostType,
+  CostTypesResponse,
+  UpdateCostType,
+} from "../../types/CostType.type";
 import { axiosInstance } from "../../utils/axiosInstance";
 import { ApiError } from "../../types/errors";
 import { toResult } from "../../utils/resultWrapper";
@@ -7,8 +11,39 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const COST_TYPES_QUERY_KEY = ["cost_types"];
 
-const fetchCostTypes = async (): Promise<CostType[]> => {
-  const response = await axiosInstance.get<CostType[]>("/cost-type");
+type GetCostTypesParams = {
+  page?: number;
+  limit?: number;
+};
+
+const fetchCostTypes = async (
+  params: GetCostTypesParams = {},
+): Promise<CostTypesResponse> => {
+  const response = await axiosInstance.get<CostTypesResponse | CostType[]>(
+    "/cost-type",
+    {
+      params: {
+        page: params.page ?? 1,
+        limit: params.limit ?? 1000,
+      },
+    },
+  );
+
+  if (Array.isArray(response.data)) {
+    return {
+      costTypes: response.data,
+      total: response.data.length,
+    };
+  }
+
+  return {
+    costTypes: response.data.costTypes ?? [],
+    total: response.data.total ?? 0,
+  };
+};
+
+const fetchAllCostTypes = async (): Promise<CostType[]> => {
+  const response = await axiosInstance.get<CostType[]>("/cost-type/all");
   return response.data;
 };
 
@@ -30,8 +65,20 @@ export const deleteCostType = (id: number): ResultAsync<void, ApiError> => {
 
 export const useCostTypesQuery = () => {
   return useQuery({
-    queryKey: COST_TYPES_QUERY_KEY,
-    queryFn: fetchCostTypes,
+    queryKey: [...COST_TYPES_QUERY_KEY, "all"],
+    queryFn: fetchAllCostTypes,
+  });
+};
+
+export const useCostTypesPaginatedQuery = (params: GetCostTypesParams = {}) => {
+  return useQuery({
+    queryKey: [
+      ...COST_TYPES_QUERY_KEY,
+      params.page ?? 1,
+      params.limit ?? 1000,
+      "paginated",
+    ],
+    queryFn: () => fetchCostTypes(params),
   });
 };
 
