@@ -10,6 +10,7 @@ import {
   HttpCode,
   Request,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto } from './dtos/create-product-category.dto';
@@ -20,9 +21,11 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { ProductCategoryDto } from './dtos/product-category.dto';
 import { AuthenticatedRequest } from 'src/auth2/auth-request.interface';
+import { GetProductCategoriesResponseDto } from './dtos/get-product-categories-response.dto';
 
 @Controller('product-categories')
 @ApiTags('product categories')
@@ -33,16 +36,20 @@ export class ProductCategoryController {
 
   @Get()
   @ApiOperation({ summary: 'Get all product categories for current user' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({
     status: 200,
     description: 'Return all product categories',
-    type: [ProductCategoryDto],
+    type: GetProductCategoriesResponseDto,
   })
   getAllCategories(
     @Request() req: AuthenticatedRequest,
-  ): Promise<ProductCategoryDto[]> {
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ categories: ProductCategoryDto[]; total: number }> {
     const userId = req.user.sub;
-    return this.productCategoryService.findAllCategories(userId);
+    return this.productCategoryService.findAllCategories(userId, page, limit);
   }
 
   @Get(':id')

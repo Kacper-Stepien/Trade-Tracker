@@ -12,4 +12,10 @@ export class ProductCategoryDto {
     description: 'The name of the product category',
   })
   name: string;
+
+  @ApiProperty({
+    example: 12,
+    description: 'Number of products assigned to this category',
+  })
+  productsCount: number;
 }
