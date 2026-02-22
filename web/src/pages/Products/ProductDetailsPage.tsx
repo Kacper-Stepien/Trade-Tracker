@@ -4,21 +4,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
   Box,
-  Button,
+  Breadcrumbs,
+  Chip,
   Divider,
   IconButton,
-  Paper,
+  Link,
   Stack,
   Typography,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import AddIcon from "@mui/icons-material/Add";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useProductByIdQuery } from "../../hooks/products";
 import { useProductCostsQuery } from "../../hooks/product_costs";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
-import { formatDate, formatPrice } from "../../utils/formatters";
 import { ProductAttribute, ProductCost } from "../../types/Product";
 import { CreateProductCostModal } from "./CreateProductCostModal";
 import { EditProductCostModal } from "./EditProductCostModal";
@@ -26,15 +25,17 @@ import { DeleteProductCostModal } from "./DeleteProductCostModal";
 import { CreateProductAttributeModal } from "./CreateProductAttributeModal";
 import { EditProductAttributeModal } from "./EditProductAttributeModal";
 import { DeleteProductAttributeModal } from "./DeleteProductAttributeModal";
-import {
-  EditProductFocusField,
-  EditProductModal,
-} from "./EditProductModal";
+import { EditProductFocusField, EditProductModal } from "./EditProductModal";
 import {
   MarkProductAsSoldFocusField,
   MarkProductAsSoldModal,
 } from "./MarkProductAsSoldModal";
 import { MarkProductAsUnsoldModal } from "./MarkProductAsUnsoldModal";
+import { ProductFinancesSection } from "./ProductFinancesSection";
+import { ProductSummarySection } from "./ProductSummarySection";
+import { ProductAttributesSection } from "./ProductAttributesSection";
+import { ProductCostsSection } from "./ProductCostsSection";
+import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -49,9 +50,8 @@ export const ProductDetailsPage = () => {
 
   const [isCreateAttributeModalOpen, setIsCreateAttributeModalOpen] =
     useState(false);
-  const [editingAttribute, setEditingAttribute] = useState<ProductAttribute | null>(
-    null,
-  );
+  const [editingAttribute, setEditingAttribute] =
+    useState<ProductAttribute | null>(null);
   const [deletingAttribute, setDeletingAttribute] =
     useState<ProductAttribute | null>(null);
 
@@ -62,13 +62,13 @@ export const ProductDetailsPage = () => {
   const [isMarkAsSoldModalOpen, setIsMarkAsSoldModalOpen] = useState(false);
   const [markAsSoldFocusField, setMarkAsSoldFocusField] =
     useState<MarkProductAsSoldFocusField | null>(null);
-  const [isMarkAsUnsoldModalOpen, setIsMarkAsUnsoldModalOpen] =
-    useState(false);
+  const [isMarkAsUnsoldModalOpen, setIsMarkAsUnsoldModalOpen] = useState(false);
 
-  const { data: product, isLoading, isError } = useProductByIdQuery(
-    productId,
-    isValidProductId,
-  );
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useProductByIdQuery(productId, isValidProductId);
   const {
     data: costs,
     isLoading: isCostsLoading,
@@ -76,7 +76,9 @@ export const ProductDetailsPage = () => {
   } = useProductCostsQuery(productId, isValidProductId);
 
   if (!isValidProductId) {
-    return <Alert severity="error">{t("pages.productDetails.invalidId")}</Alert>;
+    return (
+      <Alert severity="error">{t("pages.productDetails.invalidId")}</Alert>
+    );
   }
 
   if (isLoading || isCostsLoading) {
@@ -87,354 +89,123 @@ export const ProductDetailsPage = () => {
     return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
   }
 
-  const openEditProductModal = (field: EditProductFocusField) => {
-    setEditProductFocusField(field);
-    setIsEditProductModalOpen(true);
-  };
-
-  const openMarkAsSoldModal = (field: MarkProductAsSoldFocusField) => {
-    setMarkAsSoldFocusField(field);
-    setIsMarkAsSoldModalOpen(true);
-  };
+  const statusColor = product.sold
+    ? PRODUCT_STATUS_COLORS.sold
+    : PRODUCT_STATUS_COLORS.unsold;
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight={600}>
+      <Box display="flex" alignItems="center" gap={1} mb={1}>
+        <IconButton
+          onClick={() => navigate("/products")}
+          size="small"
+          sx={{ bgcolor: "action.hover", borderRadius: 1.5 }}
+        >
+          <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+        </IconButton>
+        <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+          <Link
+            underline="hover"
+            color="inherit"
+            onClick={() => navigate("/products")}
+            sx={{ cursor: "pointer" }}
+          >
+            {t("pages.products.title")}
+          </Link>
+          <Typography color="text.primary" fontWeight={500}>
             {product.name}
           </Typography>
-          <Typography variant="body2">
+        </Breadcrumbs>
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        flexWrap="wrap"
+        gap={2}
+        mb={4}
+      >
+        <Stack spacing={0.5}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography
+              variant="h3"
+              fontWeight={800}
+              sx={{ letterSpacing: "-0.02em" }}
+            >
+              {product.name}
+            </Typography>
+            <Chip
+              icon={
+                product.sold ? <CheckCircleOutlineIcon /> : <ErrorOutlineIcon />
+              }
+              label={
+                product.sold
+                  ? t("pages.productDetails.finances.sold")
+                  : t("pages.productDetails.finances.unsold")
+              }
+              sx={{
+                bgcolor: `${statusColor}20`,
+                color: statusColor,
+                borderColor: `${statusColor}40`,
+                fontWeight: 700,
+                px: 1,
+                "& .MuiChip-icon": { color: "inherit" },
+              }}
+              variant="outlined"
+            />
+          </Box>
+          <Typography variant="body1" color="text.secondary">
             {t("pages.productDetails.description")}
           </Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/products")}
-        >
-          {t("pages.productDetails.backToList")}
-        </Button>
+        </Stack>
       </Box>
 
-      <Stack spacing={3}>
-        <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-          <Typography variant="h6" mb={2}>
-            {t("pages.productDetails.sections.summary")}
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ mb: 4, opacity: 0.6 }} />
 
-          <Box
-            sx={{
-              display: "grid",
-              gap: 2,
-              gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+      <Stack spacing={4}>
+        <ProductFinancesSection
+          product={product}
+          costs={costs ?? []}
+          locale={i18n.language}
+        />
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
+            gap: 3,
+          }}
+        >
+          <ProductSummarySection
+            product={product}
+            costs={costs ?? []}
+            locale={i18n.language}
+            onEditProduct={(field) => {
+              setEditProductFocusField(field);
+              setIsEditProductModalOpen(true);
             }}
-          >
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.addProduct.fields.name")}
-                </Typography>
-                <IconButton size="small" onClick={() => openEditProductModal("name")}>
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">{product.name}</Typography>
-            </Box>
+            onMarkAsSold={(field) => {
+              setMarkAsSoldFocusField(field);
+              setIsMarkAsSoldModalOpen(true);
+            }}
+            onMarkAsUnsold={() => setIsMarkAsUnsoldModalOpen(true)}
+          />
 
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.category")}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => openEditProductModal("categoryId")}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">{product.category?.name ?? "-"}</Typography>
-            </Box>
+          <ProductAttributesSection
+            attributes={product.attributes}
+            onCreate={() => setIsCreateAttributeModalOpen(true)}
+            onEdit={setEditingAttribute}
+            onDelete={setDeletingAttribute}
+          />
+        </Box>
 
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.purchasePrice")}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => openEditProductModal("purchasePrice")}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">
-                {formatPrice(product.purchasePrice, i18n.language)}
-              </Typography>
-            </Box>
-
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.purchaseDate")}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => openEditProductModal("purchaseDate")}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">
-                {formatDate(product.purchaseDate, i18n.language)}
-              </Typography>
-            </Box>
-
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.salePrice")}
-                </Typography>
-                <IconButton size="small" onClick={() => openMarkAsSoldModal("salePrice")}>
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">
-                {formatPrice(product.salePrice, i18n.language)}
-              </Typography>
-            </Box>
-
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.saleDate")}
-                </Typography>
-                <IconButton size="small" onClick={() => openMarkAsSoldModal("saleDate")}>
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Box>
-              <Typography variant="h6">
-                {formatDate(product.saleDate, i18n.language)}
-              </Typography>
-            </Box>
-
-            <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="caption" color="text.secondary">
-                  {t("pages.productDetails.fields.status")}
-                </Typography>
-              </Box>
-              <Box
-                mt={0.5}
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={2}
-              >
-                <Typography
-                  variant="h6"
-                  fontWeight={700}
-                  color={product.sold ? "success.main" : "error.main"}
-                >
-                  {product.sold
-                    ? t("pages.products.status.sold")
-                    : t("pages.products.status.unsold")}
-                </Typography>
-                {product.sold ? (
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setIsMarkAsUnsoldModalOpen(true)}
-                  >
-                    {t("pages.productDetails.actions.markAsUnsold")}
-                  </Button>
-                ) : (
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => openMarkAsSoldModal("salePrice")}
-                  >
-                    {t("pages.productDetails.actions.markAsSold")}
-                  </Button>
-                )}
-              </Box>
-            </Box>
-          </Box>
-        </Paper>
-
-        <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="h6">
-              {t("pages.productDetails.sections.attributes")}
-            </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<AddIcon />}
-              onClick={() => setIsCreateAttributeModalOpen(true)}
-            >
-              {t("pages.productDetails.attributes.actions.add")}
-            </Button>
-          </Box>
-          {!product.attributes.length ? (
-            <Typography color="text.secondary">
-              {t("pages.productDetails.empty.attributes")}
-            </Typography>
-          ) : (
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2, minmax(0, 1fr))",
-                  lg: "repeat(3, minmax(0, 1fr))",
-                },
-              }}
-            >
-              {product.attributes.map((attribute) => (
-                <Box
-                  key={attribute.id}
-                  sx={{
-                    p: 2,
-                    borderRadius: 1.5,
-                    bgcolor: "action.hover",
-                    border: 1,
-                    borderColor: "divider",
-                  }}
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="flex-start"
-                    gap={1}
-                  >
-                    <Box>
-                      <Typography variant="caption" color="primary.main">
-                        {attribute.name}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <IconButton
-                        size="small"
-                        onClick={() => setEditingAttribute(attribute)}
-                      >
-                        <EditOutlinedIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => setDeletingAttribute(attribute)}
-                      >
-                        <DeleteOutlinedIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                  <Box mt={1.5}>
-                    <Typography variant="h6">{attribute.value}</Typography>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </Paper>
-
-        <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="h6">
-              {t("pages.productDetails.sections.costs")}
-            </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<AddIcon />}
-              onClick={() => setIsCreateCostModalOpen(true)}
-            >
-              {t("pages.productDetails.costs.actions.add")}
-            </Button>
-          </Box>
-          {!costs?.length ? (
-            <Typography color="text.secondary">
-              {t("pages.productDetails.empty.costs")}
-            </Typography>
-          ) : (
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2, minmax(0, 1fr))",
-                  lg: "repeat(3, minmax(0, 1fr))",
-                },
-              }}
-            >
-              {costs.map((cost) => (
-                <Box
-                  key={cost.id}
-                  sx={{
-                    p: 2,
-                    borderRadius: 1.5,
-                    bgcolor: "action.hover",
-                    border: 1,
-                    borderColor: "divider",
-                  }}
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="flex-start"
-                    gap={1}
-                  >
-                    <Box>
-                      <Typography variant="caption" color="primary.main">
-                        {cost.name}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <IconButton size="small" onClick={() => setEditingCost(cost)}>
-                        <EditOutlinedIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => setDeletingCost(cost)}
-                      >
-                        <DeleteOutlinedIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                  <Typography variant="h6" mt={1.5}>
-                    {formatPrice(cost.price, i18n.language)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    {formatDate(cost.date, i18n.language)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {cost.costType?.name ?? "-"}
-                  </Typography>
-                  <Typography variant="body2" mt={1}>
-                    {cost.description ?? "-"}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </Paper>
+        <ProductCostsSection
+          costs={costs ?? []}
+          locale={i18n.language}
+          onCreate={() => setIsCreateCostModalOpen(true)}
+          onEdit={setEditingCost}
+          onDelete={setDeletingCost}
+        />
       </Stack>
 
       <CreateProductCostModal

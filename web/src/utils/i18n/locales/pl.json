@@ -113,6 +113,7 @@
         "markAsUnsold": "Oznacz jako niesprzedany"
       },
       "sections": {
+        "finances": "Finanse",
         "summary": "Podsumowanie",
         "attributes": "Atrybuty",
         "costs": "Koszty"
@@ -189,6 +190,30 @@
         "markUnsold": {
           "title": "Oznacz produkt jako niesprzedany",
           "confirmation": "Ta operacja usunie date i cene sprzedazy. Kontynuowac?"
+        }
+      },
+      "finances": {
+        "sold": "Sprzedany",
+        "unsold": "Niesprzedany",
+        "pendingResult": "Oczekuje na sprzedaz",
+        "chartTitle": "Wykres porownawczy",
+        "chartPaidVsResult": "Zaplacone vs wynik",
+        "chartHint": "Wykres pokazuje relacje miedzy łączna inwestycja a finalnym wynikiem.",
+        "noResultYet": "Brak wyniku, bo produkt nie jest jeszcze sprzedany.",
+        "totalInvestmentFormula": "{{purchase}} zakup + {{costs}} koszty",
+        "summaryLabel": "Kluczowe liczby",
+        "lossHint": "Sprzedaz byla ponizej lacznych kosztow.",
+        "roi": "(ROI: {{value}}%)",
+        "partOfTotal": "{{value}}% calosci",
+        "metrics": {
+          "purchasePrice": "Cena zakupu",
+          "totalCosts": "Suma kosztow",
+          "totalInvestment": "Łączna inwestycja",
+          "salePrice": "Cena sprzedazy",
+          "result": "Zysk / strata",
+          "profit": "Zysk",
+          "loss": "Strata",
+          "resultPending": "Wynik"
         }
       }
     },
@@ -273,4 +298,3 @@
     }
   }
 }
-

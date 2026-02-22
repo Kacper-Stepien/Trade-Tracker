@@ -114,6 +114,7 @@
         "markAsUnsold": "Mark as Unsold"
       },
       "sections": {
+        "finances": "Finances",
         "summary": "Summary",
         "attributes": "Attributes",
         "costs": "Costs"
@@ -190,6 +191,30 @@
         "markUnsold": {
           "title": "Mark Product as Unsold",
           "confirmation": "This will clear sale date and sale price. Continue?"
+        }
+      },
+      "finances": {
+        "sold": "Sold",
+        "unsold": "Unsold",
+        "pendingResult": "Pending sale",
+        "chartTitle": "Comparison chart",
+        "chartPaidVsResult": "Paid vs result",
+        "chartHint": "The chart shows relation between total investment and final result.",
+        "noResultYet": "No result yet because the product is not sold.",
+        "totalInvestmentFormula": "{{purchase}} purchase + {{costs}} costs",
+        "summaryLabel": "Key numbers",
+        "lossHint": "Sale ended below total costs.",
+        "roi": "(ROI: {{value}}%)",
+        "partOfTotal": "{{value}}% of total",
+        "metrics": {
+          "purchasePrice": "Purchase price",
+          "totalCosts": "Total costs",
+          "totalInvestment": "Total investment",
+          "salePrice": "Sale price",
+          "result": "Profit / loss",
+          "profit": "Profit",
+          "loss": "Loss",
+          "resultPending": "Result"
         }
       }
     },
@@ -274,4 +299,5 @@
     }
   }
 }
+
 
