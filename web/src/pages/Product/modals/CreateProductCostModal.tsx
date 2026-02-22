@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -12,7 +12,7 @@ import { Controller, useForm } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import { useCreateProductCostMutation } from "../../../hooks/product_costs";
 import { useCostTypesQuery } from "../../../hooks/cost_types";
@@ -53,6 +53,17 @@ export const CreateProductCostModal = ({ open, productId, onClose }: Props) => {
       costTypeId: "",
     },
   });
+
+  useEffect(() => {
+    if (!open) return;
+    reset({
+      name: "",
+      description: "",
+      price: "",
+      date: dayjs(),
+      costTypeId: "",
+    });
+  }, [open, reset]);
 
   const handleClose = () => {
     createMutation.reset();

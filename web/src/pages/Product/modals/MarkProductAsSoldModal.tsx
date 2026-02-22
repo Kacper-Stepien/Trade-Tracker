@@ -11,7 +11,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import { useMarkProductAsSoldMutation } from "../../../hooks/products";
 import { translateError } from "../../../utils/translateError";
@@ -61,6 +61,14 @@ export const MarkProductAsSoldModal = ({
     reset();
     onClose();
   };
+
+  useEffect(() => {
+    if (!open) return;
+    reset({
+      salePrice: "",
+      saleDate: dayjs(),
+    });
+  }, [open, reset]);
 
   useEffect(() => {
     if (!open || !initialFocusField) return;

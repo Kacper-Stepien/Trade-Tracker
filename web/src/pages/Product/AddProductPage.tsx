@@ -16,7 +16,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { useCategoriesQuery } from "../../hooks/categories";
@@ -51,7 +51,7 @@ export const AddProductPage = () => {
     defaultValues: {
       name: "",
       purchasePrice: "",
-      purchaseDate: null,
+      purchaseDate: dayjs(),
       categoryId: "",
       attributes: [],
     },
