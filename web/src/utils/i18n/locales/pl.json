@@ -245,6 +245,9 @@
         "sold": "Status",
         "salePrice": "Cena sprzedazy",
         "saleDate": "Data sprzedazy",
+        "costs": "Koszty",
+        "profitLoss": "Zysk / strata",
+        "pendingSale": "Oczekuje na sprzedaz",
         "empty": "Brak produktow do wyswietlenia"
       },
       "pagination": {

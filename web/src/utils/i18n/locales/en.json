@@ -246,6 +246,9 @@
         "sold": "Status",
         "salePrice": "Sale Price",
         "saleDate": "Sale Date",
+        "costs": "Costs",
+        "profitLoss": "Profit / loss",
+        "pendingSale": "Pending sale",
         "empty": "No products to display"
       },
       "pagination": {
