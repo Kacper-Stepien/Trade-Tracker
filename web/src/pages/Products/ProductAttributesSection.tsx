@@ -28,7 +28,6 @@ export const ProductAttributesSection = ({
   onDelete,
 }: ProductAttributesSectionProps) => {
   const { t } = useTranslation();
-  const brandAccent = "#2dd4bf"; // Ten sam miętowy kolor
 
   return (
     <Paper
@@ -60,11 +59,8 @@ export const ProductAttributesSection = ({
           onClick={onCreate}
           sx={{
             borderRadius: 1.5,
-            bgcolor: brandAccent,
-            color: "black", // Dla kontrastu na miętowym
             fontWeight: 700,
             textTransform: "none",
-            "&:hover": { bgcolor: "#0d9488" },
           }}
         >
           {t("pages.productDetails.attributes.actions.add", "Dodaj")}
@@ -111,9 +107,8 @@ export const ProductAttributesSection = ({
                 borderColor: "divider",
                 transition: "0.2s",
                 "&:hover": {
-                  borderColor: brandAccent,
+                  borderColor: "primary.main",
                   transform: "translateY(-2px)",
-                  boxShadow: `0 4px 12px ${brandAccent}15`,
                 },
                 position: "relative",
                 display: "flex",
@@ -125,7 +120,6 @@ export const ProductAttributesSection = ({
                 <Typography
                   variant="caption"
                   sx={{
-                    color: brandAccent,
                     fontWeight: 700,
                     textTransform: "uppercase",
                     letterSpacing: 1,

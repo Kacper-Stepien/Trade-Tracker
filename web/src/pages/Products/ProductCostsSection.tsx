@@ -8,6 +8,7 @@ import {
   Chip,
   Tooltip,
   Divider,
+  alpha,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -16,6 +17,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import { useTranslation } from "react-i18next";
 import { ProductCost } from "../../types/Product";
 import { formatDate, formatPrice } from "../../utils/formatters";
+import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 
 type ProductCostsSectionProps = {
   costs: ProductCost[];
@@ -33,7 +35,6 @@ export const ProductCostsSection = ({
   onDelete,
 }: ProductCostsSectionProps) => {
   const { t } = useTranslation();
-  const brandAccent = "#2dd4bf"; // Nasz cyjan/mięta
 
   return (
     <Paper
@@ -67,11 +68,9 @@ export const ProductCostsSection = ({
           onClick={onCreate}
           sx={{
             borderRadius: 1.5,
-            bgcolor: brandAccent,
             color: "black",
             fontWeight: 700,
             textTransform: "none",
-            "&:hover": { bgcolor: "#0d9488" },
           }}
         >
           {t("pages.productDetails.costs.actions.add", "Dodaj koszt")}
@@ -91,7 +90,7 @@ export const ProductCostsSection = ({
           <Typography color="text.secondary">
             {t(
               "pages.productDetails.empty.costs",
-              "Brak zarejestrowanych kosztów",
+              "Brak zarejestrowanych koszt�w",
             )}
           </Typography>
         </Box>
@@ -121,10 +120,10 @@ export const ProductCostsSection = ({
               <Box display="flex" gap={2} alignItems="center">
                 <Box
                   sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 1.5,
-                    bgcolor: "background.paper",
+                    width: 50,
+                    height: 50,
+                    borderRadius: 2,
+                    bgcolor: alpha(PRODUCT_STATUS_COLORS.loss, 0.12),
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -133,9 +132,9 @@ export const ProductCostsSection = ({
                   }}
                 >
                   <Typography
-                    variant="body2"
+                    variant="body1"
                     fontWeight={700}
-                    sx={{ color: brandAccent }}
+                    sx={{ color: PRODUCT_STATUS_COLORS.loss }}
                   >
                     $
                   </Typography>

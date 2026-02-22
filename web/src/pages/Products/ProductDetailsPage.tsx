@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
   Box,
+  Button,
   Breadcrumbs,
   Chip,
   Divider,
@@ -15,6 +16,7 @@ import {
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useProductByIdQuery } from "../../hooks/products";
 import { useProductCostsQuery } from "../../hooks/product_costs";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
@@ -36,6 +38,7 @@ import { ProductSummarySection } from "./ProductSummarySection";
 import { ProductAttributesSection } from "./ProductAttributesSection";
 import { ProductCostsSection } from "./ProductCostsSection";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
+import { DeleteProductModal } from "./DeleteProductModal";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -63,6 +66,7 @@ export const ProductDetailsPage = () => {
   const [markAsSoldFocusField, setMarkAsSoldFocusField] =
     useState<MarkProductAsSoldFocusField | null>(null);
   const [isMarkAsUnsoldModalOpen, setIsMarkAsUnsoldModalOpen] = useState(false);
+  const [isDeleteProductModalOpen, setIsDeleteProductModalOpen] = useState(false);
 
   const {
     data: product,
@@ -95,32 +99,42 @@ export const ProductDetailsPage = () => {
 
   return (
     <Box>
-      <Box display="flex" alignItems="center" gap={1} mb={1}>
-        <IconButton
-          onClick={() => navigate("/products")}
-          size="small"
-          sx={{ bgcolor: "action.hover", borderRadius: 1.5 }}
-        >
-          <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-        </IconButton>
-        <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
-          <Link
-            underline="hover"
-            color="inherit"
-            onClick={() => navigate("/products")}
-            sx={{ cursor: "pointer" }}
-          >
-            {t("pages.products.title")}
-          </Link>
-          <Typography color="text.primary" fontWeight={500}>
-            {product.name}
-          </Typography>
-        </Breadcrumbs>
-      </Box>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
+        gap={2}
+        mb={1}
+        flexWrap="wrap"
+      >
+        <Box display="flex" alignItems="center" gap={1}>
+          <IconButton
+            onClick={() => navigate("/products")}
+            size="small"
+            sx={{ bgcolor: "action.hover", borderRadius: 1.5 }}
+          >
+            <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+          </IconButton>
+          <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+            <Link
+              underline="hover"
+              color="inherit"
+              onClick={() => navigate("/products")}
+              sx={{ cursor: "pointer" }}
+            >
+              {t("pages.products.title")}
+            </Link>
+            <Typography color="text.primary" fontWeight={500}>
+              {product.name}
+            </Typography>
+          </Breadcrumbs>
+        </Box>
+
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
         flexWrap="wrap"
         gap={2}
         mb={4}
@@ -158,6 +172,14 @@ export const ProductDetailsPage = () => {
             {t("pages.productDetails.description")}
           </Typography>
         </Stack>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<DeleteOutlineIcon />}
+          onClick={() => setIsDeleteProductModalOpen(true)}
+        >
+          {t("pages.productDetails.actions.deleteProduct")}
+        </Button>
       </Box>
 
       <Divider sx={{ mb: 4, opacity: 0.6 }} />
@@ -261,6 +283,13 @@ export const ProductDetailsPage = () => {
         open={isMarkAsUnsoldModalOpen}
         productId={productId}
         onClose={() => setIsMarkAsUnsoldModalOpen(false)}
+      />
+      <DeleteProductModal
+        open={isDeleteProductModalOpen}
+        productId={productId}
+        productName={product.name}
+        onClose={() => setIsDeleteProductModalOpen(false)}
+        onDeleted={() => navigate("/products")}
       />
     </Box>
   );

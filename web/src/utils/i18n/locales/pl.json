@@ -110,7 +110,8 @@
       "actions": {
         "editProduct": "Edytuj produkt",
         "markAsSold": "Oznacz jako sprzedany",
-        "markAsUnsold": "Oznacz jako niesprzedany"
+        "markAsUnsold": "Oznacz jako niesprzedany",
+        "deleteProduct": "Usun produkt"
       },
       "sections": {
         "finances": "Finanse",
@@ -190,6 +191,10 @@
         "markUnsold": {
           "title": "Oznacz produkt jako niesprzedany",
           "confirmation": "Ta operacja usunie date i cene sprzedazy. Kontynuowac?"
+        },
+        "delete": {
+          "title": "Usun produkt",
+          "confirmation": "Czy na pewno chcesz usunac produkt \"{{name}}\"?"
         }
       },
       "finances": {
