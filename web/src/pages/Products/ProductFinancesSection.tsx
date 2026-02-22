@@ -228,10 +228,6 @@ export const ProductFinancesSection = ({
           borderColor: "divider",
         }}
       >
-        <Typography variant="subtitle1" fontWeight={700} mb={4}>
-          {t("pages.productDetails.finances.chartPaidVsResult")}
-        </Typography>
-
         <Box
           sx={{
             display: "flex",

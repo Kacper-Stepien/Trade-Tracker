@@ -1,19 +1,18 @@
 import {
   Box,
   Button,
+  Chip,
+  Divider,
   IconButton,
   Paper,
   Stack,
-  Typography,
-  Chip,
   Tooltip,
-  Divider,
-  alpha,
+  Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useTranslation } from "react-i18next";
 import { ProductCost } from "../../types/Product";
 import { formatDate, formatPrice } from "../../utils/formatters";
@@ -35,6 +34,7 @@ export const ProductCostsSection = ({
   onDelete,
 }: ProductCostsSectionProps) => {
   const { t } = useTranslation();
+  const costIconColor = PRODUCT_STATUS_COLORS.loss;
 
   return (
     <Paper
@@ -53,47 +53,24 @@ export const ProductCostsSection = ({
         alignItems="center"
         mb={3}
       >
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <ReceiptLongOutlinedIcon
-            sx={{ color: "text.secondary", fontSize: 20 }}
-          />
-          <Typography variant="h6" fontWeight={700}>
-            {t("pages.productDetails.sections.costs", "Koszty dodatkowe")}
-          </Typography>
-        </Stack>
+        <Typography variant="h6" fontWeight={700}>
+          {t("pages.productDetails.sections.costs")}
+        </Typography>
+
         <Button
           variant="contained"
           size="small"
           startIcon={<AddIcon />}
           onClick={onCreate}
-          sx={{
-            borderRadius: 1.5,
-            color: "black",
-            fontWeight: 700,
-            textTransform: "none",
-          }}
         >
-          {t("pages.productDetails.costs.actions.add", "Dodaj koszt")}
+          {t("pages.productDetails.costs.actions.add")}
         </Button>
       </Box>
 
       {!costs.length ? (
-        <Box
-          sx={{
-            p: 4,
-            textAlign: "center",
-            borderRadius: 2,
-            border: "1px dashed",
-            borderColor: "divider",
-          }}
-        >
-          <Typography color="text.secondary">
-            {t(
-              "pages.productDetails.empty.costs",
-              "Brak zarejestrowanych koszt�w",
-            )}
-          </Typography>
-        </Box>
+        <Typography color="text.secondary">
+          {t("pages.productDetails.empty.costs")}
+        </Typography>
       ) : (
         <Stack spacing={1.5}>
           {costs.map((cost) => (
@@ -104,50 +81,58 @@ export const ProductCostsSection = ({
                 borderRadius: 2,
                 bgcolor: "action.hover",
                 border: 1,
-                borderColor: "transparent",
+                borderColor: "divider",
                 transition: "0.2s",
                 "&:hover": {
-                  borderColor: "divider",
                   bgcolor: "background.default",
                 },
                 display: "flex",
                 flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "stretch", sm: "center" },
                 justifyContent: "space-between",
-                alignItems: { xs: "flex-start", sm: "center" },
                 gap: 2,
               }}
             >
-              <Box display="flex" gap={2} alignItems="center">
+              <Box
+                display="flex"
+                gap={2}
+                alignItems="flex-start"
+                flex={1}
+                minWidth={0}
+              >
                 <Box
                   sx={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 2,
-                    bgcolor: alpha(PRODUCT_STATUS_COLORS.loss, 0.12),
+                    width: 44,
+                    height: 44,
+                    borderRadius: 1.5,
+                    bgcolor: alpha(costIconColor, 0.14),
+                    border: `1px solid ${alpha(costIconColor, 0.35)}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    border: 1,
-                    borderColor: "divider",
+                    flexShrink: 0,
                   }}
                 >
                   <Typography
                     variant="body1"
-                    fontWeight={700}
-                    sx={{ color: PRODUCT_STATUS_COLORS.loss }}
+                    fontWeight={800}
+                    sx={{ color: costIconColor }}
                   >
                     $
                   </Typography>
                 </Box>
-                <Box>
-                  <Typography variant="body1" fontWeight={700}>
+
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography variant="body1" fontWeight={700} noWrap>
                     {cost.name}
                   </Typography>
+
                   <Stack
                     direction="row"
                     spacing={1}
                     alignItems="center"
                     mt={0.5}
+                    flexWrap="wrap"
                   >
                     <Typography variant="caption" color="text.secondary">
                       {formatDate(cost.date, locale)}
@@ -158,41 +143,51 @@ export const ProductCostsSection = ({
                       sx={{ height: 12, my: "auto" }}
                     />
                     <Chip
-                      label={cost.costType?.name ?? "Inne"}
                       size="small"
+                      label={cost.costType?.name ?? "-"}
+                      variant="outlined"
                       sx={{
-                        height: 20,
-                        fontSize: "0.65rem",
                         fontWeight: 700,
-                        textTransform: "uppercase",
                         bgcolor: "action.selected",
+                        color: "text.secondary",
+                        borderColor: "divider",
                       }}
                     />
                   </Stack>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 0.75, overflowWrap: "anywhere" }}
+                  >
+                    {cost.description ?? "-"}
+                  </Typography>
                 </Box>
               </Box>
 
               <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ width: { xs: "100%", sm: "auto" }, gap: 3 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  flexShrink: 0,
+                  width: { xs: "100%", sm: "auto" },
+                }}
               >
-                <Box textAlign={{ xs: "left", sm: "right" }}>
-                  <Typography variant="h6" fontWeight={800}>
-                    {formatPrice(cost.price, locale)}
-                  </Typography>
-                  {cost.description && (
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      noWrap
-                      sx={{ maxWidth: 150, display: "block" }}
-                    >
-                      {cost.description}
-                    </Typography>
-                  )}
-                </Box>
+                <Typography
+                  variant="h6"
+                  fontWeight={800}
+                  sx={{ minWidth: 96, textAlign: "right" }}
+                >
+                  {formatPrice(cost.price, locale)}
+                </Typography>
+
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ display: { xs: "none", sm: "block" } }}
+                />
 
                 <Box display="flex" gap={0.5}>
                   <Tooltip title={t("common.actions.edit")}>

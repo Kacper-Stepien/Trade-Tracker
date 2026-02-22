@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, CircularProgress, Stack, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -121,7 +127,10 @@ export const MarkProductAsSoldModal = ({
           }
           {...register("salePrice", { required: true })}
         />
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language}>
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+          adapterLocale={i18n.language}
+        >
           <Controller
             name="saleDate"
             control={control}

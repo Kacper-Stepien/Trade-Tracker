@@ -3,14 +3,12 @@ import {
   Button,
   IconButton,
   Paper,
-  Stack,
   Typography,
   Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
 import { useTranslation } from "react-i18next";
 import { ProductAttribute } from "../../types/Product";
 
@@ -46,24 +44,17 @@ export const ProductAttributesSection = ({
         alignItems="center"
         mb={3}
       >
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <LabelOutlinedIcon sx={{ color: "text.secondary", fontSize: 20 }} />
-          <Typography variant="h6" fontWeight={700}>
-            {t("pages.productDetails.sections.attributes", "Parametry")}
-          </Typography>
-        </Stack>
+        <Typography variant="h6" fontWeight={700}>
+          {t("pages.productDetails.sections.attributes")}
+        </Typography>
+
         <Button
           variant="contained"
           size="small"
           startIcon={<AddIcon />}
           onClick={onCreate}
-          sx={{
-            borderRadius: 1.5,
-            fontWeight: 700,
-            textTransform: "none",
-          }}
         >
-          {t("pages.productDetails.attributes.actions.add", "Dodaj")}
+          {t("pages.productDetails.attributes.actions.add")}
         </Button>
       </Box>
 
@@ -143,12 +134,12 @@ export const ProductAttributesSection = ({
                   gap: 0.5,
                 }}
               >
-                <Tooltip title={t("common.actions.edit", "Edytuj")}>
+                <Tooltip title={t("common.actions.edit")}>
                   <IconButton size="small" onClick={() => onEdit(attribute)}>
                     <EditOutlinedIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={t("common.actions.delete", "Usuń")}>
+                <Tooltip title={t("common.actions.delete")}>
                   <IconButton
                     size="small"
                     color="error"
