@@ -265,7 +265,13 @@
       "description": "Zarządzaj swoimi kategoriami produktów",
       "table": {
         "name": "Nazwa",
-        "actions": "Akcje"
+        "productsCount": "Liczba produktow",
+        "actions": "Akcje",
+        "empty": "Brak kategorii do wyswietlenia"
+      },
+      "pagination": {
+        "rowsPerPage": "Wierszy na strone:",
+        "displayedRows": "{{from}}-{{to}} z {{total}}"
       },
       "addModal": {
         "title": "Dodaj kategorię",

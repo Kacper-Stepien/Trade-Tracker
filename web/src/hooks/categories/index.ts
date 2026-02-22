@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Category } from "../../types/Category.type";
+import { CategoriesResponse, Category } from "../../types/Category.type";
 import { axiosInstance } from "../../utils/axiosInstance";
 import { ResultAsync } from "neverthrow";
 import { ApiError } from "../../types/errors";
@@ -7,8 +7,23 @@ import { toResult } from "../../utils/resultWrapper";
 
 export const CATEGORIES_QUERY_KEY = ["categories"];
 
-const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axiosInstance.get<Category[]>("/product-categories");
+type GetCategoriesParams = {
+  page?: number;
+  limit?: number;
+};
+
+const fetchCategories = async (
+  params: GetCategoriesParams = {},
+): Promise<CategoriesResponse> => {
+  const response = await axiosInstance.get<CategoriesResponse>(
+    "/product-categories",
+    {
+      params: {
+        page: params.page ?? 1,
+        limit: params.limit ?? 1000,
+      },
+    },
+  );
   return response.data;
 };
 
@@ -36,10 +51,29 @@ export const deleteCategory = (id: number): ResultAsync<void, ApiError> => {
   return toResult(axiosInstance.delete(`/product-categories/${id}`));
 };
 
-export const useCategoriesQuery = () => {
+export const useCategoriesQuery = (params: GetCategoriesParams = {}) => {
   return useQuery({
-    queryKey: CATEGORIES_QUERY_KEY,
-    queryFn: fetchCategories,
+    queryKey: [
+      ...CATEGORIES_QUERY_KEY,
+      params.page ?? 1,
+      params.limit ?? 1000,
+    ],
+    queryFn: () => fetchCategories(params),
+    select: (data) => data.categories,
+  });
+};
+
+export const useCategoriesPaginatedQuery = (
+  params: GetCategoriesParams = {},
+) => {
+  return useQuery({
+    queryKey: [
+      ...CATEGORIES_QUERY_KEY,
+      params.page ?? 1,
+      params.limit ?? 1000,
+      "paginated",
+    ],
+    queryFn: () => fetchCategories(params),
   });
 };
 
