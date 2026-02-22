@@ -26,7 +26,11 @@ export class CostTypeService {
   ) {}
 
   async getCostTypeById(id: number): Promise<CostTypeDto> {
-    const costType = await this.costTypeRepository.findOneBy({ id });
+    const costType = await this.costTypeRepository
+      .createQueryBuilder('costType')
+      .where('costType.id = :id', { id })
+      .loadRelationCountAndMap('costType.costsCount', 'costType.costs')
+      .getOne();
     if (!costType) {
       this.logger.warn('Cost type not found', { costTypeId: id });
       throw new NotFoundException({
@@ -37,9 +41,28 @@ export class CostTypeService {
     return CostTypeMapper.toDto(costType);
   }
 
-  async getAllCostTypes(): Promise<CostTypeDto[]> {
-    const costTypes = await this.costTypeRepository.find();
-    return costTypes.map((costType) => CostTypeMapper.toDto(costType));
+  async getAllCostTypes(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ costTypes: CostTypeDto[]; total: number }> {
+    const query = this.costTypeRepository
+      .createQueryBuilder('costType')
+      .loadRelationCountAndMap('costType.costsCount', 'costType.costs')
+      .orderBy('costType.id', 'DESC');
+
+    query.skip((page - 1) * limit).take(limit);
+
+    const [costTypes, total] = await query.getManyAndCount();
+
+    return { costTypes: CostTypeMapper.toDtoList(costTypes), total };
+  }
+
+  async getAllCostTypesList(): Promise<CostTypeDto[]> {
+    const costTypes = await this.costTypeRepository.find({
+      order: { id: 'DESC' },
+    });
+
+    return CostTypeMapper.toDtoList(costTypes);
   }
 
   async createCostType(

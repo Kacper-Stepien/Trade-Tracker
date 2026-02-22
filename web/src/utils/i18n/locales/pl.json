@@ -293,7 +293,13 @@
       "description": "Zarządzaj swoimi typami kosztów",
       "table": {
         "name": "Nazwa",
-        "actions": "Akcje"
+        "costsCount": "Liczba kosztow",
+        "actions": "Akcje",
+        "empty": "Brak typow kosztow do wyswietlenia"
+      },
+      "pagination": {
+        "rowsPerPage": "Wierszy na strone:",
+        "displayedRows": "{{from}}-{{to}} z {{total}}"
       },
       "addModal": {
         "title": "Dodaj typ kosztu",
