@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, CircularProgress, Typography } from "@mui/material";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { ProductAttribute } from "../../types/Product";
-import { useDeleteProductAttributeMutation } from "../../hooks/product_attributes";
-import { translateError } from "../../utils/translateError";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { ProductAttribute } from "../../../types/Product";
+import { useDeleteProductAttributeMutation } from "../../../hooks/product_attributes";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
   productId: number;
@@ -67,3 +67,4 @@ export const DeleteProductAttributeModal: FC<Props> = ({
     </BaseModal>
   );
 };
+

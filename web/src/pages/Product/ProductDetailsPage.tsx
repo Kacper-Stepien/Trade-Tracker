@@ -21,24 +21,24 @@ import { useProductByIdQuery } from "../../hooks/products";
 import { useProductCostsQuery } from "../../hooks/product_costs";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { ProductAttribute, ProductCost } from "../../types/Product";
-import { CreateProductCostModal } from "./CreateProductCostModal";
-import { EditProductCostModal } from "./EditProductCostModal";
-import { DeleteProductCostModal } from "./DeleteProductCostModal";
-import { CreateProductAttributeModal } from "./CreateProductAttributeModal";
-import { EditProductAttributeModal } from "./EditProductAttributeModal";
-import { DeleteProductAttributeModal } from "./DeleteProductAttributeModal";
-import { EditProductFocusField, EditProductModal } from "./EditProductModal";
+import { CreateProductCostModal } from "./modals/CreateProductCostModal";
+import { EditProductCostModal } from "./modals/EditProductCostModal";
+import { DeleteProductCostModal } from "./modals/DeleteProductCostModal";
+import { CreateProductAttributeModal } from "./modals/CreateProductAttributeModal";
+import { EditProductAttributeModal } from "./modals/EditProductAttributeModal";
+import { DeleteProductAttributeModal } from "./modals/DeleteProductAttributeModal";
+import { EditProductFocusField, EditProductModal } from "./modals/EditProductModal";
 import {
   MarkProductAsSoldFocusField,
   MarkProductAsSoldModal,
-} from "./MarkProductAsSoldModal";
-import { MarkProductAsUnsoldModal } from "./MarkProductAsUnsoldModal";
+} from "./modals/MarkProductAsSoldModal";
+import { MarkProductAsUnsoldModal } from "./modals/MarkProductAsUnsoldModal";
 import { ProductFinancesSection } from "./ProductFinancesSection";
 import { ProductSummarySection } from "./ProductSummarySection";
 import { ProductAttributesSection } from "./ProductAttributesSection";
 import { ProductCostsSection } from "./ProductCostsSection";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
-import { DeleteProductModal } from "./DeleteProductModal";
+import { DeleteProductModal } from "./modals/DeleteProductModal";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -294,3 +294,4 @@ export const ProductDetailsPage = () => {
     </Box>
   );
 };
+

@@ -13,11 +13,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { Product } from "../../types/Product";
-import { useUpdateProductMutation } from "../../hooks/products";
-import { useCategoriesQuery } from "../../hooks/categories";
-import { translateError } from "../../utils/translateError";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { Product } from "../../../types/Product";
+import { useUpdateProductMutation } from "../../../hooks/products";
+import { useCategoriesQuery } from "../../../hooks/categories";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
   product: Product | null;
@@ -217,3 +217,4 @@ export const EditProductModal = ({
     </BaseModal>
   );
 };
+

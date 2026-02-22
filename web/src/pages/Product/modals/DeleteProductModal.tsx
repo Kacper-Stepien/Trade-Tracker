@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { useDeleteProductMutation } from "../../hooks/products";
-import { getApiErrorMessage } from "../../utils/getApiErrorMessage";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { useDeleteProductMutation } from "../../../hooks/products";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
 
 type DeleteProductModalProps = {
   open: boolean;
@@ -81,3 +81,4 @@ export const DeleteProductModal = ({
     </BaseModal>
   );
 };
+

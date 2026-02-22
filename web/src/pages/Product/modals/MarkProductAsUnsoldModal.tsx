@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, CircularProgress, Typography } from "@mui/material";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { useMarkProductAsUnsoldMutation } from "../../hooks/products";
-import { translateError } from "../../utils/translateError";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { useMarkProductAsUnsoldMutation } from "../../../hooks/products";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
   open: boolean;
@@ -59,3 +59,4 @@ export const MarkProductAsUnsoldModal: FC<Props> = ({
     </BaseModal>
   );
 };
+

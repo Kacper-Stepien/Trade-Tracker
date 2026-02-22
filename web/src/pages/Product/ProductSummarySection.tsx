@@ -12,8 +12,8 @@ import { useTranslation } from "react-i18next";
 import { Product, ProductCost } from "../../types/Product";
 import { formatDate, formatPrice } from "../../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
-import { EditProductFocusField } from "./EditProductModal";
-import { MarkProductAsSoldFocusField } from "./MarkProductAsSoldModal";
+import { EditProductFocusField } from "./modals/EditProductModal";
+import { MarkProductAsSoldFocusField } from "./modals/MarkProductAsSoldModal";
 
 type ProductSummarySectionProps = {
   product: Product;
@@ -228,3 +228,4 @@ const InfoRow = ({
     ) : null}
   </Box>
 );
+

@@ -9,8 +9,8 @@ import DashboardPage from "../../pages/DashboardPage";
 import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
 import { ProductsPage } from "../../pages/Products/ProductsPage";
-import { AddProductPage } from "../../pages/Products/AddProductPage";
-import { ProductDetailsPage } from "../../pages/Products/ProductDetailsPage";
+import { AddProductPage } from "../../pages/Product/AddProductPage";
+import { ProductDetailsPage } from "../../pages/Product/ProductDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -58,3 +58,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+

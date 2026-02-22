@@ -12,9 +12,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Dayjs } from "dayjs";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { useMarkProductAsSoldMutation } from "../../hooks/products";
-import { translateError } from "../../utils/translateError";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { useMarkProductAsSoldMutation } from "../../../hooks/products";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
   open: boolean;
@@ -156,3 +156,4 @@ export const MarkProductAsSoldModal = ({
     </BaseModal>
   );
 };
+

@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { ProductAttribute } from "../../types/Product";
-import { useUpdateProductAttributeMutation } from "../../hooks/product_attributes";
-import { translateError } from "../../utils/translateError";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { useCreateProductAttributeMutation } from "../../../hooks/product_attributes";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
+  open: boolean;
   productId: number;
-  attribute: ProductAttribute | null;
   onClose: () => void;
 };
 
@@ -18,13 +17,13 @@ type FormValues = {
   value: string;
 };
 
-export const EditProductAttributeModal = ({
+export const CreateProductAttributeModal = ({
+  open,
   productId,
-  attribute,
   onClose,
 }: Props) => {
   const { t } = useTranslation();
-  const updateMutation = useUpdateProductAttributeMutation();
+  const createMutation = useCreateProductAttributeMutation();
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -39,26 +38,17 @@ export const EditProductAttributeModal = ({
     },
   });
 
-  useEffect(() => {
-    if (!attribute) return;
-    reset({
-      name: attribute.name,
-      value: attribute.value,
-    });
-  }, [attribute, reset]);
-
   const handleClose = () => {
-    updateMutation.reset();
+    createMutation.reset();
     setFormError(null);
+    reset();
     onClose();
   };
 
   const onSubmit = async (values: FormValues) => {
-    if (!attribute) return;
     setFormError(null);
-    const result = await updateMutation.mutateAsync({
+    const result = await createMutation.mutateAsync({
       productId,
-      attributeId: attribute.id,
       name: values.name.trim(),
       value: values.value.trim(),
     });
@@ -71,9 +61,9 @@ export const EditProductAttributeModal = ({
 
   return (
     <BaseModal
-      open={!!attribute}
+      open={open}
       onClose={handleClose}
-      title={t("pages.productDetails.attributes.editModal.title")}
+      title={t("pages.productDetails.attributes.addModal.title")}
       actions={
         <>
           <Button onClick={handleClose} color="inherit">
@@ -82,20 +72,21 @@ export const EditProductAttributeModal = ({
           <Button
             onClick={handleSubmit(onSubmit)}
             variant="contained"
-            disabled={updateMutation.isLoading}
+            disabled={createMutation.isLoading}
             startIcon={
-              updateMutation.isLoading ? (
+              createMutation.isLoading ? (
                 <CircularProgress size={16} color="inherit" />
               ) : null
             }
           >
-            {t("common.actions.save")}
+            {t("common.actions.create")}
           </Button>
         </>
       }
     >
       <Stack spacing={2} mt={1}>
         {formError && <Alert severity="error">{formError}</Alert>}
+
         <TextField
           label={t("pages.productDetails.attributes.fields.name")}
           error={!!errors.name}
@@ -116,3 +107,4 @@ export const EditProductAttributeModal = ({
     </BaseModal>
   );
 };
+

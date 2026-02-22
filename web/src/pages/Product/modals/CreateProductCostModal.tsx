@@ -1,25 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
   Button,
   CircularProgress,
+  MenuItem,
   Stack,
   TextField,
 } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
-import { useUpdateProductCostMutation } from "../../hooks/product_costs";
-import { ProductCost } from "../../types/Product";
-import { translateError } from "../../utils/translateError";
+import { Dayjs } from "dayjs";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
+import { useCreateProductCostMutation } from "../../../hooks/product_costs";
+import { useCostTypesQuery } from "../../../hooks/cost_types";
+import { translateError } from "../../../utils/translateError";
 
 type Props = {
+  open: boolean;
   productId: number;
-  cost: ProductCost | null;
   onClose: () => void;
 };
 
@@ -28,16 +29,18 @@ type FormValues = {
   description: string;
   price: string;
   date: Dayjs | null;
+  costTypeId: string;
 };
 
-export const EditProductCostModal = ({ productId, cost, onClose }: Props) => {
+export const CreateProductCostModal = ({ open, productId, onClose }: Props) => {
   const { t, i18n } = useTranslation();
-  const updateMutation = useUpdateProductCostMutation();
+  const createMutation = useCreateProductCostMutation();
+  const { data: costTypes } = useCostTypesQuery();
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
-    control,
     register,
+    control,
     reset,
     handleSubmit,
     formState: { errors },
@@ -47,38 +50,26 @@ export const EditProductCostModal = ({ productId, cost, onClose }: Props) => {
       description: "",
       price: "",
       date: null,
+      costTypeId: "",
     },
   });
 
-  useEffect(() => {
-    if (!cost) {
-      return;
-    }
-    reset({
-      name: cost.name,
-      description: cost.description ?? "",
-      price: String(cost.price),
-      date: cost.date ? dayjs(cost.date) : null,
-    });
-  }, [cost, reset]);
-
   const handleClose = () => {
-    updateMutation.reset();
+    createMutation.reset();
     setFormError(null);
+    reset();
     onClose();
   };
 
   const onSubmit = async (values: FormValues) => {
-    if (!cost) return;
-
     setFormError(null);
-    const result = await updateMutation.mutateAsync({
-      id: cost.id,
-      productId,
+    const result = await createMutation.mutateAsync({
       name: values.name.trim(),
       description: values.description.trim(),
       price: Number(values.price),
-      date: values.date?.format("YYYY-MM-DD"),
+      date: values.date?.format("YYYY-MM-DD") ?? "",
+      productId,
+      costTypeId: Number(values.costTypeId),
     });
 
     result.match(
@@ -89,9 +80,9 @@ export const EditProductCostModal = ({ productId, cost, onClose }: Props) => {
 
   return (
     <BaseModal
-      open={!!cost}
+      open={open}
       onClose={handleClose}
-      title={t("pages.productDetails.costs.editModal.title")}
+      title={t("pages.productDetails.costs.addModal.title")}
       actions={
         <>
           <Button onClick={handleClose} color="inherit">
@@ -100,14 +91,14 @@ export const EditProductCostModal = ({ productId, cost, onClose }: Props) => {
           <Button
             onClick={handleSubmit(onSubmit)}
             variant="contained"
-            disabled={updateMutation.isLoading}
+            disabled={createMutation.isLoading}
             startIcon={
-              updateMutation.isLoading ? (
+              createMutation.isLoading ? (
                 <CircularProgress size={16} color="inherit" />
               ) : null
             }
           >
-            {t("common.actions.save")}
+            {t("common.actions.create")}
           </Button>
         </>
       }
@@ -165,7 +156,24 @@ export const EditProductCostModal = ({ productId, cost, onClose }: Props) => {
             )}
           />
         </LocalizationProvider>
+
+        <TextField
+          select
+          label={t("pages.productDetails.costs.fields.costType")}
+          error={!!errors.costTypeId}
+          helperText={
+            errors.costTypeId ? t("pages.addProduct.validation.required") : " "
+          }
+          {...register("costTypeId", { required: true })}
+        >
+          {costTypes?.map((costType) => (
+            <MenuItem key={costType.id} value={String(costType.id)}>
+              {costType.name}
+            </MenuItem>
+          ))}
+        </TextField>
       </Stack>
     </BaseModal>
   );
 };
+
