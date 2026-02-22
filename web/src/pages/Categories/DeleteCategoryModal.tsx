@@ -1,9 +1,9 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDeleteCategoryMutation } from "../../hooks/categories";
 import { Category } from "../../types/Category.type";
 import { translateError } from "../../utils/translateError";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { BaseModal } from "../../components/BaseModal/BaseModal";
 
 interface Props {
@@ -14,16 +14,24 @@ interface Props {
 export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
   const { t } = useTranslation();
   const deleteMutation = useDeleteCategoryMutation();
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleClose = () => {
+    deleteMutation.reset();
+    setFormError(null);
+    onClose();
+  };
 
   const handleConfirm = async () => {
     if (!category) return;
 
+    setFormError(null);
     const result = await deleteMutation.mutateAsync(category.id);
 
     result.match(
-      () => onClose(),
+      () => handleClose(),
       (error) => {
-        console.error(translateError(error));
+        setFormError(translateError(error));
       },
     );
   };
@@ -31,11 +39,11 @@ export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
   return (
     <BaseModal
       open={!!category}
-      onClose={onClose}
+      onClose={handleClose}
       title={t("pages.categories.deleteModal.title")}
       actions={
         <>
-          <Button onClick={onClose} color="inherit">
+          <Button onClick={handleClose} color="inherit">
             {t("common.actions.cancel")}
           </Button>
           <Button
@@ -56,6 +64,11 @@ export const DeleteCategoryModal: FC<Props> = ({ category, onClose }) => {
         </>
       }
     >
+      {formError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {formError}
+        </Alert>
+      )}
       <Typography>
         {t("pages.categories.deleteModal.confirmation")} "{category?.name}"?
       </Typography>

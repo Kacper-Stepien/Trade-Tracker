@@ -266,7 +266,13 @@
       "description": "Manage your product categories",
       "table": {
         "name": "Name",
-        "actions": "Actions"
+        "productsCount": "Products count",
+        "actions": "Actions",
+        "empty": "No categories to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
       },
       "addModal": {
         "title": "Add Category",
