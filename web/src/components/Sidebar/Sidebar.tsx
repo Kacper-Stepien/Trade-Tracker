@@ -120,7 +120,11 @@ export default function Sidebar() {
 
       <List sx={{ px: 1, py: 1 }}>
         {menuItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive =
+            item.path === "/"
+              ? location.pathname === item.path
+              : location.pathname === item.path ||
+                location.pathname.startsWith(`${item.path}/`);
 
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>

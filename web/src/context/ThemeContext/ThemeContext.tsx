@@ -1,5 +1,6 @@
 import { createContext, useState, ReactNode, useEffect, useMemo } from "react";
 import { ThemeProvider as MuiThemeProvider, Theme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import { lightTheme, darkTheme } from "../../utils/themes/themes";
 
 export interface ThemeContextType {
@@ -39,7 +40,10 @@ export const ThemeProvider = ({
 
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme, theme }}>
-      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 };

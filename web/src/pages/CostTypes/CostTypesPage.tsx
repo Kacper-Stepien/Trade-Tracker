@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   IconButton,
   Paper,
   Table,
@@ -24,6 +23,7 @@ import { CreateCostTypeModal } from "./CreateCostTypeModal";
 import { useUserStore } from "../../store/userStore";
 import { EditCostTypeModal } from "./EditCostTypeModal";
 import { DeleteCostTypeModal } from "./DeleteCostTypeModal";
+import { PageLoader } from "../../components/PageLoader/PageLoader";
 
 const CostTypesPage: FC = () => {
   const { t } = useTranslation();
@@ -39,16 +39,7 @@ const CostTypesPage: FC = () => {
   const isAdmin = userRole === "admin";
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="200px"
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   if (isError) {

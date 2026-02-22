@@ -8,6 +8,9 @@ import PublicRoute from "./PublicRoute";
 import DashboardPage from "../../pages/DashboardPage";
 import { CategoriesPage } from "../../pages/Categories/CategoriesPage";
 import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
+import { ProductsPage } from "../../pages/Products/ProductsPage";
+import { AddProductPage } from "../../pages/Product/AddProductPage";
+import { ProductDetailsPage } from "../../pages/Product/ProductDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +34,15 @@ export const router = createBrowserRouter([
           { path: "/", element: <DashboardPage /> },
           {
             path: "/products",
-            element: <div>Products Page - Coming Soon</div>,
+            element: <ProductsPage />,
+          },
+          {
+            path: "/products/add",
+            element: <AddProductPage />,
+          },
+          {
+            path: "/products/:id",
+            element: <ProductDetailsPage />,
           },
           { path: "/categories", element: <CategoriesPage /> },
           {
@@ -47,3 +58,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+

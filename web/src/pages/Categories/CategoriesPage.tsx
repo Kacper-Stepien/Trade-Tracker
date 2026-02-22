@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   IconButton,
   Paper,
   Table,
@@ -23,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { CreateCategoryModal } from "./CreateCategoryModal";
 import { EditCategoryModal } from "./EditCategoryModal";
 import { DeleteCategoryModal } from "./DeleteCategoryModal";
+import { PageLoader } from "../../components/PageLoader/PageLoader";
 
 export const CategoriesPage = () => {
   const { t } = useTranslation();
@@ -35,16 +35,7 @@ export const CategoriesPage = () => {
   );
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="200px"
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   if (isError) {
