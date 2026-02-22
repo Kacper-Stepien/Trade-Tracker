@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, CircularProgress, Stack, TextField } from "@mui/material";
@@ -13,24 +13,34 @@ import { translateError } from "../../utils/translateError";
 type Props = {
   open: boolean;
   productId: number;
+  initialFocusField?: MarkProductAsSoldFocusField | null;
   onClose: () => void;
 };
+
+export type MarkProductAsSoldFocusField = "salePrice" | "saleDate";
 
 type FormValues = {
   salePrice: string;
   saleDate: Dayjs | null;
 };
 
-export const MarkProductAsSoldModal = ({ open, productId, onClose }: Props) => {
+export const MarkProductAsSoldModal = ({
+  open,
+  productId,
+  initialFocusField,
+  onClose,
+}: Props) => {
   const { t, i18n } = useTranslation();
   const soldMutation = useMarkProductAsSoldMutation();
   const [formError, setFormError] = useState<string | null>(null);
+  const saleDateInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     control,
     register,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -45,6 +55,20 @@ export const MarkProductAsSoldModal = ({ open, productId, onClose }: Props) => {
     reset();
     onClose();
   };
+
+  useEffect(() => {
+    if (!open || !initialFocusField) return;
+    const timeoutId = window.setTimeout(() => {
+      if (initialFocusField === "saleDate") {
+        saleDateInputRef.current?.focus();
+        return;
+      }
+
+      setFocus("salePrice");
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [open, initialFocusField, setFocus]);
 
   const onSubmit = async (values: FormValues) => {
     setFormError(null);
@@ -110,6 +134,7 @@ export const MarkProductAsSoldModal = ({ open, productId, onClose }: Props) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
+                    inputRef: saleDateInputRef,
                     error: !!fieldState.error,
                     helperText: fieldState.error?.message ?? " ",
                   },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,8 +21,15 @@ import { translateError } from "../../utils/translateError";
 
 type Props = {
   product: Product | null;
+  initialFocusField?: EditProductFocusField | null;
   onClose: () => void;
 };
+
+export type EditProductFocusField =
+  | "name"
+  | "purchasePrice"
+  | "purchaseDate"
+  | "categoryId";
 
 type FormValues = {
   name: string;
@@ -31,17 +38,24 @@ type FormValues = {
   categoryId: string;
 };
 
-export const EditProductModal = ({ product, onClose }: Props) => {
+export const EditProductModal = ({
+  product,
+  initialFocusField,
+  onClose,
+}: Props) => {
   const { t, i18n } = useTranslation();
   const updateMutation = useUpdateProductMutation();
   const { data: categories } = useCategoriesQuery();
   const [formError, setFormError] = useState<string | null>(null);
+  const purchaseDateInputRef = useRef<HTMLInputElement | null>(null);
+  const categoryInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     control,
     register,
     reset,
     handleSubmit,
+    setFocus,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -61,6 +75,26 @@ export const EditProductModal = ({ product, onClose }: Props) => {
       categoryId: product.category ? String(product.category.id) : "",
     });
   }, [product, reset]);
+
+  useEffect(() => {
+    if (!product || !initialFocusField) return;
+
+    const timeoutId = window.setTimeout(() => {
+      if (initialFocusField === "purchaseDate") {
+        purchaseDateInputRef.current?.focus();
+        return;
+      }
+
+      if (initialFocusField === "categoryId") {
+        categoryInputRef.current?.focus();
+        return;
+      }
+
+      setFocus(initialFocusField);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [product, initialFocusField, setFocus]);
 
   const handleClose = () => {
     updateMutation.reset();
@@ -146,6 +180,7 @@ export const EditProductModal = ({ product, onClose }: Props) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
+                    inputRef: purchaseDateInputRef,
                     error: !!fieldState.error,
                     helperText: fieldState.error?.message ?? " ",
                   },
@@ -164,6 +199,7 @@ export const EditProductModal = ({ product, onClose }: Props) => {
               label={t("pages.addProduct.fields.category")}
               value={field.value}
               onChange={field.onChange}
+              inputRef={categoryInputRef}
               error={!!fieldState.error}
               helperText={
                 fieldState.error ? t("pages.addProduct.validation.required") : " "
