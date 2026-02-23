@@ -1,28 +1,69 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
+  Breadcrumbs,
   Button,
+  Divider,
   IconButton,
+  Link,
   MenuItem,
   Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import { alpha, Theme } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useCreateProductMutation } from "../../hooks/products";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { translateError } from "../../utils/translateError";
+
+const modernInputSx = {
+  "& .MuiFilledInput-root": (theme: Theme) => ({
+    borderRadius: 1.5,
+    bgcolor: "background.default",
+    border: "1px solid",
+    borderColor: "divider",
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      bgcolor: "action.hover",
+      borderColor: "text.disabled",
+    },
+    "&.Mui-focused": {
+      bgcolor: "background.paper",
+      borderColor: "primary.main",
+      boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.16)}`,
+    },
+  }),
+};
+
+const sectionCardSx = {
+  borderRadius: 2,
+  p: 2.5,
+  border: "1px solid",
+  borderColor: "divider",
+  bgcolor: "background.paper",
+};
+
+const sectionTitleSx = {
+  fontSize: "0.95rem",
+  fontWeight: 800,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: "primary.main",
+  mb: 1.5,
+};
 
 type AddProductFormData = {
   name: string;
@@ -95,7 +136,37 @@ export const AddProductPage = () => {
   }
 
   return (
-    <Box>
+    <Box sx={{ pb: 1 }}>
+      <Box mb={2.5}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <IconButton
+            onClick={() => navigate("/products")}
+            size="small"
+            sx={{
+              bgcolor: "action.hover",
+              borderRadius: 1.5,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+          </IconButton>
+          <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+            <Link
+              underline="hover"
+              color="inherit"
+              onClick={() => navigate("/products")}
+              sx={{ cursor: "pointer" }}
+            >
+              {t("pages.products.title")}
+            </Link>
+            <Typography color="text.primary" fontWeight={500}>
+              {t("pages.addProduct.title")}
+            </Typography>
+          </Breadcrumbs>
+        </Box>
+      </Box>
+
       <Box mb={4}>
         <Typography variant="h4" fontWeight={600}>
           {t("pages.addProduct.title")}
@@ -107,140 +178,223 @@ export const AddProductPage = () => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-            <Typography variant="h6" mb={2}>
-              {t("pages.addProduct.sections.productInfo")}
-            </Typography>
-            <Stack spacing={2}>
-              <TextField
-                label={t("pages.addProduct.fields.name")}
-                fullWidth
-                error={!!errors.name}
-                helperText={
-                  errors.name ? t("pages.addProduct.validation.required") : " "
-                }
-                {...register("name", { required: true })}
-              />
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" },
+              gap: 2,
+            }}
+          >
+            <Paper elevation={0} sx={sectionCardSx}>
+              <Typography sx={sectionTitleSx}>
+                {t("pages.addProduct.sections.productInfo")}
+              </Typography>
+              <Stack spacing={1.5}>
                 <TextField
-                  label={t("pages.addProduct.fields.purchasePrice")}
-                  type="number"
+                  variant="filled"
+                  label={t("pages.addProduct.fields.name")}
                   fullWidth
-                  inputProps={{ step: "0.01", min: 0 }}
-                  error={!!errors.purchasePrice}
+                  InputProps={{ disableUnderline: true }}
+                  sx={modernInputSx}
+                  error={!!errors.name}
                   helperText={
-                    errors.purchasePrice
+                    errors.name
                       ? t("pages.addProduct.validation.required")
                       : " "
                   }
-                  {...register("purchasePrice", { required: true })}
+                  {...register("name", { required: true })}
                 />
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale={i18n.language}
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                    gap: 1.5,
+                  }}
                 >
-                  <Controller
-                    name="purchaseDate"
-                    control={control}
-                    rules={{
-                      required: t("pages.addProduct.validation.required"),
+                  <TextField
+                    variant="filled"
+                    label={t("pages.addProduct.fields.purchasePrice")}
+                    type="number"
+                    fullWidth
+                    InputProps={{
+                      disableUnderline: true,
+                      inputProps: { step: "0.01", min: 0 },
                     }}
-                    render={({ field, fieldState }) => (
-                      <DatePicker
-                        label={t("pages.addProduct.fields.purchaseDate")}
-                        value={field.value}
-                        onChange={(date) => field.onChange(date)}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: !!fieldState.error,
-                            helperText: fieldState.error?.message ?? " ",
-                          },
-                        }}
-                      />
-                    )}
+                    sx={modernInputSx}
+                    error={!!errors.purchasePrice}
+                    helperText={
+                      errors.purchasePrice
+                        ? t("pages.addProduct.validation.required")
+                        : " "
+                    }
+                    {...register("purchasePrice", { required: true })}
                   />
-                </LocalizationProvider>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale={i18n.language}
+                  >
+                    <Controller
+                      name="purchaseDate"
+                      control={control}
+                      rules={{
+                        required: t("pages.addProduct.validation.required"),
+                      }}
+                      render={({ field, fieldState }) => (
+                        <DatePicker
+                          label={t("pages.addProduct.fields.purchaseDate")}
+                          value={field.value}
+                          onChange={(date) => field.onChange(date)}
+                          slotProps={{
+                            textField: {
+                              variant: "filled",
+                              fullWidth: true,
+                              sx: modernInputSx,
+                              error: !!fieldState.error,
+                              helperText: fieldState.error?.message ?? " ",
+                              InputProps: { disableUnderline: true },
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Box>
               </Stack>
-            </Stack>
-          </Paper>
+            </Paper>
 
-          <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
-            <Typography variant="h6" mb={2}>
-              {t("pages.addProduct.sections.category")}
-            </Typography>
-            <TextField
-              select
-              label={t("pages.addProduct.fields.category")}
-              fullWidth
-              error={!!errors.categoryId}
-              helperText={
-                errors.categoryId
-                  ? t("pages.addProduct.validation.required")
-                  : " "
-              }
-              {...register("categoryId", { required: true })}
-            >
-              {categories?.map((category) => (
-                <MenuItem key={category.id} value={String(category.id)}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Paper>
+            <Paper elevation={0} sx={sectionCardSx}>
+              <Typography sx={sectionTitleSx}>
+                {t("pages.addProduct.sections.category")}
+              </Typography>
+              <TextField
+                variant="filled"
+                select
+                label={t("pages.addProduct.fields.category")}
+                fullWidth
+                InputProps={{ disableUnderline: true }}
+                sx={modernInputSx}
+                error={!!errors.categoryId}
+                helperText={
+                  errors.categoryId
+                    ? t("pages.addProduct.validation.required")
+                    : " "
+                }
+                {...register("categoryId", { required: true })}
+              >
+                {categories?.map((category) => (
+                  <MenuItem key={category.id} value={String(category.id)}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Paper>
+          </Box>
 
-          <Paper elevation={0} sx={{ borderRadius: 2, p: 3 }}>
+          <Paper elevation={0} sx={sectionCardSx}>
             <Box
               display="flex"
               justifyContent="space-between"
               alignItems="center"
               mb={2}
             >
-              <Typography variant="h6">
-                {t("pages.addProduct.sections.attributes")}
-              </Typography>
+              <Box>
+                <Typography sx={{ ...sectionTitleSx, mb: 0.4 }}>
+                  {t("pages.addProduct.sections.attributes")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {t("pages.addProduct.fields.noAttributes")}
+                </Typography>
+              </Box>
               <Button
                 type="button"
                 variant="outlined"
                 startIcon={<AddIcon />}
                 onClick={() => append({ name: "", value: "" })}
+                sx={{
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                  fontWeight: 700,
+                }}
               >
                 {t("pages.addProduct.actions.addAttribute")}
               </Button>
             </Box>
 
             {fields.length === 0 && (
-              <Typography variant="body2" color="text.secondary">
+              <Box
+                sx={{
+                  borderRadius: 2,
+                  border: "1px dashed",
+                  borderColor: "divider",
+                  minHeight: 120,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "text.secondary",
+                  bgcolor: "background.default",
+                }}
+              >
                 {t("pages.addProduct.fields.noAttributes")}
-              </Typography>
+              </Box>
             )}
 
-            <Stack spacing={2}>
+            <Stack spacing={1.5}>
               {fields.map((field, index) => (
-                <Stack
+                <Paper
                   key={field.id}
-                  direction={{ xs: "column", md: "row" }}
-                  spacing={2}
-                  alignItems={{ xs: "stretch", md: "center" }}
+                  elevation={0}
+                  sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    border: "1px dashed",
+                    borderColor: "divider",
+                    bgcolor: "background.default",
+                  }}
                 >
-                  <TextField
-                    label={t("pages.addProduct.fields.attributeName")}
-                    fullWidth
-                    {...register(`attributes.${index}.name`)}
-                  />
-                  <TextField
-                    label={t("pages.addProduct.fields.attributeValue")}
-                    fullWidth
-                    {...register(`attributes.${index}.value`)}
-                  />
-                  <IconButton
-                    onClick={() => remove(index)}
-                    color="error"
-                    aria-label={t("pages.addProduct.actions.removeAttribute")}
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={1.5}
                   >
-                    <DeleteOutlinedIcon />
-                  </IconButton>
-                </Stack>
+                    <Typography variant="subtitle2" fontWeight={700}>
+                      {`${t("pages.addProduct.sections.attributes")} #${index + 1}`}
+                    </Typography>
+                    <IconButton
+                      onClick={() => remove(index)}
+                      color="error"
+                      size="small"
+                      aria-label={t("pages.addProduct.actions.removeAttribute")}
+                    >
+                      <DeleteOutlinedIcon />
+                    </IconButton>
+                  </Box>
+                  <Divider sx={{ mb: 2, opacity: 0.6 }} />
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                      gap: 2,
+                    }}
+                  >
+                    <TextField
+                      variant="filled"
+                      label={t("pages.addProduct.fields.attributeName")}
+                      fullWidth
+                      InputProps={{ disableUnderline: true }}
+                      sx={modernInputSx}
+                      {...register(`attributes.${index}.name`)}
+                    />
+                    <TextField
+                      variant="filled"
+                      label={t("pages.addProduct.fields.attributeValue")}
+                      fullWidth
+                      InputProps={{ disableUnderline: true }}
+                      sx={modernInputSx}
+                      {...register(`attributes.${index}.value`)}
+                    />
+                  </Box>
+                </Paper>
               ))}
             </Stack>
           </Paper>

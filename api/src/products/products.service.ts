@@ -53,6 +53,9 @@ export class ProductsService {
       query.andWhere('product.categoryId = :category', { category });
     }
 
+    query
+      .orderBy('product.purchaseDate', 'DESC')
+      .addOrderBy('product.id', 'DESC');
     query.skip((page - 1) * limit).take(limit);
     const [products, total] = await query.getManyAndCount();
     return { products, total };

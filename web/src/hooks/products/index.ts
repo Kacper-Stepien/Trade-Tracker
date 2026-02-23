@@ -59,11 +59,16 @@ export const markProductAsSold = (
 ): ResultAsync<Product, ApiError> => {
   const { id, salePrice, saleDate } = payload;
   return toResult(
-    axiosInstance.patch<Product>(`/products/${id}/sold`, { salePrice, saleDate }),
+    axiosInstance.patch<Product>(`/products/${id}/sold`, {
+      salePrice,
+      saleDate,
+    }),
   );
 };
 
-export const markProductAsUnsold = (id: number): ResultAsync<Product, ApiError> => {
+export const markProductAsUnsold = (
+  id: number,
+): ResultAsync<Product, ApiError> => {
   return toResult(axiosInstance.patch<Product>(`/products/${id}/unsold`));
 };
 
@@ -110,7 +115,9 @@ export const useUpdateProductMutation = () => {
     onSuccess: (result, variables) => {
       if (result.isOk()) {
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
-        queryClient.invalidateQueries({ queryKey: [...PRODUCT_QUERY_KEY, variables.id] });
+        queryClient.invalidateQueries({
+          queryKey: [...PRODUCT_QUERY_KEY, variables.id],
+        });
       }
     },
   });
@@ -144,7 +151,9 @@ export const useMarkProductAsSoldMutation = () => {
     onSuccess: (result, variables) => {
       if (result.isOk()) {
         queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
-        queryClient.invalidateQueries({ queryKey: [...PRODUCT_QUERY_KEY, variables.id] });
+        queryClient.invalidateQueries({
+          queryKey: [...PRODUCT_QUERY_KEY, variables.id],
+        });
       }
     },
   });

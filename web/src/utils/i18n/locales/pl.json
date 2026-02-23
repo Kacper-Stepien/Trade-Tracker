@@ -260,6 +260,24 @@
         "displayedRows": "{{from}}-{{to}} z {{total}}"
       }
     },
+    "dashboard": {
+      "title": "Panel glowny",
+      "description": "Najwazniejsze liczby i ostatnie produkty z calego okresu",
+      "latestProducts": "Ostatnie produkty",
+      "kpi": {
+        "totalProducts": "Wszystkie produkty",
+        "soldProducts": "Sprzedane produkty",
+        "totalProfit": "Laczny zysk",
+        "totalProfitPercentage": "Laczny zysk %",
+        "realizedMargin": "Marza zrealizowana",
+        "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
+        "frozenCapital": "Kapital zamrozony (niesprzedane)",
+        "sellThroughRate": "Skutecznosc sprzedazy"
+      },
+      "actions": {
+        "showMore": "Zobacz wiecej"
+      }
+    },
     "categories": {
       "title": "Kategorie",
       "description": "Zarządzaj swoimi kategoriami produktów",
