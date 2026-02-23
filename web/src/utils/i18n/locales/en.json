@@ -261,6 +261,23 @@
         "displayedRows": "{{from}}-{{to}} of {{total}}"
       }
     },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Key numbers and latest products from your whole trading period",
+      "latestProducts": "Latest products",
+      "kpi": {
+        "totalProducts": "All products",
+        "soldProducts": "Sold products",
+        "totalProfit": "Total profit",
+        "totalProfitPercentage": "Total profit %",
+        "realizedMargin": "Realized margin",
+        "averageProfitPerSoldProduct": "Avg profit per sold product",
+        "frozenCapital": "Frozen capital (unsold)"
+      },
+      "actions": {
+        "showMore": "Show more"
+      }
+    },
     "categories": {
       "title": "Categories",
       "description": "Manage your product categories",
