@@ -16,6 +16,12 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import ShoppingCartCheckoutOutlinedIcon from "@mui/icons-material/ShoppingCartCheckoutOutlined";
+import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
+import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import { useUserStatsQuery } from "../hooks/stats";
 import { useProductsQuery } from "../hooks/products";
 import { formatDate, formatPrice } from "../utils/formatters";
@@ -93,6 +99,10 @@ export default function DashboardPage() {
     stats.totalProfit >= 0
       ? PRODUCT_STATUS_COLORS.sold
       : PRODUCT_STATUS_COLORS.loss;
+  const realizedMarginColor =
+    (stats.soldProductsProfitPercentage ?? 0) >= 0
+      ? PRODUCT_STATUS_COLORS.sold
+      : PRODUCT_STATUS_COLORS.loss;
   const frozenCapital = stats.totalCosts - stats.soldProductsCosts;
   const averageProfitPerSoldProduct =
     stats.numberOfSoldProducts > 0
@@ -121,26 +131,40 @@ export default function DashboardPage() {
         }}
       >
         <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
-          >
-            {t("pages.dashboard.kpi.totalProducts")}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.totalProducts")}
+            </Typography>
+            <Inventory2OutlinedIcon fontSize="small" color="action" />
+          </Box>
           <Typography variant="h5" fontWeight={700} mt={1}>
             {stats.numberOfProducts}
           </Typography>
         </Box>
 
         <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
-          >
-            {t("pages.dashboard.kpi.soldProducts")}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.soldProducts")}
+            </Typography>
+            <ShoppingCartCheckoutOutlinedIcon fontSize="small" color="action" />
+          </Box>
           <Typography variant="h5" fontWeight={700} mt={1}>
             {stats.numberOfSoldProducts}
           </Typography>
@@ -155,13 +179,23 @@ export default function DashboardPage() {
             borderBottom: `3px solid ${profitColor}`,
           }}
         >
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
-          >
-            {t("pages.dashboard.kpi.totalProfit")}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.totalProfit")}
+            </Typography>
+            <ShowChartOutlinedIcon
+              fontSize="small"
+              sx={{ color: alpha(profitColor, 0.9) }}
+            />
+          </Box>
           <Box display="flex" alignItems="baseline" gap={1.5} mt={1}>
             <Typography variant="h5" fontWeight={700} sx={{ color: profitColor }}>
               {formatPrice(stats.totalProfit, i18n.language)}
@@ -183,27 +217,57 @@ export default function DashboardPage() {
           </Box>
         </Box>
 
-        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
+        <Box
+          sx={{
+            p: 2.5,
+            borderRadius: 1.5,
+            bgcolor: alpha(realizedMarginColor, 0.14),
+            border: `1px solid ${alpha(realizedMarginColor, 0.35)}`,
+            borderBottom: `3px solid ${realizedMarginColor}`,
+          }}
+        >
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.realizedMargin")}
+            </Typography>
+            <PercentOutlinedIcon
+              fontSize="small"
+              sx={{ color: alpha(realizedMarginColor, 0.9) }}
+            />
+          </Box>
           <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
+            variant="h5"
+            fontWeight={700}
+            mt={1}
+            sx={{ color: realizedMarginColor }}
           >
-            {t("pages.dashboard.kpi.realizedMargin")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
             {formatPercentage(stats.soldProductsProfitPercentage, i18n.language)}
           </Typography>
         </Box>
 
         <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
-          >
-            {t("pages.dashboard.kpi.averageProfitPerSoldProduct")}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.averageProfitPerSoldProduct")}
+            </Typography>
+            <PaidOutlinedIcon fontSize="small" color="action" />
+          </Box>
           <Typography variant="h5" fontWeight={700} mt={1}>
             {averageProfitPerSoldProduct === null
               ? "-"
@@ -220,13 +284,23 @@ export default function DashboardPage() {
             borderBottom: `3px solid ${PRODUCT_STATUS_COLORS.unsold}`,
           }}
         >
-          <Typography
-            variant="caption"
-            sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: 0.5 }}
-            textTransform="uppercase"
-          >
-            {t("pages.dashboard.kpi.frozenCapital")}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.frozenCapital")}
+            </Typography>
+            <AcUnitOutlinedIcon
+              fontSize="small"
+              sx={{ color: alpha(PRODUCT_STATUS_COLORS.unsold, 0.9) }}
+            />
+          </Box>
           <Typography
             variant="h5"
             fontWeight={700}
