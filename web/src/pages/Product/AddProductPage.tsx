@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
+  Breadcrumbs,
   Button,
   IconButton,
+  Link,
   MenuItem,
   Paper,
   Stack,
@@ -19,6 +21,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useCreateProductMutation } from "../../hooks/products";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
@@ -96,6 +99,31 @@ export const AddProductPage = () => {
 
   return (
     <Box>
+      <Box mb={2.5}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <IconButton
+            onClick={() => navigate("/products")}
+            size="small"
+            sx={{ bgcolor: "action.hover", borderRadius: 1.5 }}
+          >
+            <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
+          </IconButton>
+          <Breadcrumbs sx={{ fontSize: "0.875rem" }}>
+            <Link
+              underline="hover"
+              color="inherit"
+              onClick={() => navigate("/products")}
+              sx={{ cursor: "pointer" }}
+            >
+              {t("pages.products.title")}
+            </Link>
+            <Typography color="text.primary" fontWeight={500}>
+              {t("pages.addProduct.title")}
+            </Typography>
+          </Breadcrumbs>
+        </Box>
+      </Box>
+
       <Box mb={4}>
         <Typography variant="h4" fontWeight={600}>
           {t("pages.addProduct.title")}
