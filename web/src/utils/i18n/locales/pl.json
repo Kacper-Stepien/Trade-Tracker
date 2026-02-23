@@ -271,7 +271,8 @@
         "totalProfitPercentage": "Laczny zysk %",
         "realizedMargin": "Marza zrealizowana",
         "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
-        "frozenCapital": "Kapital zamrozony (niesprzedane)"
+        "frozenCapital": "Kapital zamrozony (niesprzedane)",
+        "sellThroughRate": "Skutecznosc sprzedazy"
       },
       "actions": {
         "showMore": "Zobacz wiecej"

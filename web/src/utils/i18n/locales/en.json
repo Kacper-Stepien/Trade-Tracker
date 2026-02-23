@@ -272,7 +272,8 @@
         "totalProfitPercentage": "Total profit %",
         "realizedMargin": "Realized margin",
         "averageProfitPerSoldProduct": "Avg profit per sold product",
-        "frozenCapital": "Frozen capital (unsold)"
+        "frozenCapital": "Frozen capital (unsold)",
+        "sellThroughRate": "Sell-through rate"
       },
       "actions": {
         "showMore": "Show more"
