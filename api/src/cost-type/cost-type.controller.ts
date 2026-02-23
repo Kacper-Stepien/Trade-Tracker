@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { CostTypeService } from './cost-type.service';
 import { CreateCostTypeDto } from './dtos/create-cost-type.dto';
@@ -20,14 +21,44 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { GetCostTypesResponseDto } from './dtos/get-cost-types-response.dto';
 
 @Controller('cost-type')
 @ApiTags('cost-type')
 export class CostTypeController {
   constructor(private readonly costTypeService: CostTypeService) {}
 
-  @Get(':id')
+  @Get('all')
+  @ApiOperation({ summary: 'Get all cost types as a full list' })
+  @ApiResponse({
+    status: 200,
+    description: 'Full list of cost types',
+    type: CostTypeDto,
+    isArray: true,
+  })
+  getAllCostTypesList(): Promise<CostTypeDto[]> {
+    return this.costTypeService.getAllCostTypesList();
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all cost types' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated list of cost types',
+    type: GetCostTypesResponseDto,
+  })
+  getAllCostTypes(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ costTypes: CostTypeDto[]; total: number }> {
+    return this.costTypeService.getAllCostTypes(page, limit);
+  }
+
+  @Get(':id(\\d+)')
   @ApiOperation({ summary: 'Get cost type by ID' })
   @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiResponse({
@@ -38,18 +69,6 @@ export class CostTypeController {
   @ApiResponse({ status: 404, description: 'Cost type not found' })
   getCostType(@Param('id', ParseIntPipe) id: number): Promise<CostTypeDto> {
     return this.costTypeService.getCostTypeById(id);
-  }
-
-  @Get()
-  @ApiOperation({ summary: 'Get all cost types' })
-  @ApiResponse({
-    status: 200,
-    description: 'An array of cost types',
-    type: CostTypeDto,
-    isArray: true,
-  })
-  getAllCostTypes(): Promise<CostTypeDto[]> {
-    return this.costTypeService.getAllCostTypes();
   }
 
   @UseGuards(AdminGuard)
@@ -69,7 +88,7 @@ export class CostTypeController {
   }
 
   @UseGuards(AdminGuard)
-  @Patch(':id')
+  @Patch(':id(\\d+)')
   @ApiOperation({ summary: 'Update a cost type - only for admin' })
   @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiBody({ type: UpdateCostTypeDto })
@@ -87,7 +106,7 @@ export class CostTypeController {
   }
 
   @UseGuards(AdminGuard)
-  @Delete(':id')
+  @Delete(':id(\\d+)')
   @ApiOperation({ summary: 'Delete a cost type - only for admin' })
   @ApiParam({ name: 'id', type: 'number', description: 'Cost type ID' })
   @ApiResponse({

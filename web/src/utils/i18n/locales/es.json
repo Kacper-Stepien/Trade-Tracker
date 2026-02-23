@@ -1,0 +1,339 @@
+{
+  "sidebar.dashboard": "Panel",
+  "sidebar.products": "Productos",
+  "sidebar.categories": "Categorias",
+  "sidebar.costTypes": "Tipos de costo",
+  "sidebar.statistics": "Estadisticas",
+
+  "logging": "Iniciar sesion",
+  "email": "Correo electronico",
+  "password": "Contrasena",
+  "login": "Iniciar sesion",
+  "emailIsRequired": "El correo electronico es obligatorio",
+  "emailIsIncorrect": "El correo electronico es incorrecto",
+  "passwordIsRequired": "La contrasena es obligatoria",
+  "passwordMinLength": "La contrasena debe tener al menos 8 caracteres",
+  "passwordIsIncorrect": "La contrasena es incorrecta",
+  "doesntHaveAnAccount": "No tienes una cuenta?",
+  "registerNow": "Registrate ahora",
+  "registration": "Registro",
+  "name": "Nombre",
+  "surname": "Apellido",
+  "confirmPassword": "Confirmar contrasena",
+  "dateOfBirth": "Fecha de nacimiento",
+  "dateIsRequired": "La fecha de nacimiento es obligatoria",
+  "isProfessional": "Soy un vendedor profesional",
+  "nameIsRequired": "El nombre es obligatorio",
+  "register": "Registrarse",
+  "haveAnAccount": "Ya tienes una cuenta?",
+  "surnameIsRequired": "El apellido es obligatorio",
+  "passwordsMustMatch": "Las contrasenas deben coincidir",
+
+  "continueWithGoogle": "Continuar con cuenta de Google",
+  "or": "O",
+
+  "INVALID_EMAIL_OR_PASSWORD": "Correo electronico o contrasena invalidos",
+  "SUCCESS_SING_UP": "La cuenta ha sido creada.",
+  "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Ya existe un usuario con este correo electronico",
+  "UNEXPECTED_ERROR": "Error del servidor. Intentalo de nuevo mas tarde",
+
+  "aboutUs": "Sobre nosotros",
+  "contact": "Contacto",
+  "footerAboutText": "Trade Tracker es una herramienta para seguir transacciones de compra y venta. Agrega productos, registra costos y luego monitorea tus ganancias con resumenes y graficos claros.",
+  "footerContactEmail": "kacper2007x48@gmail.com",
+  "footerContactPhone": "+48 123 456 789",
+  "footerAllRightsReserved": "© {{year}} Trade Tracker. Todos los derechos reservados.",
+  "footerDesignedBy": "© Disenado por Kacper Stepien.",
+
+  "footerSocialMediaLinks": "Enlaces de redes sociales",
+
+  "common": {
+    "actions": {
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "deleting": "Eliminando",
+      "edit": "Editar",
+      "add": "Agregar",
+      "create": "Crear",
+      "save": "Guardar"
+    },
+    "errors": {
+      "error": "Ocurrio un error",
+      "fetchFailed": "No se pudieron obtener los datos",
+      "saveFaield": "No se pudieron guardar los cambios"
+    }
+  },
+
+  "apiErrors": {
+    "NOT_FOUND": "No se encontro el recurso solicitado",
+    "FORBIDDEN": "No tienes permiso para realizar esta accion",
+    "UNEXPECTED_ERROR": "Algo salio mal. Intentalo de nuevo mas tarde",
+    "USER_WITH_GIVEN_EMAIL_ALREADY_EXISTS": "Ya existe una cuenta con este correo electronico",
+    "NETWORK_ERROR": "Sin conexion a internet. Verifica tu red",
+    "SERVER_UNAVAILABLE": "El servidor esta temporalmente no disponible. Intentalo de nuevo mas tarde",
+    "CATEGORY_ALREADY_EXISTS": "Ya existe una categoria con este nombre",
+    "CATEGORY_HAS_PRODUCTS": "No se puede eliminar una categoria que tiene productos asignados",
+    "COST_TYPE_NOT_FOUND": "Tipo de costo no encontrado",
+    "COST_TYPE_ALREADY_EXISTS": "Ya existe un tipo de costo con este nombre",
+    "COST_TYPE_HAS_ASSOCIATED_COSTS": "No se puede eliminar un tipo de costo que tiene costos asociados"
+  },
+
+  "pages": {
+    "addProduct": {
+      "title": "Agregar producto",
+      "description": "Crear una nueva entrada de producto",
+      "sections": {
+        "productInfo": "Informacion del producto",
+        "category": "Categoria",
+        "attributes": "Atributos"
+      },
+      "fields": {
+        "name": "Nombre del producto",
+        "purchasePrice": "Precio de compra",
+        "purchaseDate": "Fecha de compra",
+        "category": "Categoria",
+        "attributeName": "Nombre del atributo",
+        "attributeValue": "Valor del atributo",
+        "noAttributes": "No se agregaron atributos"
+      },
+      "actions": {
+        "addAttribute": "Agregar atributo",
+        "removeAttribute": "Eliminar atributo"
+      },
+      "validation": {
+        "required": "Este campo es obligatorio"
+      }
+    },
+    "productDetails": {
+      "description": "Informacion detallada del producto",
+      "backToList": "Volver a productos",
+      "invalidId": "ID de producto invalido",
+      "actions": {
+        "editProduct": "Editar producto",
+        "markAsSold": "Marcar como vendido",
+        "markAsUnsold": "Marcar como no vendido",
+        "deleteProduct": "Eliminar producto"
+      },
+      "sections": {
+        "finances": "Finanzas",
+        "summary": "Resumen",
+        "attributes": "Atributos",
+        "costs": "Costos"
+      },
+      "fields": {
+        "category": "Categoria",
+        "purchasePrice": "Precio de compra",
+        "purchaseDate": "Fecha de compra",
+        "status": "Estado",
+        "salePrice": "Precio de venta",
+        "saleDate": "Fecha de venta"
+      },
+      "tables": {
+        "name": "Nombre",
+        "value": "Valor",
+        "price": "Precio",
+        "date": "Fecha",
+        "description": "Descripcion",
+        "costType": "Tipo de costo",
+        "actions": "Acciones"
+      },
+      "empty": {
+        "attributes": "No hay atributos disponibles",
+        "costs": "No hay costos disponibles"
+      },
+      "costs": {
+        "actions": {
+          "add": "Agregar costo"
+        },
+        "fields": {
+          "name": "Nombre",
+          "description": "Descripcion",
+          "price": "Precio",
+          "date": "Fecha",
+          "costType": "Tipo de costo"
+        },
+        "addModal": {
+          "title": "Agregar costo"
+        },
+        "editModal": {
+          "title": "Editar costo"
+        },
+        "deleteModal": {
+          "title": "Eliminar costo",
+          "confirmation": "Estas seguro de que quieres eliminar?"
+        }
+      },
+      "attributes": {
+        "actions": {
+          "add": "Agregar atributo"
+        },
+        "fields": {
+          "name": "Nombre",
+          "value": "Valor"
+        },
+        "addModal": {
+          "title": "Agregar atributo"
+        },
+        "editModal": {
+          "title": "Editar atributo"
+        },
+        "deleteModal": {
+          "title": "Eliminar atributo",
+          "confirmation": "Estas seguro de que quieres eliminar?"
+        }
+      },
+      "productModals": {
+        "edit": {
+          "title": "Editar producto"
+        },
+        "markSold": {
+          "title": "Marcar producto como vendido"
+        },
+        "markUnsold": {
+          "title": "Marcar producto como no vendido",
+          "confirmation": "Esto borrara la fecha y el precio de venta. Continuar?"
+        },
+        "delete": {
+          "title": "Eliminar producto",
+          "confirmation": "Estas seguro de que quieres eliminar el producto \"{{name}}\"?"
+        }
+      },
+      "finances": {
+        "sold": "Vendido",
+        "unsold": "No vendido",
+        "pendingResult": "Venta pendiente",
+        "chartTitle": "Grafico comparativo",
+        "chartPaidVsResult": "Pagado vs resultado",
+        "chartHint": "El grafico muestra la relacion entre la inversion total y el resultado final.",
+        "noResultYet": "Aun no hay resultado porque el producto no se ha vendido.",
+        "totalInvestmentFormula": "{{purchase}} compra + {{costs}} costos",
+        "summaryLabel": "Numeros clave",
+        "lossHint": "La venta termino por debajo de los costos totales.",
+        "roi": "(ROI: {{value}}%)",
+        "partOfTotal": "{{value}}% del total",
+        "metrics": {
+          "purchasePrice": "Precio de compra",
+          "totalCosts": "Costos totales",
+          "totalInvestment": "Inversion total",
+          "salePrice": "Precio de venta",
+          "result": "Ganancia / perdida",
+          "profit": "Ganancia",
+          "loss": "Perdida",
+          "resultPending": "Resultado"
+        }
+      }
+    },
+    "products": {
+      "title": "Productos",
+      "description": "Explora y gestiona tus productos",
+      "filters": {
+        "status": "Estado",
+        "category": "Categoria",
+        "options": {
+          "allStatuses": "Todos los estados",
+          "allCategories": "Todas las categorias",
+          "sold": "Vendido",
+          "unsold": "No vendido"
+        }
+      },
+      "actions": {
+        "addProduct": "Agregar producto"
+      },
+      "status": {
+        "sold": "Vendido",
+        "unsold": "No vendido"
+      },
+      "table": {
+        "name": "Nombre",
+        "category": "Categoria",
+        "purchasePrice": "Precio de compra",
+        "purchaseDate": "Fecha de compra",
+        "sold": "Estado",
+        "salePrice": "Precio de venta",
+        "saleDate": "Fecha de venta",
+        "costs": "Costos",
+        "profitLoss": "Ganancia / perdida",
+        "pendingSale": "Venta pendiente",
+        "empty": "No hay productos para mostrar"
+      },
+      "pagination": {
+        "rowsPerPage": "Filas por pagina:",
+        "displayedRows": "{{from}}-{{to}} de {{total}}"
+      }
+    },
+    "dashboard": {
+      "title": "Panel",
+      "description": "Numeros clave y ultimos productos de todo tu periodo de ventas",
+      "latestProducts": "Ultimos productos",
+      "kpi": {
+        "totalProducts": "Todos los productos",
+        "soldProducts": "Productos vendidos",
+        "totalProfit": "Ganancia total",
+        "totalProfitPercentage": "Ganancia total %",
+        "realizedMargin": "Margen realizado",
+        "averageProfitPerSoldProduct": "Ganancia media por producto vendido",
+        "frozenCapital": "Capital congelado (no vendidos)",
+        "sellThroughRate": "Tasa de venta"
+      },
+      "actions": {
+        "showMore": "Ver mas"
+      }
+    },
+    "categories": {
+      "title": "Categorias",
+      "description": "Gestiona tus categorias de producto",
+      "table": {
+        "name": "Nombre",
+        "productsCount": "Cantidad de productos",
+        "actions": "Acciones",
+        "empty": "No hay categorias para mostrar"
+      },
+      "pagination": {
+        "rowsPerPage": "Filas por pagina:",
+        "displayedRows": "{{from}}-{{to}} de {{total}}"
+      },
+      "addModal": {
+        "title": "Agregar categoria",
+        "label": "Nombre de la categoria",
+        "placeholder": "Ingresa el nombre de la categoria"
+      },
+      "editModal": {
+        "title": "Editar categoria",
+        "label": "Nombre de la categoria",
+        "placeholder": "Ingresa el nombre de la categoria"
+      },
+      "deleteModal": {
+        "title": "Eliminar categoria",
+        "confirmation": "Estas seguro de que quieres eliminar?"
+      }
+    },
+    "costTypes": {
+      "title": "Tipos de costo",
+      "description": "Gestiona tus tipos de costo",
+      "table": {
+        "name": "Nombre",
+        "costsCount": "Cantidad de costos",
+        "actions": "Acciones",
+        "empty": "No hay tipos de costo para mostrar"
+      },
+      "pagination": {
+        "rowsPerPage": "Filas por pagina:",
+        "displayedRows": "{{from}}-{{to}} de {{total}}"
+      },
+      "addModal": {
+        "title": "Agregar tipo de costo",
+        "label": "Nombre del tipo de costo",
+        "placeholder": "Ingresa el nombre del tipo de costo"
+      },
+      "editModal": {
+        "title": "Editar tipo de costo",
+        "label": "Nombre del tipo de costo",
+        "placeholder": "Ingresa el nombre del tipo de costo"
+      },
+      "deleteModal": {
+        "title": "Eliminar tipo de costo",
+        "confirmation": "Estas seguro de que quieres eliminar este tipo de costo?"
+      }
+    }
+  }
+}

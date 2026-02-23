@@ -68,7 +68,7 @@ export class ProductCostService {
 
     const productCost = await this.productCostRepository.findOne({
       where: { id: costId },
-      relations: ['costType', 'product'],
+      relations: ['costType', 'product', 'product.user'],
     });
     if (!productCost) {
       this.logger.warn('Cost not found', { costId });
@@ -132,7 +132,7 @@ export class ProductCostService {
 
     const productCost = await this.productCostRepository.findOne({
       where: { id: costId },
-      relations: ['costType', 'product'],
+      relations: ['costType', 'product', 'product.user'],
     });
 
     if (!productCost) {
@@ -187,8 +187,9 @@ export class ProductCostService {
   }
 
   private async getProductById(productId: number): Promise<Product> {
-    const product = await this.productRepository.findOneBy({
-      id: productId,
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['user'],
     });
 
     if (!product) {

@@ -72,16 +72,225 @@
     "NETWORK_ERROR": "No internet connection. Please check your network",
     "SERVER_UNAVAILABLE": "Server is temporarily unavailable. Please try again later",
     "CATEGORY_ALREADY_EXISTS": "A category with this name already exists",
-    "CATEGORY_HAS_PRODUCTS": "Cannot delete a category that has products assigned to it"
+    "CATEGORY_HAS_PRODUCTS": "Cannot delete a category that has products assigned to it",
+    "COST_TYPE_NOT_FOUND": "Cost type not found",
+    "COST_TYPE_ALREADY_EXISTS": "Cost type with this name already exists",
+    "COST_TYPE_HAS_ASSOCIATED_COSTS": "Cannot delete a cost type that has associated costs"
   },
 
   "pages": {
+    "addProduct": {
+      "title": "Add Product",
+      "description": "Create a new product entry",
+      "sections": {
+        "productInfo": "Product Information",
+        "category": "Category",
+        "attributes": "Attributes"
+      },
+      "fields": {
+        "name": "Product Name",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "category": "Category",
+        "attributeName": "Attribute Name",
+        "attributeValue": "Attribute Value",
+        "noAttributes": "No attributes added"
+      },
+      "actions": {
+        "addAttribute": "Add Attribute",
+        "removeAttribute": "Remove Attribute"
+      },
+      "validation": {
+        "required": "This field is required"
+      }
+    },
+    "productDetails": {
+      "description": "Detailed product information",
+      "backToList": "Back to products",
+      "invalidId": "Invalid product ID",
+      "actions": {
+        "editProduct": "Edit Product",
+        "markAsSold": "Mark as Sold",
+        "markAsUnsold": "Mark as Unsold",
+        "deleteProduct": "Delete Product"
+      },
+      "sections": {
+        "finances": "Finances",
+        "summary": "Summary",
+        "attributes": "Attributes",
+        "costs": "Costs"
+      },
+      "fields": {
+        "category": "Category",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "status": "Status",
+        "salePrice": "Sale Price",
+        "saleDate": "Sale Date"
+      },
+      "tables": {
+        "name": "Name",
+        "value": "Value",
+        "price": "Price",
+        "date": "Date",
+        "description": "Description",
+        "costType": "Cost Type",
+        "actions": "Actions"
+      },
+      "empty": {
+        "attributes": "No attributes available",
+        "costs": "No costs available"
+      },
+      "costs": {
+        "actions": {
+          "add": "Add Cost"
+        },
+        "fields": {
+          "name": "Name",
+          "description": "Description",
+          "price": "Price",
+          "date": "Date",
+          "costType": "Cost Type"
+        },
+        "addModal": {
+          "title": "Add Cost"
+        },
+        "editModal": {
+          "title": "Edit Cost"
+        },
+        "deleteModal": {
+          "title": "Delete Cost",
+          "confirmation": "Are you sure you want to delete"
+        }
+      },
+      "attributes": {
+        "actions": {
+          "add": "Add Attribute"
+        },
+        "fields": {
+          "name": "Name",
+          "value": "Value"
+        },
+        "addModal": {
+          "title": "Add Attribute"
+        },
+        "editModal": {
+          "title": "Edit Attribute"
+        },
+        "deleteModal": {
+          "title": "Delete Attribute",
+          "confirmation": "Are you sure you want to delete"
+        }
+      },
+      "productModals": {
+        "edit": {
+          "title": "Edit Product"
+        },
+        "markSold": {
+          "title": "Mark Product as Sold"
+        },
+        "markUnsold": {
+          "title": "Mark Product as Unsold",
+          "confirmation": "This will clear sale date and sale price. Continue?"
+        },
+        "delete": {
+          "title": "Delete Product",
+          "confirmation": "Are you sure you want to delete product \"{{name}}\"?"
+        }
+      },
+      "finances": {
+        "sold": "Sold",
+        "unsold": "Unsold",
+        "pendingResult": "Pending sale",
+        "chartTitle": "Comparison chart",
+        "chartPaidVsResult": "Paid vs result",
+        "chartHint": "The chart shows relation between total investment and final result.",
+        "noResultYet": "No result yet because the product is not sold.",
+        "totalInvestmentFormula": "{{purchase}} purchase + {{costs}} costs",
+        "summaryLabel": "Key numbers",
+        "lossHint": "Sale ended below total costs.",
+        "roi": "(ROI: {{value}}%)",
+        "partOfTotal": "{{value}}% of total",
+        "metrics": {
+          "purchasePrice": "Purchase price",
+          "totalCosts": "Total costs",
+          "totalInvestment": "Total investment",
+          "salePrice": "Sale price",
+          "result": "Profit / loss",
+          "profit": "Profit",
+          "loss": "Loss",
+          "resultPending": "Result"
+        }
+      }
+    },
+    "products": {
+      "title": "Products",
+      "description": "Browse and manage your products",
+      "filters": {
+        "status": "Status",
+        "category": "Category",
+        "options": {
+          "allStatuses": "All statuses",
+          "allCategories": "All categories",
+          "sold": "Sold",
+          "unsold": "Unsold"
+        }
+      },
+      "actions": {
+        "addProduct": "Add Product"
+      },
+      "status": {
+        "sold": "Sold",
+        "unsold": "Unsold"
+      },
+      "table": {
+        "name": "Name",
+        "category": "Category",
+        "purchasePrice": "Purchase Price",
+        "purchaseDate": "Purchase Date",
+        "sold": "Status",
+        "salePrice": "Sale Price",
+        "saleDate": "Sale Date",
+        "costs": "Costs",
+        "profitLoss": "Profit / loss",
+        "pendingSale": "Pending sale",
+        "empty": "No products to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Key numbers and latest products from your whole trading period",
+      "latestProducts": "Latest products",
+      "kpi": {
+        "totalProducts": "All products",
+        "soldProducts": "Sold products",
+        "totalProfit": "Total profit",
+        "totalProfitPercentage": "Total profit %",
+        "realizedMargin": "Realized margin",
+        "averageProfitPerSoldProduct": "Avg profit per sold product",
+        "frozenCapital": "Frozen capital (unsold)",
+        "sellThroughRate": "Sell-through rate"
+      },
+      "actions": {
+        "showMore": "Show more"
+      }
+    },
     "categories": {
       "title": "Categories",
       "description": "Manage your product categories",
       "table": {
         "name": "Name",
-        "actions": "Actions"
+        "productsCount": "Products count",
+        "actions": "Actions",
+        "empty": "No categories to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
       },
       "addModal": {
         "title": "Add Category",
@@ -97,6 +306,36 @@
         "title": "Delete Category",
         "confirmation": "Are you sure you want to delete"
       }
+    },
+    "costTypes": {
+      "title": "Cost Types",
+      "description": "Manage your cost types",
+      "table": {
+        "name": "Name",
+        "costsCount": "Costs count",
+        "actions": "Actions",
+        "empty": "No cost types to display"
+      },
+      "pagination": {
+        "rowsPerPage": "Rows per page:",
+        "displayedRows": "{{from}}-{{to}} of {{total}}"
+      },
+      "addModal": {
+        "title": "Add Cost Type",
+        "label": "Cost Type Name",
+        "placeholder": "Enter cost type name"
+      },
+      "editModal": {
+        "title": "Edit Cost Type",
+        "label": "Cost Type Name",
+        "placeholder": "Enter cost type name"
+      },
+      "deleteModal": {
+        "title": "Delete Cost Type",
+        "confirmation": "Are you sure you want to delete this cost type?"
+      }
     }
   }
 }
+
+

@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import DashboardHeader from "../components/DashboardHeader/DashboardHeader";
-import Footer from "../components/Footer/Footer";
 import { useTheme } from "../hooks/useTheme";
 
 export default function DashboardLayout() {
@@ -44,7 +43,6 @@ export default function DashboardLayout() {
         >
           <Outlet />
         </Box>
-        <Footer />
       </Box>
     </Box>
   );

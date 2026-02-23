@@ -26,20 +26,49 @@ export class ProductCategoryService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async findAllCategories(userId: number): Promise<ProductCategoryDto[]> {
-    this.logger.info('Finding all categories for user', { userId });
-
-    const categories = await this.productCategoryRepository.find({
-      where: { user: { id: userId } },
+  async findAllCategories(
+    userId: number,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ categories: ProductCategoryDto[]; total: number }> {
+    this.logger.info('Finding all categories for user', {
+      userId,
+      page,
+      limit,
     });
-    return ProductCategoryMapper.toDtoList(categories);
+
+    const query = this.productCategoryRepository
+      .createQueryBuilder('category')
+      .where('category.userId = :userId', { userId })
+      .loadRelationCountAndMap('category.productsCount', 'category.products')
+      .orderBy('category.id', 'DESC');
+
+    query.skip((page - 1) * limit).take(limit);
+    const [categories, total] = await query.getManyAndCount();
+
+    return { categories: ProductCategoryMapper.toDtoList(categories), total };
   }
 
   async findCategoryById(
     id: number,
     userId: number,
   ): Promise<ProductCategoryDto> {
-    const category = await this.getCategoryById(id, userId);
+    const category = await this.productCategoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.user', 'user')
+      .where('category.id = :id', { id })
+      .andWhere('category.userId = :userId', { userId })
+      .loadRelationCountAndMap('category.productsCount', 'category.products')
+      .getOne();
+
+    if (!category) {
+      this.logger.warn('Category not found', { categoryId: id });
+      throw new NotFoundException({
+        message: `Category with ID ${id} not found`,
+        code: ApiErrorCode.NOT_FOUND,
+      });
+    }
+
     return ProductCategoryMapper.toDto(category);
   }
 
