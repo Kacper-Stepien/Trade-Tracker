@@ -275,7 +275,9 @@
         "realizedMargin": "Margen realizado",
         "averageProfitPerSoldProduct": "Ganancia media por producto vendido",
         "frozenCapital": "Capital congelado (no vendidos)",
-        "sellThroughRate": "Tasa de venta"
+        "sellThroughRate": "Tasa de venta",
+        "averageDaysFromPurchaseToSale": "Promedio de dias de compra a venta",
+        "daysUnit": "dias"
       },
       "actions": {
         "showMore": "Ver mas"

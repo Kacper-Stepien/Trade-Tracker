@@ -23,6 +23,7 @@ import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
+import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import { useUserStatsQuery } from "../hooks/stats";
 import { useProductsQuery } from "../hooks/products";
 import { formatDate, formatPrice } from "../utils/formatters";
@@ -42,6 +43,19 @@ const toSafeNumber = (value: unknown) => {
   }
 
   return 0;
+};
+
+const toFiniteNumberOrNull = (value: unknown) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
 };
 
 const formatPercentage = (
@@ -113,6 +127,10 @@ export default function DashboardPage() {
     stats.numberOfProducts > 0
       ? (stats.numberOfSoldProducts / stats.numberOfProducts) * 100
       : null;
+  const averageDaysFromPurchaseToSaleRaw = stats.averageDaysFromPurchaseToSale;
+  const averageDaysFromPurchaseToSale = toFiniteNumberOrNull(
+    averageDaysFromPurchaseToSaleRaw,
+  );
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -237,7 +255,7 @@ export default function DashboardPage() {
           gridTemplateColumns: {
             xs: "1fr",
             md: "repeat(2, minmax(0, 1fr))",
-            xl: "repeat(4, minmax(0, 1fr))",
+            xl: "repeat(5, minmax(0, 1fr))",
           },
         }}
       >
@@ -298,6 +316,33 @@ export default function DashboardPage() {
           </Box>
           <Typography variant="h6" fontWeight={700} mt={1}>
             {formatPercentage(sellThroughRate, i18n.language)}
+          </Typography>
+        </Box>
+
+        <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+              textTransform="uppercase"
+            >
+              {t("pages.dashboard.kpi.averageDaysFromPurchaseToSale")}
+            </Typography>
+            <ScheduleOutlinedIcon fontSize="small" color="action" />
+          </Box>
+          <Typography variant="h6" fontWeight={700} mt={1}>
+            {averageDaysFromPurchaseToSale !== null
+              ? `${new Intl.NumberFormat(i18n.language, {
+                  maximumFractionDigits: 0,
+                }).format(Math.round(averageDaysFromPurchaseToSale))} ${t(
+                  "pages.dashboard.kpi.daysUnit",
+                )}`
+              : "-"
+            }
           </Typography>
         </Box>
 

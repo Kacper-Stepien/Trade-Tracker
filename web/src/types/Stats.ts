@@ -9,5 +9,6 @@ export type UserStats = {
   soldProductsProfitPercentage: number | null;
   numberOfProducts: number;
   numberOfSoldProducts: number;
+  averageDaysFromPurchaseToSale: number | null;
   period: string;
 };

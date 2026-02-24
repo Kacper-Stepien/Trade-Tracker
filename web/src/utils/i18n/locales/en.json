@@ -275,7 +275,9 @@
         "realizedMargin": "Realized margin",
         "averageProfitPerSoldProduct": "Avg profit per sold product",
         "frozenCapital": "Frozen capital (unsold)",
-        "sellThroughRate": "Sell-through rate"
+        "sellThroughRate": "Sell-through rate",
+        "averageDaysFromPurchaseToSale": "Avg days from purchase to sale",
+        "daysUnit": "days"
       },
       "actions": {
         "showMore": "Show more"
@@ -339,5 +341,3 @@
     }
   }
 }
-
-

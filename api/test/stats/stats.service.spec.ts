@@ -96,4 +96,63 @@ describe('StatsService', () => {
       expect(result).toEqual(products);
     });
   });
+
+  describe('calculateUserStats', () => {
+    it('should calculate average days from purchase to sale for sold products', () => {
+      const products = [
+        {
+          id: 1001,
+          purchasePrice: 100,
+          purchaseDate: new Date('2025-01-01'),
+          sold: true,
+          salePrice: 150,
+          saleDate: new Date('2025-01-11'),
+          costs: [],
+          user: { id: 1 },
+          category: null,
+          attributes: [],
+          name: 'A',
+        } as unknown as Product,
+        {
+          id: 1002,
+          purchasePrice: 200,
+          purchaseDate: new Date('2025-01-01'),
+          sold: true,
+          salePrice: 260,
+          saleDate: new Date('2025-01-06'),
+          costs: [],
+          user: { id: 1 },
+          category: null,
+          attributes: [],
+          name: 'B',
+        } as unknown as Product,
+      ];
+
+      const result = service['calculateUserStats'](products, 'all');
+
+      expect(result.averageDaysFromPurchaseToSale).toBe(7.5);
+    });
+
+    it('should return null average days when there are no sold products with dates', () => {
+      const products = [
+        {
+          id: 1003,
+          purchasePrice: 100,
+          purchaseDate: new Date('2025-01-01'),
+          sold: false,
+          salePrice: null,
+          saleDate: null,
+          costs: [],
+          user: { id: 1 },
+          category: null,
+          attributes: [],
+          name: 'C',
+        } as unknown as Product,
+      ];
+
+      const result = service['calculateUserStats'](products, 'all');
+
+      expect(result.averageDaysFromPurchaseToSale).toBeNull();
+    });
+  });
 });

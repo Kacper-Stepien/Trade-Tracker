@@ -274,7 +274,9 @@
         "realizedMargin": "Marza zrealizowana",
         "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
         "frozenCapital": "Kapital zamrozony (niesprzedane)",
-        "sellThroughRate": "Skutecznosc sprzedazy"
+        "sellThroughRate": "Skutecznosc sprzedazy",
+        "averageDaysFromPurchaseToSale": "Sredni czas od zakupu do sprzedazy",
+        "daysUnit": "dni"
       },
       "actions": {
         "showMore": "Zobacz wiecej"
