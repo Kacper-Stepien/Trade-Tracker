@@ -210,12 +210,14 @@
         "summaryLabel": "Key numbers",
         "lossHint": "Sale ended below total costs.",
         "roi": "(ROI: {{value}}%)",
+        "daysToSaleValue": "{{value}} days",
         "partOfTotal": "{{value}}% of total",
         "metrics": {
           "purchasePrice": "Purchase price",
           "totalCosts": "Total costs",
           "totalInvestment": "Total investment",
           "salePrice": "Sale price",
+          "daysToSale": "Days from purchase to sale",
           "result": "Profit / loss",
           "profit": "Profit",
           "loss": "Loss",
@@ -273,7 +275,9 @@
         "realizedMargin": "Realized margin",
         "averageProfitPerSoldProduct": "Avg profit per sold product",
         "frozenCapital": "Frozen capital (unsold)",
-        "sellThroughRate": "Sell-through rate"
+        "sellThroughRate": "Sell-through rate",
+        "averageDaysFromPurchaseToSale": "Avg days from purchase to sale",
+        "daysUnit": "days"
       },
       "actions": {
         "showMore": "Show more"
@@ -337,5 +341,3 @@
     }
   }
 }
-
-

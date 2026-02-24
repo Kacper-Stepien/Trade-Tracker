@@ -210,12 +210,14 @@
         "summaryLabel": "Numeros clave",
         "lossHint": "La venta termino por debajo de los costos totales.",
         "roi": "(ROI: {{value}}%)",
+        "daysToSaleValue": "{{value}} dias",
         "partOfTotal": "{{value}}% del total",
         "metrics": {
           "purchasePrice": "Precio de compra",
           "totalCosts": "Costos totales",
           "totalInvestment": "Inversion total",
           "salePrice": "Precio de venta",
+          "daysToSale": "Dias desde compra hasta venta",
           "result": "Ganancia / perdida",
           "profit": "Ganancia",
           "loss": "Perdida",
@@ -273,7 +275,9 @@
         "realizedMargin": "Margen realizado",
         "averageProfitPerSoldProduct": "Ganancia media por producto vendido",
         "frozenCapital": "Capital congelado (no vendidos)",
-        "sellThroughRate": "Tasa de venta"
+        "sellThroughRate": "Tasa de venta",
+        "averageDaysFromPurchaseToSale": "Promedio de dias de compra a venta",
+        "daysUnit": "dias"
       },
       "actions": {
         "showMore": "Ver mas"

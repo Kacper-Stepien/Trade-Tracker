@@ -209,12 +209,14 @@
         "summaryLabel": "Kluczowe liczby",
         "lossHint": "Sprzedaz byla ponizej lacznych kosztow.",
         "roi": "(ROI: {{value}}%)",
+        "daysToSaleValue": "{{value}} dni",
         "partOfTotal": "{{value}}% calosci",
         "metrics": {
           "purchasePrice": "Cena zakupu",
           "totalCosts": "Suma kosztow",
           "totalInvestment": "Łączna inwestycja",
           "salePrice": "Cena sprzedazy",
+          "daysToSale": "Dni od zakupu do sprzedazy",
           "result": "Zysk / strata",
           "profit": "Zysk",
           "loss": "Strata",
@@ -272,7 +274,9 @@
         "realizedMargin": "Marza zrealizowana",
         "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
         "frozenCapital": "Kapital zamrozony (niesprzedane)",
-        "sellThroughRate": "Skutecznosc sprzedazy"
+        "sellThroughRate": "Skutecznosc sprzedazy",
+        "averageDaysFromPurchaseToSale": "Sredni czas od zakupu do sprzedazy",
+        "daysUnit": "dni"
       },
       "actions": {
         "showMore": "Zobacz wiecej"

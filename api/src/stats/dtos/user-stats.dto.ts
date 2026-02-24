@@ -52,6 +52,13 @@ export class UserStatsDto {
   })
   numberOfSoldProducts: number;
   @ApiProperty({
+    description:
+      'Average number of days between purchase and sale for sold products in the selected period.',
+    example: 12.5,
+    nullable: true,
+  })
+  averageDaysFromPurchaseToSale: number | null;
+  @ApiProperty({
     description: 'Time period for which the statistics are calculated.',
     example: 'Q1 2025',
   })

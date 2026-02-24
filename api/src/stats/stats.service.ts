@@ -92,6 +92,24 @@ export class StatsService {
     const numberOfSoldProducts = productStats.filter(
       (product) => product.sold,
     ).length;
+    const soldProductsDurationsInDays = productStats
+      .filter((product) => product.sold)
+      .map((product) =>
+        this.calculateDaysBetweenDates(product.purchaseDate, product.saleDate),
+      )
+      .filter((days): days is number => days !== null);
+    const totalDaysFromPurchaseToSale = soldProductsDurationsInDays.reduce(
+      (acc, days) => acc + days,
+      0,
+    );
+    const averageDaysFromPurchaseToSale =
+      soldProductsDurationsInDays.length > 0
+        ? parseFloat(
+            (
+              totalDaysFromPurchaseToSale / soldProductsDurationsInDays.length
+            ).toFixed(2),
+          )
+        : null;
 
     return {
       totalCosts,
@@ -104,8 +122,50 @@ export class StatsService {
       soldProductsProfitPercentage,
       numberOfProducts,
       numberOfSoldProducts,
+      averageDaysFromPurchaseToSale,
       period,
     } as UserStatsDto;
+  }
+
+  private calculateDaysBetweenDates(
+    from: Date | string | null | undefined,
+    to: Date | string | null | undefined,
+  ): number | null {
+    const fromDate = this.toValidDateOrNull(from);
+    const toDate = this.toValidDateOrNull(to);
+
+    if (!fromDate || !toDate) {
+      return null;
+    }
+
+    const fromUtc = Date.UTC(
+      fromDate.getUTCFullYear(),
+      fromDate.getUTCMonth(),
+      fromDate.getUTCDate(),
+    );
+    const toUtc = Date.UTC(
+      toDate.getUTCFullYear(),
+      toDate.getUTCMonth(),
+      toDate.getUTCDate(),
+    );
+
+    if (!Number.isFinite(fromUtc) || !Number.isFinite(toUtc)) {
+      return null;
+    }
+
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    return Math.max(0, Math.round((toUtc - fromUtc) / millisecondsPerDay));
+  }
+
+  private toValidDateOrNull(
+    value: Date | string | null | undefined,
+  ): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const parsedDate = value instanceof Date ? value : new Date(value);
+    return Number.isFinite(parsedDate.getTime()) ? parsedDate : null;
   }
 
   private async getUserProducts(
