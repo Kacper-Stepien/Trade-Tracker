@@ -14,6 +14,7 @@ import { formatDate, formatPrice } from "../../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 import { EditProductFocusField } from "./modals/EditProductModal";
 import { MarkProductAsSoldFocusField } from "./modals/MarkProductAsSoldModal";
+import { toSafeNumber } from "../../utils/number";
 
 type ProductSummarySectionProps = {
   product: Product;
@@ -22,19 +23,6 @@ type ProductSummarySectionProps = {
   onEditProduct: (field: EditProductFocusField) => void;
   onMarkAsSold: (field: MarkProductAsSoldFocusField) => void;
   onMarkAsUnsold: () => void;
-};
-
-const toSafeNumber = (value: unknown) => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  return 0;
 };
 
 export const ProductSummarySection = ({

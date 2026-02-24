@@ -24,37 +24,8 @@ import { formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
 import { KpiCard } from "../components/KpiCard/KpiCard";
-
-const formatPercentage = (value: number | null, locale: string) => {
-  if (value === null) {
-    return "-";
-  }
-
-  return `${new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)}%`;
-};
-
-const formatAxisNumber = (value: number, locale: string) =>
-  new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-
-const formatRangePeriodLabel = (period: string, locale: string) => {
-  if (/^\d{4}-\d{2}$/.test(period)) {
-    const [year, month] = period.split("-");
-    const date = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
-    return new Intl.DateTimeFormat(locale, {
-      month: "short",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(date);
-  }
-
-  return period;
-};
+import { formatAxisNumber, formatPercentage } from "../utils/number";
+import { formatRangePeriodLabel } from "../utils/date";
 
 const getRangeMonthsCount = (range: StatsRange) => {
   switch (range) {

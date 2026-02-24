@@ -30,51 +30,13 @@ import { formatDate, formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
 import { KpiCard } from "../components/KpiCard/KpiCard";
+import {
+  formatPercentage,
+  toFiniteNumberOrNull,
+  toSafeNumber,
+} from "../utils/number";
 
 const DASHBOARD_PRODUCTS_LIMIT = 5;
-
-const toSafeNumber = (value: unknown) => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  return 0;
-};
-
-const toFiniteNumberOrNull = (value: unknown) => {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-
-  return null;
-};
-
-const formatPercentage = (
-  value: number | null,
-  locale: string,
-  withSuffix: boolean = true,
-) => {
-  if (value === null) {
-    return "-";
-  }
-
-  const formatted = new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-
-  return withSuffix ? `${formatted}%` : formatted;
-};
 
 export default function DashboardPage() {
   const { t, i18n } = useTranslation();

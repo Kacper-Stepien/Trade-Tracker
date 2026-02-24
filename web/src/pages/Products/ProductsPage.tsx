@@ -34,6 +34,7 @@ import {
   PRODUCT_SOLD_FILTER,
 } from "../../types/Product";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
+import { toSafeNumber } from "../../utils/number";
 
 export const ProductsPage = () => {
   const { t, i18n } = useTranslation();
@@ -64,19 +65,6 @@ export const ProductsPage = () => {
 
   const handleCreateProduct = () => {
     navigate("/products/add");
-  };
-
-  const toSafeNumber = (value: unknown) => {
-    if (typeof value === "number" && Number.isFinite(value)) {
-      return value;
-    }
-
-    if (typeof value === "string") {
-      const parsed = Number(value.replace(",", "."));
-      return Number.isFinite(parsed) ? parsed : 0;
-    }
-
-    return 0;
   };
 
   if (isLoading) {

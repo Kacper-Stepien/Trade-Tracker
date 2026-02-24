@@ -5,47 +5,13 @@ import { Product, ProductCost } from "../../types/Product";
 import { formatPrice } from "../../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 import { KpiCard } from "../../components/KpiCard/KpiCard";
+import { toSafeNumber } from "../../utils/number";
+import { getDaysBetweenDates } from "../../utils/date";
 
 type ProductFinancesSectionProps = {
   product: Product;
   costs: ProductCost[];
   locale: string;
-};
-
-const toSafeNumber = (value: unknown) => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  return 0;
-};
-
-const getDaysBetweenDates = (from: string, to: string) => {
-  const fromDate = new Date(from);
-  const toDate = new Date(to);
-
-  if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) {
-    return null;
-  }
-
-  const fromUtc = Date.UTC(
-    fromDate.getUTCFullYear(),
-    fromDate.getUTCMonth(),
-    fromDate.getUTCDate(),
-  );
-  const toUtc = Date.UTC(
-    toDate.getUTCFullYear(),
-    toDate.getUTCMonth(),
-    toDate.getUTCDate(),
-  );
-
-  const millisecondsPerDay = 1000 * 60 * 60 * 24;
-  return Math.max(0, Math.round((toUtc - fromUtc) / millisecondsPerDay));
 };
 
 export const ProductFinancesSection = ({
