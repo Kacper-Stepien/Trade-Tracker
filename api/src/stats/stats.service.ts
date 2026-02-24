@@ -5,6 +5,13 @@ import { Product } from 'src/products/product.entity';
 import { ProductStatisticDto } from './dtos/product-statistic.dto';
 import { UserStatsDto } from './dtos/user-stats.dto';
 import { Logger } from '@kacper2076/logger-client';
+import {
+  ProfitByCategoryDto,
+  ProfitTrendPointDto,
+  StatsChartsDto,
+} from './dtos/stats-charts.dto';
+
+export type StatsRange = 'all' | '3m' | '6m' | '12m';
 
 @Injectable()
 export class StatsService {
@@ -41,6 +48,32 @@ export class StatsService {
 
     const products = await this.getUserProducts(userId, startDate, endDate);
     return this.calculateUserStats(products, `last ${months} months`);
+  }
+
+  async getUserStatsByRange(
+    userId: number,
+    range: StatsRange,
+  ): Promise<UserStatsDto> {
+    if (range === 'all') {
+      return this.getAllUserStats(userId);
+    }
+
+    const months = this.parseRangeMonths(range);
+    return this.getUserStatsFromLastMonths(userId, months);
+  }
+
+  async getUserChartsByRange(
+    userId: number,
+    range: StatsRange,
+  ): Promise<StatsChartsDto> {
+    const products = await this.getProductsForRange(userId, range);
+    const aggregation: 'month' | 'year' = range === 'all' ? 'year' : 'month';
+
+    return {
+      aggregation,
+      profitByCategory: this.buildProfitByCategory(products),
+      profitTrend: this.buildProfitTrend(products, aggregation),
+    };
   }
 
   private calculateUserStats(products: Product[], period: string): UserStatsDto {
@@ -176,6 +209,7 @@ export class StatsService {
     const queryBuilder = this.productsRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.costs', 'costs')
+      .leftJoinAndSelect('product.category', 'category')
       .where('product.userId = :userId', { userId });
 
     if (startDate && endDate) {
@@ -193,6 +227,109 @@ export class StatsService {
     }
 
     return queryBuilder.getMany();
+  }
+
+  private async getProductsForRange(userId: number, range: StatsRange) {
+    if (range === 'all') {
+      return this.getUserProducts(userId);
+    }
+
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - this.parseRangeMonths(range));
+    return this.getUserProducts(userId, startDate, endDate);
+  }
+
+  private parseRangeMonths(range: Exclude<StatsRange, 'all'>): number {
+    const months = Number(range.replace('m', ''));
+    return Number.isFinite(months) ? months : 12;
+  }
+
+  private buildProfitByCategory(products: Product[]): ProfitByCategoryDto[] {
+    const categoryProfitMap = new Map<string, number>();
+
+    for (const product of products) {
+      if (!product.sold || product.salePrice === null) {
+        continue;
+      }
+
+      const profit = this.calculateProductProfit(product);
+      if (profit <= 0) {
+        continue;
+      }
+
+      const categoryName = product.category?.name ?? 'Uncategorized';
+      categoryProfitMap.set(
+        categoryName,
+        (categoryProfitMap.get(categoryName) ?? 0) + profit,
+      );
+    }
+
+    const totalPositiveProfit = Array.from(categoryProfitMap.values()).reduce(
+      (acc, value) => acc + value,
+      0,
+    );
+
+    const result = Array.from(categoryProfitMap.entries()).map(
+      ([category, profit]) =>
+        ({
+          category,
+          profit: parseFloat(profit.toFixed(2)),
+          sharePercentage:
+            totalPositiveProfit > 0
+              ? parseFloat(((profit / totalPositiveProfit) * 100).toFixed(2))
+              : 0,
+        }) as ProfitByCategoryDto,
+    );
+
+    return result.sort((a, b) => b.profit - a.profit);
+  }
+
+  private buildProfitTrend(
+    products: Product[],
+    aggregation: 'month' | 'year',
+  ): ProfitTrendPointDto[] {
+    const trendMap = new Map<string, number>();
+
+    for (const product of products) {
+      if (!product.sold || product.salePrice === null) {
+        continue;
+      }
+
+      const saleDate = this.toValidDateOrNull(product.saleDate);
+      if (!saleDate) {
+        continue;
+      }
+
+      const period =
+        aggregation === 'year'
+          ? String(saleDate.getUTCFullYear())
+          : `${saleDate.getUTCFullYear()}-${String(
+              saleDate.getUTCMonth() + 1,
+            ).padStart(2, '0')}`;
+
+      trendMap.set(period, (trendMap.get(period) ?? 0) + this.calculateProductProfit(product));
+    }
+
+    return Array.from(trendMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(
+        ([period, profit]) =>
+          ({
+            period,
+            profit: parseFloat(profit.toFixed(2)),
+          }) as ProfitTrendPointDto,
+      );
+  }
+
+  private calculateProductProfit(product: Product): number {
+    const additionalCosts = (product.costs ?? []).reduce(
+      (acc, cost) => acc + parseFloat(cost.price.toString()),
+      0,
+    );
+    const totalCosts = parseFloat(product.purchasePrice.toString()) + additionalCosts;
+    const salePrice = product.salePrice ? parseFloat(product.salePrice.toString()) : 0;
+    return salePrice - totalCosts;
   }
 
   private mapProductToProductStatisticDto(

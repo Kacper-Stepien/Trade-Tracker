@@ -1,3 +1,12 @@
+export const STATS_RANGE = {
+  ALL: "all",
+  LAST_3_MONTHS: "3m",
+  LAST_6_MONTHS: "6m",
+  LAST_12_MONTHS: "12m",
+} as const;
+
+export type StatsRange = (typeof STATS_RANGE)[keyof typeof STATS_RANGE];
+
 export type UserStats = {
   totalCosts: number;
   totalRevenue: number;
@@ -11,4 +20,21 @@ export type UserStats = {
   numberOfSoldProducts: number;
   averageDaysFromPurchaseToSale: number | null;
   period: string;
+};
+
+export type ProfitByCategory = {
+  category: string;
+  profit: number;
+  sharePercentage: number;
+};
+
+export type ProfitTrendPoint = {
+  period: string;
+  profit: number;
+};
+
+export type StatsCharts = {
+  aggregation: "month" | "year";
+  profitByCategory: ProfitByCategory[];
+  profitTrend: ProfitTrendPoint[];
 };

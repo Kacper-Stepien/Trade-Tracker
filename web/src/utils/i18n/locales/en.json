@@ -270,9 +270,9 @@
       "kpi": {
         "totalProducts": "All products",
         "soldProducts": "Sold products",
-        "totalProfit": "Total profit",
+        "totalProfit": "Portfolio result (after costs)",
         "totalProfitPercentage": "Total profit %",
-        "realizedMargin": "Realized margin",
+        "realizedMargin": "Margin on sold products",
         "averageProfitPerSoldProduct": "Avg profit per sold product",
         "frozenCapital": "Frozen capital (unsold)",
         "sellThroughRate": "Sell-through rate",
@@ -281,6 +281,38 @@
       },
       "actions": {
         "showMore": "Show more"
+      }
+    },
+    "statistics": {
+      "title": "Statistics",
+      "description": "Analyze your flipping performance for a selected period",
+      "filters": {
+        "range": "Range",
+        "allTime": "All time",
+        "last3Months": "Last 3 months",
+        "last6Months": "Last 6 months",
+        "last12Months": "Last 12 months"
+      },
+      "kpi": {
+        "totalRevenue": "Revenue from sold products",
+        "totalCosts": "Total costs (sold + unsold)",
+        "netProfit": "Portfolio result after costs",
+        "transactions": "Transactions",
+        "realizedMargin": "Margin on sold products",
+        "averageProfitPerSoldProduct": "Avg profit per sold product",
+        "sellThroughRate": "Sell-through rate",
+        "averageDaysFromPurchaseToSale": "Avg days from purchase to sale",
+        "daysUnit": "days",
+        "frozenCapital": "Frozen capital"
+      },
+      "charts": {
+        "profitTrend": "Profit / loss over time",
+        "profitByCategory": "Profit by category",
+        "netResult": "Net result",
+        "profit": "Profit",
+        "loss": "Loss",
+        "noTrendData": "No trend data available for selected period.",
+        "noCategoryData": "No positive category profit in selected period."
       }
     },
     "categories": {

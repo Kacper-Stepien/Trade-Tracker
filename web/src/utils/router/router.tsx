@@ -11,6 +11,7 @@ import CostTypesPage from "../../pages/CostTypes/CostTypesPage";
 import { ProductsPage } from "../../pages/Products/ProductsPage";
 import { AddProductPage } from "../../pages/Product/AddProductPage";
 import { ProductDetailsPage } from "../../pages/Product/ProductDetailsPage";
+import StatisticsPage from "../../pages/StatisticsPage";
 
 export const router = createBrowserRouter([
   {
@@ -51,7 +52,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/statistics",
-            element: <div>Statistics Page - Coming Soon</div>,
+            element: <StatisticsPage />,
           },
         ],
       },
