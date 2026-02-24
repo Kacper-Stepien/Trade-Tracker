@@ -1,10 +1,10 @@
 import { Box, Paper, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useTranslation } from "react-i18next";
 import { Product, ProductCost } from "../../types/Product";
 import { formatPrice } from "../../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
+import { KpiCard } from "../../components/KpiCard/KpiCard";
 
 type ProductFinancesSectionProps = {
   product: Product;
@@ -160,111 +160,60 @@ export const ProductFinancesSection = ({
           },
         }}
       >
-        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: 0.5,
-            }}
-            textTransform="uppercase"
-          >
-            {t("pages.productDetails.finances.metrics.totalInvestment")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {formatPrice(totalInvestment, locale)}
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
-            {t("pages.productDetails.finances.totalInvestmentFormula", {
-              purchase: formatPrice(purchasePrice, locale),
-              costs: formatPrice(totalCosts, locale),
-            })}
-          </Typography>
-        </Box>
+        <KpiCard
+          size="large"
+          label={t("pages.productDetails.finances.metrics.totalInvestment")}
+          value={formatPrice(totalInvestment, locale)}
+          subtitle={t("pages.productDetails.finances.totalInvestmentFormula", {
+            purchase: formatPrice(purchasePrice, locale),
+            costs: formatPrice(totalCosts, locale),
+          })}
+        />
 
-        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{
-              color: "text.secondary",
-              fontWeight: 700,
-              letterSpacing: 0.5,
-            }}
-            textTransform="uppercase"
-          >
-            {t("pages.productDetails.finances.metrics.salePrice")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {formatPrice(product.sold ? salePrice : null, locale)}
-          </Typography>
-        </Box>
+        <KpiCard
+          size="large"
+          label={t("pages.productDetails.finances.metrics.salePrice")}
+          value={formatPrice(product.sold ? salePrice : null, locale)}
+        />
 
-        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Typography
-            variant="caption"
-            sx={{
-              color: "text.secondary",
-              fontWeight: 700,
-              letterSpacing: 0.5,
-            }}
-            textTransform="uppercase"
-          >
-            {t("pages.productDetails.finances.metrics.daysToSale")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {daysToSale !== null
+        <KpiCard
+          size="large"
+          label={t("pages.productDetails.finances.metrics.daysToSale")}
+          value={
+            daysToSale !== null
               ? t("pages.productDetails.finances.daysToSaleValue", {
                   value: daysToSale,
                 })
-              : t("pages.productDetails.finances.pendingResult")}
-          </Typography>
-        </Box>
+              : t("pages.productDetails.finances.pendingResult")
+          }
+        />
 
-        <Box
-          sx={{
-            p: 2.5,
-            borderRadius: 1.5,
-            bgcolor: alpha(resultCardColor, 0.14),
-            border: `1px solid ${alpha(resultCardColor, 0.35)}`,
-            borderBottom: `3px solid ${resultColor}`,
-          }}
-        >
-          <Typography
-            variant="caption"
-            sx={{
-              color: "text.secondary",
-              fontWeight: 700,
-              letterSpacing: 0.5,
-            }}
-            textTransform="uppercase"
-          >
-            {t("pages.productDetails.finances.metrics.result")}
-          </Typography>
-          <Box display="flex" alignItems="baseline" gap={1.5} mt={1}>
-            <Typography
-              variant="h5"
-              fontWeight={700}
-              sx={{ color: resultColor }}
-            >
-              {product.sold
-                ? formatPrice(profit, locale)
-                : t("pages.productDetails.finances.pendingResult")}
-            </Typography>
-            {roi ? (
-              <Typography
-                variant="body2"
-                sx={{ color: resultColor, fontWeight: 600 }}
-              >
-                {t("pages.productDetails.finances.roi", { value: roi })}
+        <KpiCard
+          size="large"
+          label={t("pages.productDetails.finances.metrics.result")}
+          accentColor={resultCardColor}
+          value={
+            <Box display="flex" alignItems="baseline" gap={1.5}>
+              <Typography variant="h5" fontWeight={700} sx={{ color: resultColor }}>
+                {product.sold
+                  ? formatPrice(profit, locale)
+                  : t("pages.productDetails.finances.pendingResult")}
               </Typography>
-            ) : null}
-          </Box>
-          {isLoss ? (
-            <Typography variant="body2" mt={1}>
-              {t("pages.productDetails.finances.lossHint")}
-            </Typography>
-          ) : null}
-        </Box>
+              {roi ? (
+                <Typography variant="body2" sx={{ color: resultColor, fontWeight: 600 }}>
+                  {t("pages.productDetails.finances.roi", { value: roi })}
+                </Typography>
+              ) : null}
+            </Box>
+          }
+          subtitle={
+            isLoss ? (
+              <Typography variant="body2">
+                {t("pages.productDetails.finances.lossHint")}
+              </Typography>
+            ) : null
+          }
+        />
       </Box>
 
       <Box

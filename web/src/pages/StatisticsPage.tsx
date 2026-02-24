@@ -11,7 +11,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import { BarChart, PieChart } from "@mui/x-charts";
 import {
   STATS_RANGE,
@@ -24,6 +23,7 @@ import {
 import { formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
+import { KpiCard } from "../components/KpiCard/KpiCard";
 
 const formatPercentage = (value: number | null, locale: string) => {
   if (value === null) {
@@ -243,53 +243,28 @@ export default function StatisticsPage() {
           },
         }}
       >
-        <Paper sx={{ p: 2.5, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.totalRevenue")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {formatPrice(stats.totalRevenue, i18n.language)}
-          </Typography>
-        </Paper>
-
-        <Paper sx={{ p: 2.5, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.totalCosts")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {formatPrice(stats.totalCosts, i18n.language)}
-          </Typography>
-        </Paper>
-
-        <Paper
-          sx={{
-            p: 2.5,
-            borderRadius: 2,
-            border: `1px solid ${alpha(totalProfitColor, 0.35)}`,
-            borderBottom: `3px solid ${totalProfitColor}`,
-            bgcolor: alpha(totalProfitColor, 0.14),
-          }}
-          elevation={0}
-        >
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.netProfit")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1} sx={{ color: totalProfitColor }}>
-            {formatPrice(stats.totalProfit, i18n.language)}
-          </Typography>
-          <Typography variant="body2" sx={{ color: totalProfitColor, mt: 1, fontWeight: 600 }}>
-            {formatPercentage(stats.totalProfitPercentage, i18n.language)}
-          </Typography>
-        </Paper>
-
-        <Paper sx={{ p: 2.5, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.transactions")}
-          </Typography>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {stats.numberOfSoldProducts}
-          </Typography>
-        </Paper>
+        <KpiCard
+          size="large"
+          label={t("pages.statistics.kpi.totalRevenue")}
+          value={formatPrice(stats.totalRevenue, i18n.language)}
+        />
+        <KpiCard
+          size="large"
+          label={t("pages.statistics.kpi.totalCosts")}
+          value={formatPrice(stats.totalCosts, i18n.language)}
+        />
+        <KpiCard
+          size="large"
+          label={t("pages.statistics.kpi.netProfit")}
+          value={formatPrice(stats.totalProfit, i18n.language)}
+          accentColor={totalProfitColor}
+          subtitle={formatPercentage(stats.totalProfitPercentage, i18n.language)}
+        />
+        <KpiCard
+          size="large"
+          label={t("pages.statistics.kpi.transactions")}
+          value={stats.numberOfSoldProducts}
+        />
       </Box>
 
       <Box
@@ -303,64 +278,35 @@ export default function StatisticsPage() {
           },
         }}
       >
-        <Paper sx={{ p: 2, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.realizedMargin")}
-          </Typography>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {formatPercentage(stats.soldProductsProfitPercentage, i18n.language)}
-          </Typography>
-        </Paper>
-        <Paper sx={{ p: 2, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.averageProfitPerSoldProduct")}
-          </Typography>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {averageProfitPerSoldProduct === null
+        <KpiCard
+          label={t("pages.statistics.kpi.realizedMargin")}
+          value={formatPercentage(stats.soldProductsProfitPercentage, i18n.language)}
+        />
+        <KpiCard
+          label={t("pages.statistics.kpi.averageProfitPerSoldProduct")}
+          value={
+            averageProfitPerSoldProduct === null
               ? "-"
-              : formatPrice(averageProfitPerSoldProduct, i18n.language)}
-          </Typography>
-        </Paper>
-        <Paper sx={{ p: 2, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.sellThroughRate")}
-          </Typography>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {formatPercentage(sellThroughRate, i18n.language)}
-          </Typography>
-        </Paper>
-        <Paper sx={{ p: 2, borderRadius: 2 }} elevation={0} variant="outlined">
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.averageDaysFromPurchaseToSale")}
-          </Typography>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {avgDaysRounded === null
+              : formatPrice(averageProfitPerSoldProduct, i18n.language)
+          }
+        />
+        <KpiCard
+          label={t("pages.statistics.kpi.sellThroughRate")}
+          value={formatPercentage(sellThroughRate, i18n.language)}
+        />
+        <KpiCard
+          label={t("pages.statistics.kpi.averageDaysFromPurchaseToSale")}
+          value={
+            avgDaysRounded === null
               ? "-"
-              : `${avgDaysRounded} ${t("pages.statistics.kpi.daysUnit")}`}
-          </Typography>
-        </Paper>
-        <Paper
-          sx={{
-            p: 2,
-            borderRadius: 2,
-            border: `1px solid ${alpha(PRODUCT_STATUS_COLORS.unsold, 0.35)}`,
-            borderBottom: `3px solid ${PRODUCT_STATUS_COLORS.unsold}`,
-            bgcolor: alpha(PRODUCT_STATUS_COLORS.unsold, 0.14),
-          }}
-          elevation={0}
-        >
-          <Typography variant="caption" color="text.secondary" fontWeight={700}>
-            {t("pages.statistics.kpi.frozenCapital")}
-          </Typography>
-          <Typography
-            variant="h6"
-            fontWeight={700}
-            mt={1}
-            sx={{ color: PRODUCT_STATUS_COLORS.unsold }}
-          >
-            {formatPrice(frozenCapital, i18n.language)}
-          </Typography>
-        </Paper>
+              : `${avgDaysRounded} ${t("pages.statistics.kpi.daysUnit")}`
+          }
+        />
+        <KpiCard
+          label={t("pages.statistics.kpi.frozenCapital")}
+          value={formatPrice(frozenCapital, i18n.language)}
+          accentColor={PRODUCT_STATUS_COLORS.unsold}
+        />
       </Box>
 
       <Box
