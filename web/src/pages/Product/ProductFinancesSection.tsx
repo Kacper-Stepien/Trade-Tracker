@@ -25,6 +25,29 @@ const toSafeNumber = (value: unknown) => {
   return 0;
 };
 
+const getDaysBetweenDates = (from: string, to: string) => {
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+
+  if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) {
+    return null;
+  }
+
+  const fromUtc = Date.UTC(
+    fromDate.getUTCFullYear(),
+    fromDate.getUTCMonth(),
+    fromDate.getUTCDate(),
+  );
+  const toUtc = Date.UTC(
+    toDate.getUTCFullYear(),
+    toDate.getUTCMonth(),
+    toDate.getUTCDate(),
+  );
+
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return Math.max(0, Math.round((toUtc - fromUtc) / millisecondsPerDay));
+};
+
 export const ProductFinancesSection = ({
   product,
   costs,
@@ -51,6 +74,10 @@ export const ProductFinancesSection = ({
   const roi =
     isProfit && totalInvestment > 0
       ? ((resultValue / totalInvestment) * 100).toFixed(1)
+      : null;
+  const daysToSale =
+    product.sold && product.saleDate
+      ? getDaysBetweenDates(product.purchaseDate, product.saleDate)
       : null;
 
   const resultLabel = isProfit
@@ -129,6 +156,7 @@ export const ProductFinancesSection = ({
           gridTemplateColumns: {
             xs: "1fr",
             md: "repeat(3, minmax(0, 1fr))",
+            lg: "repeat(4, minmax(0, 1fr))",
           },
         }}
       >
@@ -168,6 +196,27 @@ export const ProductFinancesSection = ({
           </Typography>
           <Typography variant="h5" fontWeight={700} mt={1}>
             {formatPrice(product.sold ? salePrice : null, locale)}
+          </Typography>
+        </Box>
+
+        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              fontWeight: 700,
+              letterSpacing: 0.5,
+            }}
+            textTransform="uppercase"
+          >
+            {t("pages.productDetails.finances.metrics.daysToSale")}
+          </Typography>
+          <Typography variant="h5" fontWeight={700} mt={1}>
+            {daysToSale !== null
+              ? t("pages.productDetails.finances.daysToSaleValue", {
+                  value: daysToSale,
+                })
+              : t("pages.productDetails.finances.pendingResult")}
           </Typography>
         </Box>
 
