@@ -1,46 +1,54 @@
+import { useState } from "react";
 import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useDeleteCostTypeMutation } from "../../hooks/cost_types";
-import { CostType } from "../../types/CostType.type";
-import { translateError } from "../../utils/translateError";
-import { FC, useState } from "react";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../BaseModal/BaseModal";
 
-interface Props {
-  costType: CostType | null;
+type EntityDeleteModalProps = {
+  open: boolean;
   onClose: () => void;
-}
+  title: string;
+  confirmationText: string;
+  entityName?: string;
+  isSubmitting: boolean;
+  onConfirm: () => Promise<string | null>;
+  disableConfirm?: boolean;
+};
 
-export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
+export const EntityDeleteModal = ({
+  open,
+  onClose,
+  title,
+  confirmationText,
+  entityName,
+  isSubmitting,
+  onConfirm,
+  disableConfirm = false,
+}: EntityDeleteModalProps) => {
   const { t } = useTranslation();
-  const deleteMutation = useDeleteCostTypeMutation();
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleClose = () => {
-    deleteMutation.reset();
     setFormError(null);
     onClose();
   };
 
   const handleConfirm = async () => {
-    if (!costType) return;
-
     setFormError(null);
-    const result = await deleteMutation.mutateAsync(costType.id);
+    const errorMessage = await onConfirm();
 
-    result.match(
-      () => handleClose(),
-      (error) => {
-        setFormError(translateError(error));
-      },
-    );
+    if (errorMessage) {
+      setFormError(errorMessage);
+      return;
+    }
+
+    handleClose();
   };
 
   return (
     <BaseModal
-      open={!!costType}
+      open={open}
       onClose={handleClose}
-      title={t("pages.costTypes.deleteModal.title")}
+      title={title}
       actions={
         <>
           <Button onClick={handleClose} color="inherit">
@@ -50,14 +58,12 @@ export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
             onClick={handleConfirm}
             color="error"
             variant="contained"
-            disabled={deleteMutation.isLoading}
+            disabled={disableConfirm || isSubmitting}
             startIcon={
-              deleteMutation.isLoading ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : null
+              isSubmitting ? <CircularProgress size={16} color="inherit" /> : null
             }
           >
-            {deleteMutation.isLoading
+            {isSubmitting
               ? `${t("common.actions.deleting")}...`
               : t("common.actions.delete")}
           </Button>
@@ -70,7 +76,7 @@ export const DeleteCostTypeModal: FC<Props> = ({ costType, onClose }) => {
         </Alert>
       )}
       <Typography>
-        {t("pages.costTypes.deleteModal.confirmation")} "{costType?.name}"?
+        {confirmationText} "{entityName}"?
       </Typography>
     </BaseModal>
   );

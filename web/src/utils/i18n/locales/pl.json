@@ -209,12 +209,14 @@
         "summaryLabel": "Kluczowe liczby",
         "lossHint": "Sprzedaz byla ponizej lacznych kosztow.",
         "roi": "(ROI: {{value}}%)",
+        "daysToSaleValue": "{{value}} dni",
         "partOfTotal": "{{value}}% calosci",
         "metrics": {
           "purchasePrice": "Cena zakupu",
           "totalCosts": "Suma kosztow",
           "totalInvestment": "Łączna inwestycja",
           "salePrice": "Cena sprzedazy",
+          "daysToSale": "Dni od zakupu do sprzedazy",
           "result": "Zysk / strata",
           "profit": "Zysk",
           "loss": "Strata",
@@ -267,15 +269,49 @@
       "kpi": {
         "totalProducts": "Wszystkie produkty",
         "soldProducts": "Sprzedane produkty",
-        "totalProfit": "Laczny zysk",
+        "totalProfit": "Wynik portfela (po kosztach)",
         "totalProfitPercentage": "Laczny zysk %",
-        "realizedMargin": "Marza zrealizowana",
+        "realizedMargin": "Marza na sprzedanych",
         "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
         "frozenCapital": "Kapital zamrozony (niesprzedane)",
-        "sellThroughRate": "Skutecznosc sprzedazy"
+        "sellThroughRate": "Skutecznosc sprzedazy",
+        "averageDaysFromPurchaseToSale": "Sredni czas od zakupu do sprzedazy",
+        "daysUnit": "dni"
       },
       "actions": {
         "showMore": "Zobacz wiecej"
+      }
+    },
+    "statistics": {
+      "title": "Statystyki",
+      "description": "Analizuj wyniki flipow w wybranym okresie",
+      "filters": {
+        "range": "Zakres",
+        "allTime": "Caly okres",
+        "last3Months": "Ostatnie 3 miesiace",
+        "last6Months": "Ostatnie 6 miesiecy",
+        "last12Months": "Ostatnie 12 miesiecy"
+      },
+      "kpi": {
+        "totalRevenue": "Przychod ze sprzedanych",
+        "totalCosts": "Laczne koszty (sprzedane + niesprzedane)",
+        "netProfit": "Wynik portfela po kosztach",
+        "transactions": "Transakcje",
+        "realizedMargin": "Marza na sprzedanych",
+        "averageProfitPerSoldProduct": "Sredni zysk na sprzedany produkt",
+        "sellThroughRate": "Skutecznosc sprzedazy",
+        "averageDaysFromPurchaseToSale": "Sredni czas od zakupu do sprzedazy",
+        "daysUnit": "dni",
+        "frozenCapital": "Kapital zamrozony"
+      },
+      "charts": {
+        "profitTrend": "Zysk / strata w czasie",
+        "profitByCategory": "Zysk wedlug kategorii",
+        "netResult": "Wynik netto",
+        "profit": "Zysk",
+        "loss": "Strata",
+        "noTrendData": "Brak danych do wykresu trendu dla wybranego okresu.",
+        "noCategoryData": "Brak dodatniego zysku wedlug kategorii w wybranym okresie."
       }
     },
     "categories": {
