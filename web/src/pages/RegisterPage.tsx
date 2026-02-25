@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
 
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import RegisterForm from "../components/forms/RegisterForm/RegisterForm";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ export default function RegisterPage() {
       gap={4}
       borderRadius={2}
     >
-      <Typography variant="h4">{t("registration")}</Typography>
+      <PageHeader title={t("registration")} marginBottom={0} />
       <RegisterForm />
     </Grid>
   );

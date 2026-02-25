@@ -29,6 +29,7 @@ import { useProductsQuery } from "../hooks/products";
 import { formatDate, formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 import { KpiCard } from "../components/KpiCard/KpiCard";
 import {
   formatPercentage,
@@ -97,14 +98,10 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      <Box>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {t("pages.dashboard.title")}
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {t("pages.dashboard.description")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("pages.dashboard.title")}
+        description={t("pages.dashboard.description")}
+      />
 
       <Box
         sx={{

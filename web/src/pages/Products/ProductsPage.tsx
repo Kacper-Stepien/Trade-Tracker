@@ -18,7 +18,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,6 +26,7 @@ import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 import { formatDate, formatPrice } from "../../utils/formatters";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
+import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useProductsFilters } from "../../hooks/products/useProductsFilters";
 import {
@@ -84,30 +84,21 @@ export const ProductsPage = () => {
         overflow: "hidden",
       }}
     >
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        mb={4}
-        flexShrink={0}
-      >
-        <Box>
-          <Typography variant="h4" fontWeight={600}>
-            {t("pages.products.title")}
-          </Typography>
-          <Typography variant="body2">
-            {t("pages.products.description")}
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleCreateProduct}
-        >
-          {t("pages.products.actions.addProduct")}
-        </Button>
-      </Box>
+      <PageHeader
+        title={t("pages.products.title")}
+        description={t("pages.products.description")}
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleCreateProduct}
+            sx={{ alignSelf: "flex-end" }}
+          >
+            {t("pages.products.actions.addProduct")}
+          </Button>
+        }
+      />
 
       <Stack
         direction={{ xs: "column", sm: "row" }}

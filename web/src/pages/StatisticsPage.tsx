@@ -24,6 +24,7 @@ import { formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
 import { KpiCard } from "../components/KpiCard/KpiCard";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 import { formatAxisNumber, formatPercentage } from "../utils/number";
 import { formatRangePeriodLabel } from "../utils/date";
 
@@ -166,42 +167,29 @@ export default function StatisticsPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: { xs: "flex-start", md: "center" },
-          gap: 2,
-          flexWrap: "wrap",
-        }}
-      >
-        <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {t("pages.statistics.title")}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {t("pages.statistics.description")}
-          </Typography>
-        </Box>
-
-        <FormControl sx={{ minWidth: 220 }} size="small">
-          <InputLabel id="statistics-range-label">
-            {t("pages.statistics.filters.range")}
-          </InputLabel>
-          <Select
-            labelId="statistics-range-label"
-            value={range}
-            label={t("pages.statistics.filters.range")}
-            onChange={(event) => setRange(event.target.value as StatsRange)}
-          >
-            {rangeOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+      <PageHeader
+        title={t("pages.statistics.title")}
+        description={t("pages.statistics.description")}
+        action={
+          <FormControl sx={{ minWidth: 220, alignSelf: "flex-end" }} size="small">
+            <InputLabel id="statistics-range-label">
+              {t("pages.statistics.filters.range")}
+            </InputLabel>
+            <Select
+              labelId="statistics-range-label"
+              value={range}
+              label={t("pages.statistics.filters.range")}
+              onChange={(event) => setRange(event.target.value as StatsRange)}
+            >
+              {rangeOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        }
+      />
 
       <Box
         sx={{
@@ -388,6 +376,7 @@ export default function StatisticsPage() {
           )}
         </Paper>
       </Box>
+
     </Box>
   );
 }
