@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Category } from "../../types/Category.type";
-import { useUpdateCategoryMutation } from "../../hooks/categories";
-import { translateError } from "../../utils/translateError";
+import { Category } from "../../../types/Category.type";
+import { useUpdateCategoryMutation } from "../../../hooks/categories";
+import { translateError } from "../../../utils/translateError";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import {
   Alert,
   Button,

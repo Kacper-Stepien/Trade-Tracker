@@ -1,10 +1,10 @@
 import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useDeleteCategoryMutation } from "../../hooks/categories";
-import { Category } from "../../types/Category.type";
-import { translateError } from "../../utils/translateError";
+import { useDeleteCategoryMutation } from "../../../hooks/categories";
+import { Category } from "../../../types/Category.type";
+import { translateError } from "../../../utils/translateError";
 import { FC, useState } from "react";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 
 interface Props {
   category: Category | null;

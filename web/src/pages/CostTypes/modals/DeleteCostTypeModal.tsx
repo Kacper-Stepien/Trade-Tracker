@@ -1,10 +1,10 @@
 import { Alert, Button, CircularProgress, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useDeleteCostTypeMutation } from "../../hooks/cost_types";
-import { CostType } from "../../types/CostType.type";
-import { translateError } from "../../utils/translateError";
+import { useDeleteCostTypeMutation } from "../../../hooks/cost_types";
+import { CostType } from "../../../types/CostType.type";
+import { translateError } from "../../../utils/translateError";
 import { FC, useState } from "react";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 
 interface Props {
   costType: CostType | null;
