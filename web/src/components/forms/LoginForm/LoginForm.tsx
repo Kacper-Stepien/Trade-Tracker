@@ -75,7 +75,7 @@ const LoginForm = () => {
             },
           })}
         />
-        {serverError && <InputError> {t(serverError)}</InputError>}
+        {serverError && <InputError>{serverError}</InputError>}
         <FormSubmitButton
           disabled={!isValid}
           isLoading={loginMutation.isLoading}

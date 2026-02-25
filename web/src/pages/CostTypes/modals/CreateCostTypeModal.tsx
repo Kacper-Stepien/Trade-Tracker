@@ -1,15 +1,8 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { translateError } from "../../../utils/translateError";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../../components/BaseModal/BaseModal";
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useCreateCostTypeMutation } from "../../../hooks/cost_types";
+import { EntityNameModal } from "../../../components/entity-modals/EntityNameModal";
 
 interface Props {
   open: boolean;
@@ -18,68 +11,31 @@ interface Props {
 
 export const CreateCostTypeModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [formError, setFormError] = useState<string | null>(null);
   const createMutation = useCreateCostTypeMutation();
 
   const handleClose = () => {
     createMutation.reset();
-    setFormError(null);
-    setName("");
     onClose();
   };
 
-  const handleSubmit = async () => {
-    if (!name.trim()) return;
-    setFormError(null);
-    const result = await createMutation.mutateAsync(name.trim());
-    result.match(
-      () => handleClose(),
-      (error) => setFormError(translateError(error)),
+  const handleSubmit = async (name: string) => {
+    const result = await createMutation.mutateAsync(name);
+    return result.match(
+      () => null,
+      (error) => translateError(error),
     );
   };
 
   return (
-    <BaseModal
+    <EntityNameModal
       open={open}
       onClose={handleClose}
       title={t("pages.costTypes.addModal.title")}
-      actions={
-        <>
-          <Button onClick={handleClose} color="inherit">
-            {t("common.actions.cancel")}
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            disabled={!name.trim() || createMutation.isLoading}
-            startIcon={
-              createMutation.isLoading ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : null
-            }
-          >
-            {t("common.actions.create")}
-          </Button>
-        </>
-      }
-    >
-      {formError && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {formError}
-        </Alert>
-      )}
-      <Typography variant="body2" mb={1}>
-        {t("pages.costTypes.addModal.label")}
-      </Typography>
-      <TextField
-        autoFocus
-        fullWidth
-        placeholder={t("pages.costTypes.addModal.placeholder")}
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-      />
-    </BaseModal>
+      label={t("pages.costTypes.addModal.label")}
+      placeholder={t("pages.costTypes.addModal.placeholder")}
+      submitLabel={t("common.actions.create")}
+      isSubmitting={createMutation.isLoading}
+      onSubmit={handleSubmit}
+    />
   );
 };

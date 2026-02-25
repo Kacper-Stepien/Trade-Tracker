@@ -1,13 +1,9 @@
 import {
-  Alert,
   Box,
   Button,
   IconButton,
-  Paper,
-  Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TablePagination,
   TableRow,
@@ -22,8 +18,10 @@ import { useTranslation } from "react-i18next";
 import { CreateCategoryModal } from "./modals/CreateCategoryModal";
 import { EditCategoryModal } from "./modals/EditCategoryModal";
 import { DeleteCategoryModal } from "./modals/DeleteCategoryModal";
-import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
+import { DataTableContainer } from "../../components/DataTable/DataTableContainer";
+import { DataTableLayout } from "../../components/DataTable/DataTableLayout";
+import { AsyncStateBoundary } from "../../components/AsyncStateBoundary/AsyncStateBoundary";
 import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 
@@ -42,70 +40,66 @@ export const CategoriesPage = () => {
     null,
   );
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError) {
-    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
-  }
-
   return (
-    <Box
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
+    <AsyncStateBoundary
+      data={data}
+      isLoading={isLoading}
+      isError={isError}
+      errorMessage={t("common.errors.fetchFailed")}
     >
-      <PageHeader
-        title={t("pages.categories.title")}
-        description={t("pages.categories.description")}
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => setIsCreateModalOpen(true)}
-            sx={{ alignSelf: "flex-end" }}
-          >
-            {t("common.actions.add")}
-          </Button>
-        }
-      />
-
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: 2,
-          border: 1,
-          borderColor: "divider",
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
-        <TableContainer
+      {(resolvedData) => (
+        <Box
           sx={{
-            flex: 1,
-            minHeight: 0,
-            overflowY: "scroll",
-            overflowX: "auto",
-            boxShadow: "inset 0 6px 6px -8px rgba(0,0,0,0.35)",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
-          <Table
-            stickyHeader
-            sx={{
-              "& .MuiTableCell-stickyHeader": {
-                backgroundColor: "background.paper",
-                zIndex: 2,
-              },
-            }}
+          <PageHeader
+            title={t("pages.categories.title")}
+            description={t("pages.categories.description")}
+            action={
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={() => setIsCreateModalOpen(true)}
+                sx={{ alignSelf: "flex-end" }}
+              >
+                {t("common.actions.add")}
+              </Button>
+            }
+          />
+
+          <DataTableContainer
+            pagination={
+              <TablePagination
+                component="div"
+                count={resolvedData.total}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
+                labelRowsPerPage={t("pages.categories.pagination.rowsPerPage")}
+                labelDisplayedRows={({ from, to, count }) =>
+                  t("pages.categories.pagination.displayedRows", {
+                    from,
+                    to,
+                    total: count === -1 ? `>${to}` : count,
+                  })
+                }
+              />
+            }
           >
+            <DataTableLayout
+              tableContainerSx={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: "scroll",
+              }}
+            >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>
@@ -120,8 +114,8 @@ export const CategoriesPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.categories.length ? (
-                data.categories.map((category) => (
+              {resolvedData.categories.length ? (
+                resolvedData.categories.map((category) => (
                   <TableRow
                     key={category.id}
                     hover
@@ -154,41 +148,25 @@ export const CategoriesPage = () => {
                 </TableRow>
               )}
             </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          component="div"
-          count={data?.total ?? 0}
-          page={page}
-          onPageChange={handlePageChange}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
-          labelRowsPerPage={t("pages.categories.pagination.rowsPerPage")}
-          labelDisplayedRows={({ from, to, count }) =>
-            t("pages.categories.pagination.displayedRows", {
-              from,
-              to,
-              total: count === -1 ? `>${to}` : count,
-            })
-          }
-        />
-      </Paper>
+            </DataTableLayout>
+          </DataTableContainer>
 
-      <CreateCategoryModal
-        open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+          <CreateCategoryModal
+            open={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+          />
 
-      <EditCategoryModal
-        category={editingCategory}
-        onClose={() => setEditingCategory(null)}
-      />
+          <EditCategoryModal
+            category={editingCategory}
+            onClose={() => setEditingCategory(null)}
+          />
 
-      <DeleteCategoryModal
-        category={deletingCategory}
-        onClose={() => setDeletingCategory(null)}
-      />
-    </Box>
+          <DeleteCategoryModal
+            category={deletingCategory}
+            onClose={() => setDeletingCategory(null)}
+          />
+        </Box>
+      )}
+    </AsyncStateBoundary>
   );
 };

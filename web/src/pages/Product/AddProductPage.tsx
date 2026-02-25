@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -26,8 +26,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useCreateProductMutation } from "../../hooks/products";
-import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
+import { AsyncStateBoundary } from "../../components/AsyncStateBoundary/AsyncStateBoundary";
 import { translateError } from "../../utils/translateError";
 
 const modernInputSx = {
@@ -128,16 +128,15 @@ export const AddProductPage = () => {
     );
   };
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError) {
-    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
-  }
-
   return (
-    <Box sx={{ pb: 1 }}>
+    <AsyncStateBoundary
+      data={categories ?? []}
+      isLoading={isLoading}
+      isError={isError}
+      errorMessage={t("common.errors.fetchFailed")}
+    >
+      {(resolvedCategories) => (
+        <Box sx={{ pb: 1 }}>
       <Box mb={2.5}>
         <Box display="flex" alignItems="center" gap={1}>
           <IconButton
@@ -278,7 +277,7 @@ export const AddProductPage = () => {
                 }
                 {...register("categoryId", { required: true })}
               >
-                {categories?.map((category) => (
+                {resolvedCategories.map((category) => (
                   <MenuItem key={category.id} value={String(category.id)}>
                     {category.name}
                   </MenuItem>
@@ -416,6 +415,8 @@ export const AddProductPage = () => {
           </Stack>
         </Stack>
       </form>
-    </Box>
+        </Box>
+      )}
+    </AsyncStateBoundary>
   );
 };

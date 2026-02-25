@@ -19,6 +19,8 @@ import { translateError } from "../../../utils/translateError";
 type Props = {
   open: boolean;
   productId: number;
+  initialSalePrice?: number | null;
+  initialSaleDate?: string | null;
   initialFocusField?: MarkProductAsSoldFocusField | null;
   onClose: () => void;
 };
@@ -33,6 +35,8 @@ type FormValues = {
 export const MarkProductAsSoldModal = ({
   open,
   productId,
+  initialSalePrice,
+  initialSaleDate,
   initialFocusField,
   onClose,
 }: Props) => {
@@ -65,10 +69,13 @@ export const MarkProductAsSoldModal = ({
   useEffect(() => {
     if (!open) return;
     reset({
-      salePrice: "",
-      saleDate: dayjs(),
+      salePrice:
+        initialSalePrice !== null && initialSalePrice !== undefined
+          ? String(initialSalePrice)
+          : "",
+      saleDate: initialSaleDate ? dayjs(initialSaleDate) : dayjs(),
     });
-  }, [open, reset]);
+  }, [open, reset, initialSalePrice, initialSaleDate]);
 
   useEffect(() => {
     if (!open || !initialFocusField) return;
