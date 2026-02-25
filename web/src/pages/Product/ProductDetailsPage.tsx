@@ -19,7 +19,6 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useProductByIdQuery } from "../../hooks/products";
 import { useProductCostsQuery } from "../../hooks/product_costs";
-import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { ProductAttribute, ProductCost } from "../../types/Product";
 import { CreateProductCostModal } from "./modals/CreateProductCostModal";
 import { EditProductCostModal } from "./modals/EditProductCostModal";
@@ -40,6 +39,7 @@ import { ProductCostsSection } from "./ProductCostsSection";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 import { DeleteProductModal } from "./modals/DeleteProductModal";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
+import { AsyncStateBoundary } from "../../components/AsyncStateBoundary/AsyncStateBoundary";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -81,25 +81,23 @@ export const ProductDetailsPage = () => {
   } = useProductCostsQuery(productId, isValidProductId);
 
   if (!isValidProductId) {
-    return (
-      <Alert severity="error">{t("pages.productDetails.invalidId")}</Alert>
-    );
+    return <Alert severity="error">{t("pages.productDetails.invalidId")}</Alert>;
   }
-
-  if (isLoading || isCostsLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError || isCostsError || !product) {
-    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
-  }
-
-  const statusColor = product.sold
-    ? PRODUCT_STATUS_COLORS.sold
-    : PRODUCT_STATUS_COLORS.unsold;
 
   return (
-    <Box>
+    <AsyncStateBoundary
+      data={product}
+      isLoading={isLoading || isCostsLoading}
+      isError={isError || isCostsError}
+      errorMessage={t("common.errors.fetchFailed")}
+    >
+      {(resolvedProduct) => {
+        const statusColor = resolvedProduct.sold
+          ? PRODUCT_STATUS_COLORS.sold
+          : PRODUCT_STATUS_COLORS.unsold;
+
+        return (
+          <Box>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -126,7 +124,7 @@ export const ProductDetailsPage = () => {
               {t("pages.products.title")}
             </Link>
             <Typography color="text.primary" fontWeight={500}>
-              {product.name}
+              {resolvedProduct.name}
             </Typography>
           </Breadcrumbs>
         </Box>
@@ -140,14 +138,14 @@ export const ProductDetailsPage = () => {
               fontWeight={800}
               sx={{ letterSpacing: "-0.02em" }}
             >
-              {product.name}
+              {resolvedProduct.name}
             </Typography>
             <Chip
               icon={
-                product.sold ? <CheckCircleOutlineIcon /> : <ErrorOutlineIcon />
+                resolvedProduct.sold ? <CheckCircleOutlineIcon /> : <ErrorOutlineIcon />
               }
               label={
-                product.sold
+                resolvedProduct.sold
                   ? t("pages.productDetails.finances.sold")
                   : t("pages.productDetails.finances.unsold")
               }
@@ -180,7 +178,7 @@ export const ProductDetailsPage = () => {
 
       <Stack spacing={4}>
         <ProductFinancesSection
-          product={product}
+          product={resolvedProduct}
           costs={costs ?? []}
           locale={i18n.language}
         />
@@ -193,7 +191,7 @@ export const ProductDetailsPage = () => {
           }}
         >
           <ProductSummarySection
-            product={product}
+            product={resolvedProduct}
             costs={costs ?? []}
             locale={i18n.language}
             onEditProduct={(field) => {
@@ -208,7 +206,7 @@ export const ProductDetailsPage = () => {
           />
 
           <ProductAttributesSection
-            attributes={product.attributes}
+            attributes={resolvedProduct.attributes}
             onCreate={() => setIsCreateAttributeModalOpen(true)}
             onEdit={setEditingAttribute}
             onDelete={setDeletingAttribute}
@@ -257,7 +255,7 @@ export const ProductDetailsPage = () => {
       />
 
       <EditProductModal
-        product={isEditProductModalOpen ? product : null}
+        product={isEditProductModalOpen ? resolvedProduct : null}
         initialFocusField={editProductFocusField}
         onClose={() => {
           setIsEditProductModalOpen(false);
@@ -281,11 +279,14 @@ export const ProductDetailsPage = () => {
       <DeleteProductModal
         open={isDeleteProductModalOpen}
         productId={productId}
-        productName={product.name}
+        productName={resolvedProduct.name}
         onClose={() => setIsDeleteProductModalOpen(false)}
         onDeleted={() => navigate("/products")}
       />
-    </Box>
+          </Box>
+        );
+      }}
+    </AsyncStateBoundary>
   );
 };
 

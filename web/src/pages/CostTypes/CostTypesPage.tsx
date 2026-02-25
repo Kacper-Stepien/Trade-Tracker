@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Alert,
   Box,
   Button,
   IconButton,
@@ -20,10 +19,10 @@ import { CreateCostTypeModal } from "./modals/CreateCostTypeModal";
 import { useUserStore } from "../../store/userStore";
 import { EditCostTypeModal } from "./modals/EditCostTypeModal";
 import { DeleteCostTypeModal } from "./modals/DeleteCostTypeModal";
-import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { DataTableContainer } from "../../components/DataTable/DataTableContainer";
 import { DataTableLayout } from "../../components/DataTable/DataTableLayout";
+import { AsyncStateBoundary } from "../../components/AsyncStateBoundary/AsyncStateBoundary";
 import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 
@@ -35,7 +34,6 @@ const CostTypesPage: FC = () => {
     page: page + 1,
     limit: rowsPerPage,
   });
-  const costTypes = data?.costTypes ?? [];
   const userRole = useUserStore((state) => state.user?.role);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -46,69 +44,68 @@ const CostTypesPage: FC = () => {
 
   const isAdmin = userRole === "admin";
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError) {
-    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
-  }
-
   return (
-    <Box
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
+    <AsyncStateBoundary
+      data={data}
+      isLoading={isLoading}
+      isError={isError}
+      errorMessage={t("common.errors.fetchFailed")}
     >
-      <PageHeader
-        title={t("pages.costTypes.title")}
-        description={t("pages.costTypes.description")}
-        action={
-          isAdmin ? (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={() => setIsCreateModalOpen(true)}
-              sx={{ alignSelf: "flex-end" }}
-            >
-              {t("common.actions.add")}
-            </Button>
-          ) : null
-        }
-      />
-
-      <DataTableContainer
-        pagination={
-          <TablePagination
-            component="div"
-            count={data?.total ?? 0}
-            page={page}
-            onPageChange={handlePageChange}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
-            labelRowsPerPage={t("pages.costTypes.pagination.rowsPerPage")}
-            labelDisplayedRows={({ from, to, count }) =>
-              t("pages.costTypes.pagination.displayedRows", {
-                from,
-                to,
-                total: count === -1 ? `>${to}` : count,
-              })
-            }
-          />
-        }
-      >
-        <DataTableLayout
-          tableContainerSx={{
-            flex: 1,
-            minHeight: 0,
-            overflowY: "scroll",
+      {(resolvedData) => (
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
+          <PageHeader
+            title={t("pages.costTypes.title")}
+            description={t("pages.costTypes.description")}
+            action={
+              isAdmin ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={() => setIsCreateModalOpen(true)}
+                  sx={{ alignSelf: "flex-end" }}
+                >
+                  {t("common.actions.add")}
+                </Button>
+              ) : null
+            }
+          />
+
+          <DataTableContainer
+            pagination={
+              <TablePagination
+                component="div"
+                count={resolvedData.total}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
+                labelRowsPerPage={t("pages.costTypes.pagination.rowsPerPage")}
+                labelDisplayedRows={({ from, to, count }) =>
+                  t("pages.costTypes.pagination.displayedRows", {
+                    from,
+                    to,
+                    total: count === -1 ? `>${to}` : count,
+                  })
+                }
+              />
+            }
+          >
+            <DataTableLayout
+              tableContainerSx={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: "scroll",
+              }}
+            >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>
@@ -125,8 +122,8 @@ const CostTypesPage: FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {costTypes.length ? (
-                costTypes.map((costType) => (
+              {resolvedData.costTypes.length ? (
+                resolvedData.costTypes.map((costType) => (
                   <TableRow
                     key={costType.id}
                     hover
@@ -163,26 +160,28 @@ const CostTypesPage: FC = () => {
                 </TableRow>
               )}
             </TableBody>
-        </DataTableLayout>
-      </DataTableContainer>
+            </DataTableLayout>
+          </DataTableContainer>
 
-      {isAdmin && (
-        <>
-          <CreateCostTypeModal
-            open={isCreateModalOpen}
-            onClose={() => setIsCreateModalOpen(false)}
-          />
-          <EditCostTypeModal
-            costType={editingCostType}
-            onClose={() => setEditingCostType(null)}
-          />
-          <DeleteCostTypeModal
-            costType={deletingCostType}
-            onClose={() => setDeletingCostType(null)}
-          />
-        </>
+          {isAdmin && (
+            <>
+              <CreateCostTypeModal
+                open={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+              />
+              <EditCostTypeModal
+                costType={editingCostType}
+                onClose={() => setEditingCostType(null)}
+              />
+              <DeleteCostTypeModal
+                costType={deletingCostType}
+                onClose={() => setDeletingCostType(null)}
+              />
+            </>
+          )}
+        </Box>
       )}
-    </Box>
+    </AsyncStateBoundary>
   );
 };
 

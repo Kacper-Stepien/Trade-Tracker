@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
-  Alert,
   Box,
   Button,
   FormControl,
@@ -15,10 +14,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { useProductsQuery } from "../../hooks/products";
 import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
-import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { ProductTable } from "../../components/ProductTable/ProductTable";
 import { DataTableContainer } from "../../components/DataTable/DataTableContainer";
+import { AsyncStateBoundary } from "../../components/AsyncStateBoundary/AsyncStateBoundary";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useProductsFilters } from "../../hooks/products/useProductsFilters";
 import {
@@ -57,38 +56,37 @@ export const ProductsPage = () => {
     navigate("/products/add");
   };
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
-  if (isError) {
-    return <Alert severity="error">{t("common.errors.fetchFailed")}</Alert>;
-  }
-
   return (
-    <Box
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
+    <AsyncStateBoundary
+      data={data}
+      isLoading={isLoading}
+      isError={isError}
+      errorMessage={t("common.errors.fetchFailed")}
     >
-      <PageHeader
-        title={t("pages.products.title")}
-        description={t("pages.products.description")}
-        action={
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleCreateProduct}
-            sx={{ alignSelf: "flex-end" }}
-          >
-            {t("pages.products.actions.addProduct")}
-          </Button>
-        }
-      />
+      {(resolvedData) => (
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <PageHeader
+            title={t("pages.products.title")}
+            description={t("pages.products.description")}
+            action={
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleCreateProduct}
+                sx={{ alignSelf: "flex-end" }}
+              >
+                {t("pages.products.actions.addProduct")}
+              </Button>
+            }
+          />
 
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -140,38 +138,40 @@ export const ProductsPage = () => {
         </FormControl>
       </Stack>
 
-      <DataTableContainer
-        pagination={
-          <TablePagination
-            component="div"
-            count={data?.total ?? 0}
-            page={page}
-            onPageChange={handlePageChange}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
-            labelRowsPerPage={t("pages.products.pagination.rowsPerPage")}
-            labelDisplayedRows={({ from, to, count }) =>
-              t("pages.products.pagination.displayedRows", {
-                from,
-                to,
-                total: count === -1 ? `>${to}` : count,
-              })
+          <DataTableContainer
+            pagination={
+              <TablePagination
+                component="div"
+                count={resolvedData.total}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
+                labelRowsPerPage={t("pages.products.pagination.rowsPerPage")}
+                labelDisplayedRows={({ from, to, count }) =>
+                  t("pages.products.pagination.displayedRows", {
+                    from,
+                    to,
+                    total: count === -1 ? `>${to}` : count,
+                  })
+                }
+              />
             }
-          />
-        }
-      >
-        <ProductTable
-          products={data?.products ?? []}
-          locale={i18n.language}
-          onRowClick={(id) => navigate(`/products/${id}`)}
-          tableContainerSx={{
-            flex: 1,
-            minHeight: 0,
-            overflowY: "scroll",
-          }}
-        />
-      </DataTableContainer>
-    </Box>
+          >
+            <ProductTable
+              products={resolvedData.products}
+              locale={i18n.language}
+              onRowClick={(id) => navigate(`/products/${id}`)}
+              tableContainerSx={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: "scroll",
+              }}
+            />
+          </DataTableContainer>
+        </Box>
+      )}
+    </AsyncStateBoundary>
   );
 };
