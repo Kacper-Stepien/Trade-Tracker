@@ -1,4 +1,4 @@
-import { Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Chip, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { SxProps, Theme } from "@mui/system";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import { Product } from "../../types/Product";
 import { formatDate, formatPrice } from "../../utils/formatters";
 import { toSafeNumber } from "../../utils/number";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
+import { DataTableLayout } from "../DataTable/DataTableLayout";
 
 type ProductTableProps = {
   products: Product[];
@@ -25,23 +26,7 @@ export const ProductTable = ({
   const { t } = useTranslation();
 
   return (
-    <TableContainer
-      sx={{
-        overflowY: "auto",
-        overflowX: "auto",
-        boxShadow: "inset 0 6px 6px -8px rgba(0,0,0,0.35)",
-        ...tableContainerSx,
-      }}
-    >
-      <Table
-        stickyHeader
-        sx={{
-          "& .MuiTableCell-stickyHeader": {
-            backgroundColor: "background.paper",
-            zIndex: 2,
-          },
-        }}
-      >
+    <DataTableLayout tableContainerSx={tableContainerSx}>
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontWeight: 700 }}>
@@ -169,7 +154,6 @@ export const ProductTable = ({
             </TableRow>
           )}
         </TableBody>
-      </Table>
-    </TableContainer>
+    </DataTableLayout>
   );
 };

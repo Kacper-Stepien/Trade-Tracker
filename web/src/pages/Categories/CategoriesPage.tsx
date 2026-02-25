@@ -3,11 +3,8 @@ import {
   Box,
   Button,
   IconButton,
-  Paper,
-  Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TablePagination,
   TableRow,
@@ -24,6 +21,8 @@ import { EditCategoryModal } from "./modals/EditCategoryModal";
 import { DeleteCategoryModal } from "./modals/DeleteCategoryModal";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
+import { DataTableContainer } from "../../components/DataTable/DataTableContainer";
+import { DataTableLayout } from "../../components/DataTable/DataTableLayout";
 import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 
@@ -75,37 +74,34 @@ export const CategoriesPage = () => {
         }
       />
 
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: 2,
-          border: 1,
-          borderColor: "divider",
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
+      <DataTableContainer
+        pagination={
+          <TablePagination
+            component="div"
+            count={data?.total ?? 0}
+            page={page}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
+            labelRowsPerPage={t("pages.categories.pagination.rowsPerPage")}
+            labelDisplayedRows={({ from, to, count }) =>
+              t("pages.categories.pagination.displayedRows", {
+                from,
+                to,
+                total: count === -1 ? `>${to}` : count,
+              })
+            }
+          />
+        }
       >
-        <TableContainer
-          sx={{
+        <DataTableLayout
+          tableContainerSx={{
             flex: 1,
             minHeight: 0,
             overflowY: "scroll",
-            overflowX: "auto",
-            boxShadow: "inset 0 6px 6px -8px rgba(0,0,0,0.35)",
           }}
         >
-          <Table
-            stickyHeader
-            sx={{
-              "& .MuiTableCell-stickyHeader": {
-                backgroundColor: "background.paper",
-                zIndex: 2,
-              },
-            }}
-          >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>
@@ -154,26 +150,8 @@ export const CategoriesPage = () => {
                 </TableRow>
               )}
             </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          component="div"
-          count={data?.total ?? 0}
-          page={page}
-          onPageChange={handlePageChange}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
-          labelRowsPerPage={t("pages.categories.pagination.rowsPerPage")}
-          labelDisplayedRows={({ from, to, count }) =>
-            t("pages.categories.pagination.displayedRows", {
-              from,
-              to,
-              total: count === -1 ? `>${to}` : count,
-            })
-          }
-        />
-      </Paper>
+        </DataTableLayout>
+      </DataTableContainer>
 
       <CreateCategoryModal
         open={isCreateModalOpen}

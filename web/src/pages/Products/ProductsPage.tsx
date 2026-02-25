@@ -7,7 +7,6 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Stack,
   TablePagination,
@@ -19,6 +18,7 @@ import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { ProductTable } from "../../components/ProductTable/ProductTable";
+import { DataTableContainer } from "../../components/DataTable/DataTableContainer";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useProductsFilters } from "../../hooks/products/useProductsFilters";
 import {
@@ -140,18 +140,26 @@ export const ProductsPage = () => {
         </FormControl>
       </Stack>
 
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: 2,
-          border: 1,
-          borderColor: "divider",
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
+      <DataTableContainer
+        pagination={
+          <TablePagination
+            component="div"
+            count={data?.total ?? 0}
+            page={page}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
+            labelRowsPerPage={t("pages.products.pagination.rowsPerPage")}
+            labelDisplayedRows={({ from, to, count }) =>
+              t("pages.products.pagination.displayedRows", {
+                from,
+                to,
+                total: count === -1 ? `>${to}` : count,
+              })
+            }
+          />
+        }
       >
         <ProductTable
           products={data?.products ?? []}
@@ -163,24 +171,7 @@ export const ProductsPage = () => {
             overflowY: "scroll",
           }}
         />
-        <TablePagination
-          component="div"
-          count={data?.total ?? 0}
-          page={page}
-          onPageChange={handlePageChange}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          rowsPerPageOptions={TABLE_ROWS_PER_PAGE_OPTIONS}
-          labelRowsPerPage={t("pages.products.pagination.rowsPerPage")}
-          labelDisplayedRows={({ from, to, count }) =>
-            t("pages.products.pagination.displayedRows", {
-              from,
-              to,
-              total: count === -1 ? `>${to}` : count,
-            })
-          }
-        />
-      </Paper>
+      </DataTableContainer>
     </Box>
   );
 };
