@@ -29,51 +29,15 @@ import { useProductsQuery } from "../hooks/products";
 import { formatDate, formatPrice } from "../utils/formatters";
 import { PRODUCT_STATUS_COLORS } from "../utils/themes/themes";
 import { PageLoader } from "../components/PageLoader/PageLoader";
+import { PageHeader } from "../components/PageHeader/PageHeader";
+import { KpiCard } from "../components/KpiCard/KpiCard";
+import {
+  formatPercentage,
+  toFiniteNumberOrNull,
+  toSafeNumber,
+} from "../utils/number";
 
 const DASHBOARD_PRODUCTS_LIMIT = 5;
-
-const toSafeNumber = (value: unknown) => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  return 0;
-};
-
-const toFiniteNumberOrNull = (value: unknown) => {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number(value.replace(",", "."));
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-
-  return null;
-};
-
-const formatPercentage = (
-  value: number | null,
-  locale: string,
-  withSuffix: boolean = true,
-) => {
-  if (value === null) {
-    return "-";
-  }
-
-  const formatted = new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-
-  return withSuffix ? `${formatted}%` : formatted;
-};
 
 export default function DashboardPage() {
   const { t, i18n } = useTranslation();
@@ -134,14 +98,10 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      <Box>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {t("pages.dashboard.title")}
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {t("pages.dashboard.description")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("pages.dashboard.title")}
+        description={t("pages.dashboard.description")}
+      />
 
       <Box
         sx={{
@@ -153,99 +113,42 @@ export default function DashboardPage() {
           },
         }}
       >
-        <Box
-          sx={{
-            p: 2.5,
-            borderRadius: 1.5,
-            bgcolor: alpha(realizedMarginColor, 0.14),
-            border: `1px solid ${alpha(realizedMarginColor, 0.35)}`,
-            borderBottom: `3px solid ${realizedMarginColor}`,
-          }}
-        >
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.realizedMargin")}
-            </Typography>
+        <KpiCard
+          size="large"
+          label={t("pages.dashboard.kpi.realizedMargin")}
+          value={formatPercentage(stats.soldProductsProfitPercentage, i18n.language)}
+          accentColor={realizedMarginColor}
+          icon={
             <PercentOutlinedIcon
               fontSize="small"
               sx={{ color: alpha(realizedMarginColor, 0.9) }}
             />
-          </Box>
-          <Typography
-            variant="h5"
-            fontWeight={700}
-            mt={1}
-            sx={{ color: realizedMarginColor }}
-          >
-            {formatPercentage(stats.soldProductsProfitPercentage, i18n.language)}
-          </Typography>
-        </Box>
+          }
+        />
 
-        <Box sx={{ p: 2.5, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.averageProfitPerSoldProduct")}
-            </Typography>
-            <PaidOutlinedIcon fontSize="small" color="action" />
-          </Box>
-          <Typography variant="h5" fontWeight={700} mt={1}>
-            {averageProfitPerSoldProduct === null
+        <KpiCard
+          size="large"
+          label={t("pages.dashboard.kpi.averageProfitPerSoldProduct")}
+          value={
+            averageProfitPerSoldProduct === null
               ? "-"
-              : formatPrice(averageProfitPerSoldProduct, i18n.language)}
-          </Typography>
-        </Box>
+              : formatPrice(averageProfitPerSoldProduct, i18n.language)
+          }
+          icon={<PaidOutlinedIcon fontSize="small" color="action" />}
+        />
 
-        <Box
-          sx={{
-            p: 2.5,
-            borderRadius: 1.5,
-            bgcolor: alpha(PRODUCT_STATUS_COLORS.unsold, 0.14),
-            border: `1px solid ${alpha(PRODUCT_STATUS_COLORS.unsold, 0.35)}`,
-            borderBottom: `3px solid ${PRODUCT_STATUS_COLORS.unsold}`,
-          }}
-        >
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.frozenCapital")}
-            </Typography>
+        <KpiCard
+          size="large"
+          label={t("pages.dashboard.kpi.frozenCapital")}
+          value={formatPrice(frozenCapital, i18n.language)}
+          accentColor={PRODUCT_STATUS_COLORS.unsold}
+          icon={
             <AcUnitOutlinedIcon
               fontSize="small"
               sx={{ color: alpha(PRODUCT_STATUS_COLORS.unsold, 0.9) }}
             />
-          </Box>
-          <Typography
-            variant="h5"
-            fontWeight={700}
-            mt={1}
-            sx={{ color: PRODUCT_STATUS_COLORS.unsold }}
-          >
-            {formatPrice(frozenCapital, i18n.language)}
-          </Typography>
-        </Box>
+          }
+        />
       </Box>
 
       <Box
@@ -259,139 +162,66 @@ export default function DashboardPage() {
           },
         }}
       >
-        <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.totalProducts")}
-            </Typography>
-            <Inventory2OutlinedIcon fontSize="small" color="action" />
-          </Box>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {stats.numberOfProducts}
-          </Typography>
-        </Box>
+        <KpiCard
+          label={t("pages.dashboard.kpi.totalProducts")}
+          value={stats.numberOfProducts}
+          icon={<Inventory2OutlinedIcon fontSize="small" color="action" />}
+        />
 
-        <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.soldProducts")}
-            </Typography>
-            <ShoppingCartCheckoutOutlinedIcon fontSize="small" color="action" />
-          </Box>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {stats.numberOfSoldProducts}
-          </Typography>
-        </Box>
+        <KpiCard
+          label={t("pages.dashboard.kpi.soldProducts")}
+          value={stats.numberOfSoldProducts}
+          icon={<ShoppingCartCheckoutOutlinedIcon fontSize="small" color="action" />}
+        />
 
-        <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.sellThroughRate")}
-            </Typography>
-            <TrendingUpOutlinedIcon fontSize="small" color="action" />
-          </Box>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {formatPercentage(sellThroughRate, i18n.language)}
-          </Typography>
-        </Box>
+        <KpiCard
+          label={t("pages.dashboard.kpi.sellThroughRate")}
+          value={formatPercentage(sellThroughRate, i18n.language)}
+          icon={<TrendingUpOutlinedIcon fontSize="small" color="action" />}
+        />
 
-        <Box sx={{ p: 2, borderRadius: 1.5, bgcolor: "action.hover" }}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.averageDaysFromPurchaseToSale")}
-            </Typography>
-            <ScheduleOutlinedIcon fontSize="small" color="action" />
-          </Box>
-          <Typography variant="h6" fontWeight={700} mt={1}>
-            {averageDaysFromPurchaseToSale !== null
+        <KpiCard
+          label={t("pages.dashboard.kpi.averageDaysFromPurchaseToSale")}
+          value={
+            averageDaysFromPurchaseToSale !== null
               ? `${new Intl.NumberFormat(i18n.language, {
                   maximumFractionDigits: 0,
                 }).format(Math.round(averageDaysFromPurchaseToSale))} ${t(
                   "pages.dashboard.kpi.daysUnit",
                 )}`
               : "-"
-            }
-          </Typography>
-        </Box>
+          }
+          icon={<ScheduleOutlinedIcon fontSize="small" color="action" />}
+        />
 
-        <Box
-          sx={{
-            p: 2,
-            borderRadius: 1.5,
-            bgcolor: alpha(profitColor, 0.14),
-            border: `1px solid ${alpha(profitColor, 0.35)}`,
-            borderBottom: `3px solid ${profitColor}`,
-          }}
-        >
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography
-              variant="caption"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-              }}
-              textTransform="uppercase"
-            >
-              {t("pages.dashboard.kpi.totalProfit")}
-            </Typography>
+        <KpiCard
+          label={t("pages.dashboard.kpi.totalProfit")}
+          accentColor={profitColor}
+          icon={
             <ShowChartOutlinedIcon
               fontSize="small"
               sx={{ color: alpha(profitColor, 0.9) }}
             />
-          </Box>
-          <Box display="flex" alignItems="baseline" gap={1.5} mt={1}>
-            <Typography variant="h6" fontWeight={700} sx={{ color: profitColor }}>
-              {formatPrice(stats.totalProfit, i18n.language)}
-            </Typography>
-            {stats.totalProfitPercentage !== null ? (
-              <Typography
-                variant="body2"
-                sx={{ color: profitColor, fontWeight: 600 }}
-              >
-                {t("pages.productDetails.finances.roi", {
-                  value: formatPercentage(
-                    stats.totalProfitPercentage,
-                    i18n.language,
-                    false,
-                  ),
-                })}
+          }
+          value={
+            <Box display="flex" alignItems="baseline" gap={1.5}>
+              <Typography variant="h6" fontWeight={700} sx={{ color: profitColor }}>
+                {formatPrice(stats.totalProfit, i18n.language)}
               </Typography>
-            ) : null}
-          </Box>
-        </Box>
+              {stats.totalProfitPercentage !== null ? (
+                <Typography variant="body2" sx={{ color: profitColor, fontWeight: 600 }}>
+                  {t("pages.productDetails.finances.roi", {
+                    value: formatPercentage(
+                      stats.totalProfitPercentage,
+                      i18n.language,
+                      false,
+                    ),
+                  })}
+                </Typography>
+              ) : null}
+            </Box>
+          }
+        />
       </Box>
 
       <Paper

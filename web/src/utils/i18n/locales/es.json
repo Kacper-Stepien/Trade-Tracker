@@ -270,9 +270,9 @@
       "kpi": {
         "totalProducts": "Todos los productos",
         "soldProducts": "Productos vendidos",
-        "totalProfit": "Ganancia total",
+        "totalProfit": "Resultado del portafolio (tras costos)",
         "totalProfitPercentage": "Ganancia total %",
-        "realizedMargin": "Margen realizado",
+        "realizedMargin": "Margen en vendidos",
         "averageProfitPerSoldProduct": "Ganancia media por producto vendido",
         "frozenCapital": "Capital congelado (no vendidos)",
         "sellThroughRate": "Tasa de venta",
@@ -281,6 +281,38 @@
       },
       "actions": {
         "showMore": "Ver mas"
+      }
+    },
+    "statistics": {
+      "title": "Estadisticas",
+      "description": "Analiza tu rendimiento de flipping en el periodo seleccionado",
+      "filters": {
+        "range": "Rango",
+        "allTime": "Todo el periodo",
+        "last3Months": "Ultimos 3 meses",
+        "last6Months": "Ultimos 6 meses",
+        "last12Months": "Ultimos 12 meses"
+      },
+      "kpi": {
+        "totalRevenue": "Ingresos de vendidos",
+        "totalCosts": "Costos totales (vendidos + no vendidos)",
+        "netProfit": "Resultado del portafolio tras costos",
+        "transactions": "Transacciones",
+        "realizedMargin": "Margen en vendidos",
+        "averageProfitPerSoldProduct": "Ganancia media por producto vendido",
+        "sellThroughRate": "Tasa de venta",
+        "averageDaysFromPurchaseToSale": "Promedio de dias de compra a venta",
+        "daysUnit": "dias",
+        "frozenCapital": "Capital congelado"
+      },
+      "charts": {
+        "profitTrend": "Ganancia / perdida en el tiempo",
+        "profitByCategory": "Ganancia por categoria",
+        "netResult": "Resultado neto",
+        "profit": "Ganancia",
+        "loss": "Perdida",
+        "noTrendData": "No hay datos de tendencia para el periodo seleccionado.",
+        "noCategoryData": "No hay ganancia positiva por categoria en el periodo seleccionado."
       }
     },
     "categories": {

@@ -39,6 +39,7 @@ import { ProductAttributesSection } from "./ProductAttributesSection";
 import { ProductCostsSection } from "./ProductCostsSection";
 import { PRODUCT_STATUS_COLORS } from "../../utils/themes/themes";
 import { DeleteProductModal } from "./modals/DeleteProductModal";
+import { PageHeader } from "../../components/PageHeader/PageHeader";
 
 export const ProductDetailsPage = () => {
   const { t, i18n } = useTranslation();
@@ -131,15 +132,8 @@ export const ProductDetailsPage = () => {
         </Box>
 
       </Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap={2}
-        mb={4}
-      >
-        <Stack spacing={0.5}>
+      <PageHeader
+        title={
           <Box display="flex" alignItems="center" gap={2}>
             <Typography
               variant="h3"
@@ -168,19 +162,19 @@ export const ProductDetailsPage = () => {
               variant="outlined"
             />
           </Box>
-          <Typography variant="body1" color="text.secondary">
-            {t("pages.productDetails.description")}
-          </Typography>
-        </Stack>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<DeleteOutlineIcon />}
-          onClick={() => setIsDeleteProductModalOpen(true)}
-        >
-          {t("pages.productDetails.actions.deleteProduct")}
-        </Button>
-      </Box>
+        }
+        description={t("pages.productDetails.description")}
+        action={
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteOutlineIcon />}
+            onClick={() => setIsDeleteProductModalOpen(true)}
+          >
+            {t("pages.productDetails.actions.deleteProduct")}
+          </Button>
+        }
+      />
 
       <Divider sx={{ mb: 4, opacity: 0.6 }} />
 

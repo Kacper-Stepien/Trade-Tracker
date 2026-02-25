@@ -27,6 +27,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useCategoriesQuery } from "../../hooks/categories";
 import { useCreateProductMutation } from "../../hooks/products";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
+import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { translateError } from "../../utils/translateError";
 
 const modernInputSx = {
@@ -167,14 +168,10 @@ export const AddProductPage = () => {
         </Box>
       </Box>
 
-      <Box mb={4}>
-        <Typography variant="h4" fontWeight={600}>
-          {t("pages.addProduct.title")}
-        </Typography>
-        <Typography variant="body2">
-          {t("pages.addProduct.description")}
-        </Typography>
-      </Box>
+      <PageHeader
+        title={t("pages.addProduct.title")}
+        description={t("pages.addProduct.description")}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>

@@ -11,7 +11,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -20,10 +19,11 @@ import { useCategoriesPaginatedQuery } from "../../hooks/categories";
 import { useState } from "react";
 import { Category } from "../../types/Category.type";
 import { useTranslation } from "react-i18next";
-import { CreateCategoryModal } from "./CreateCategoryModal";
-import { EditCategoryModal } from "./EditCategoryModal";
-import { DeleteCategoryModal } from "./DeleteCategoryModal";
+import { CreateCategoryModal } from "./modals/CreateCategoryModal";
+import { EditCategoryModal } from "./modals/EditCategoryModal";
+import { DeleteCategoryModal } from "./modals/DeleteCategoryModal";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
+import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { usePagination } from "../../hooks/usePagination";
 import { TABLE_ROWS_PER_PAGE_OPTIONS } from "../../constants/pagination";
 
@@ -59,30 +59,21 @@ export const CategoriesPage = () => {
         overflow: "hidden",
       }}
     >
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        mb={4}
-        flexShrink={0}
-      >
-        <Box>
-          <Typography variant="h4" fontWeight={600}>
-            {t("pages.categories.title")}
-          </Typography>
-          <Typography variant="body2">
-            {t("pages.categories.description")}
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          {t("common.actions.add")}
-        </Button>
-      </Box>
+      <PageHeader
+        title={t("pages.categories.title")}
+        description={t("pages.categories.description")}
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => setIsCreateModalOpen(true)}
+            sx={{ alignSelf: "flex-end" }}
+          >
+            {t("common.actions.add")}
+          </Button>
+        }
+      />
 
       <Paper
         elevation={0}

@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
 
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import LoginForm from "../components/forms/LoginForm/LoginForm";
+import { PageHeader } from "../components/PageHeader/PageHeader";
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function LoginPage() {
       gap={4}
       borderRadius={2}
     >
-      <Typography variant="h4">{t("logging")}</Typography>
+      <PageHeader title={t("logging")} marginBottom={0} />
       <LoginForm />
     </Grid>
   );
