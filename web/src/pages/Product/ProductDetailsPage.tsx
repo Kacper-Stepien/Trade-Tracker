@@ -265,6 +265,8 @@ export const ProductDetailsPage = () => {
       <MarkProductAsSoldModal
         open={isMarkAsSoldModalOpen}
         productId={productId}
+        initialSalePrice={resolvedProduct.salePrice}
+        initialSaleDate={resolvedProduct.saleDate}
         initialFocusField={markAsSoldFocusField}
         onClose={() => {
           setIsMarkAsSoldModalOpen(false);
