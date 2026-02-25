@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { CostType } from "../../types/CostType.type";
-import { useUpdateCostTypeMutation } from "../../hooks/cost_types";
-import { translateError } from "../../utils/translateError";
+import { CostType } from "../../../types/CostType.type";
+import { useUpdateCostTypeMutation } from "../../../hooks/cost_types";
+import { translateError } from "../../../utils/translateError";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import {
   Alert,
   Button,

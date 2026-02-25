@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
-import { translateError } from "../../utils/translateError";
+import { translateError } from "../../../utils/translateError";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import {
   Alert,
   Button,
@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useCreateCostTypeMutation } from "../../hooks/cost_types";
+import { useCreateCostTypeMutation } from "../../../hooks/cost_types";
 
 interface Props {
   open: boolean;

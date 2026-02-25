@@ -19,10 +19,10 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useCostTypesPaginatedQuery } from "../../hooks/cost_types";
 import { CostType } from "../../types/CostType.type";
-import { CreateCostTypeModal } from "./CreateCostTypeModal";
+import { CreateCostTypeModal } from "./modals/CreateCostTypeModal";
 import { useUserStore } from "../../store/userStore";
-import { EditCostTypeModal } from "./EditCostTypeModal";
-import { DeleteCostTypeModal } from "./DeleteCostTypeModal";
+import { EditCostTypeModal } from "./modals/EditCostTypeModal";
+import { DeleteCostTypeModal } from "./modals/DeleteCostTypeModal";
 import { PageLoader } from "../../components/PageLoader/PageLoader";
 import { PageHeader } from "../../components/PageHeader/PageHeader";
 import { usePagination } from "../../hooks/usePagination";
@@ -144,7 +144,9 @@ const CostTypesPage: FC = () => {
                     <TableCell>{costType.costsCount}</TableCell>
                     {isAdmin && (
                       <TableCell align="right">
-                        <IconButton onClick={() => setEditingCostType(costType)}>
+                        <IconButton
+                          onClick={() => setEditingCostType(costType)}
+                        >
                           <EditOutlinedIcon />
                         </IconButton>
                         <IconButton

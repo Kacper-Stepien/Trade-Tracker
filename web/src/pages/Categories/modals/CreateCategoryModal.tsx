@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
-import { useCreateCategoryMutation } from "../../hooks/categories";
-import { translateError } from "../../utils/translateError";
+import { useCreateCategoryMutation } from "../../../hooks/categories";
+import { translateError } from "../../../utils/translateError";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../components/BaseModal/BaseModal";
+import { BaseModal } from "../../../components/BaseModal/BaseModal";
 import {
   Alert,
   Button,
